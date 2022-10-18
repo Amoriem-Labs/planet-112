@@ -1,6 +1,6 @@
-#README
+# README
 
-##Jacob's Logs
+## Jacob's Logs
 8/18/2022
 Right now we have player movement with A and D or right and left.
 Press E by a plant to increment it's life stage.
