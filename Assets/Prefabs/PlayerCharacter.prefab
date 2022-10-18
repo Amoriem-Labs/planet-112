@@ -148,6 +148,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  interactRange: 0.5
+  plantObject: {fileID: 5392039749182135098, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
 --- !u!114 &6951981859433477780
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,39 +6,43 @@ using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
-    PlantScript[] plantScripts;
+    List<PlantScript> plantScripts = new List<PlantScript>();
     List<PlantScript> closePlants = new List<PlantScript>();
     PlantScript closestPlant;
 
 
     [SerializeField] float speed = 5f;
     [SerializeField] float interactRange = 50f;
+    [SerializeField] GameObject plantObject;
 
     Controls controls;
     PlayerInput playerInput;
     bool playerInputHasBeenInit = false;
     InputAction actionMovement;
     InputAction actionInteract;
+    InputAction actionNewPlant;
 
     Rigidbody2D rb;
     Vector2 moveInput;
-
-
-
-
+    SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         controls = new Controls();
         playerInput = GetComponent<PlayerInput>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         actionMovement = controls.Main.Movement;
         actionInteract = controls.Main.Interact;
+        actionNewPlant = controls.Main.NewPlant;
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
         {
             Debug.LogError("RigidBody2D is null!");
         }
-        plantScripts = GameObject.FindObjectsOfType<PlantScript>();
+        foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
+        {
+            plantScripts.Add(plant);
+        }
         // add initially close plants to closePlants list
 
 
@@ -51,6 +56,7 @@ public class PlayerScript : MonoBehaviour
     public void InitPlayerInput()
     {
         actionInteract.started += OnInteract;
+        actionNewPlant.started += GeneratePlant;
         playerInputHasBeenInit = true;
         Debug.Log("playerInput has been init");
 
@@ -60,6 +66,7 @@ public class PlayerScript : MonoBehaviour
     {
         controls.Main.Disable();
         actionInteract.started -= OnInteract;
+        actionNewPlant.started -= GeneratePlant;
 
         playerInputHasBeenInit = true;
     }
@@ -86,6 +93,15 @@ public class PlayerScript : MonoBehaviour
     {
         // character movement
         moveInput.x = actionMovement.ReadValue<Vector2>().x;
+        // flip sprite according to movement
+        if (moveInput.x > 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else if (moveInput.x < 0)
+        {
+            spriteRenderer.flipX = false;
+        }
         //moveInput.y = 0f;
         Vector2 vector2 = new Vector2(moveInput.x * speed, rb.velocity.y);
         rb.velocity = vector2;
@@ -144,5 +160,13 @@ public class PlayerScript : MonoBehaviour
         //{
         //    Debug.Log("no closestPlant");
         //}
+    }
+
+    public void GeneratePlant(InputAction.CallbackContext context)
+    {
+        Vector3 plantLocation = new Vector3(transform.position.x, -2.84f, transform.position.z);
+        GameObject newPlant = Instantiate(plantObject, plantLocation, transform.rotation);
+        // add the new plant to the overall list:
+        plantScripts.Add(newPlant.GetComponent<PlantScript>());
     }
 }

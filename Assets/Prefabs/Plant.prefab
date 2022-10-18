@@ -122,11 +122,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54d7f6023c88245cfbf2cdc0f6091e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentStage: 0
+  maxStage: 2
   spriteArray:
   - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  currentStage: 0
+  stageTimeMax: 20
 --- !u!61 &1836785115747074028
 BoxCollider2D:
   m_ObjectHideFlags: 0

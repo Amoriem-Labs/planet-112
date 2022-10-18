@@ -44,13 +44,22 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""NewPlant"",
+                    ""type"": ""Button"",
+                    ""id"": ""41a1b36b-8ebf-4cb0-a89b-d8a7ae49c53f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": ""Arrow Keys"",
                     ""id"": ""b155e1b2-eaee-46cf-b4c8-993a837a7a49"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -167,6 +176,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dbad689b-950d-4ff0-9656-28f3510bb9cf"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""NewPlant"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -183,6 +203,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Main = asset.FindActionMap("Main", throwIfNotFound: true);
         m_Main_Movement = m_Main.FindAction("Movement", throwIfNotFound: true);
         m_Main_Interact = m_Main.FindAction("Interact", throwIfNotFound: true);
+        m_Main_NewPlant = m_Main.FindAction("NewPlant", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -244,12 +265,14 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private IMainActions m_MainActionsCallbackInterface;
     private readonly InputAction m_Main_Movement;
     private readonly InputAction m_Main_Interact;
+    private readonly InputAction m_Main_NewPlant;
     public struct MainActions
     {
         private @Controls m_Wrapper;
         public MainActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Main_Movement;
         public InputAction @Interact => m_Wrapper.m_Main_Interact;
+        public InputAction @NewPlant => m_Wrapper.m_Main_NewPlant;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -265,6 +288,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_MainActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnInteract;
+                @NewPlant.started -= m_Wrapper.m_MainActionsCallbackInterface.OnNewPlant;
+                @NewPlant.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnNewPlant;
+                @NewPlant.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnNewPlant;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -275,6 +301,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @NewPlant.started += instance.OnNewPlant;
+                @NewPlant.performed += instance.OnNewPlant;
+                @NewPlant.canceled += instance.OnNewPlant;
             }
         }
     }
@@ -292,5 +321,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnNewPlant(InputAction.CallbackContext context);
     }
 }
