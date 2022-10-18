@@ -4,26 +4,22 @@ using UnityEngine;
 
 public class PlantScript : MonoBehaviour
 {
-    PlayerScript playerScript;
-    [SerializeField] Sprite[] spriteArray;
-    
-    SpriteRenderer spriteRenderer;
+    // public variables
     public int currentStage = 0;
-    int maxStage = 2;
+    public int maxStage = 2;
+
+    // serialized
+    [SerializeField] Sprite[] spriteArray;
+
+    // private
+    PlayerScript playerScript;
+    SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         playerScript = Object.FindObjectOfType<PlayerScript>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            playerScript.plantScript = this;
-        }
     }
 
     public void IncrementState()

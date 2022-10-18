@@ -5,9 +5,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
-    public PlantScript plantScript;
+    PlantScript[] plantScripts;
+    List<PlantScript> closePlants = new List<PlantScript>();
+    PlantScript closestPlant;
+
 
     [SerializeField] float speed = 5f;
+    [SerializeField] float interactRange = 50f;
 
     Controls controls;
     PlayerInput playerInput;
@@ -33,6 +37,10 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.LogError("RigidBody2D is null!");
         }
+        plantScripts = GameObject.FindObjectsOfType<PlantScript>();
+        // add initially close plants to closePlants list
+
+
     }
 
     private void OnEnable()
@@ -42,32 +50,16 @@ public class PlayerScript : MonoBehaviour
 
     public void InitPlayerInput()
     {
-
-        Debug.Log("playerInput has been init");
-        //if (playerInput.isActiveAndEnabled) return;
-        //playerInput.actions["Movement"].performed +=
-        //playerInput.actions["Interact"].performed += OnInteract;
-        //playerInput.actions["Interact"].started += OnInteract;
-        //playerInput.actions["Interact"].canceled += OnInteract;
-
-        //actionInteract.performed += OnInteract;
         actionInteract.started += OnInteract;
-        //actionInteract.canceled += OnInteract;
+        playerInputHasBeenInit = true;
         Debug.Log("playerInput has been init");
 
-        playerInputHasBeenInit = true;
     }
 
     private void OnDisable()
     {
         controls.Main.Disable();
-        //playerInput.actions["Interact"].performed -= OnInteract;
-        //playerInput.actions["Interact"].started -= OnInteract;
-        //playerInput.actions["Interact"].canceled -= OnInteract;
-
-        //actionInteract.performed -= OnInteract;
         actionInteract.started -= OnInteract;
-        //actionInteract.canceled -= OnInteract;
 
         playerInputHasBeenInit = true;
     }
@@ -85,6 +77,9 @@ public class PlayerScript : MonoBehaviour
         {
             InitPlayerInput();
         }
+
+        AddPlantsToList();
+        findClosestPlant();
     }
 
     private void FixedUpdate()
@@ -102,14 +97,52 @@ public class PlayerScript : MonoBehaviour
         return groundCheck.collider != null && groundCheck.collider.CompareTag("Ground");
     }
 
-    //private bool IsCloseToPlant()
-    //{
-        
-    //}
+    public void AddPlantsToList()
+    {
+        foreach (PlantScript plant in plantScripts)
+        {
+            float currentPlantDist = Mathf.Abs(Vector3.Distance(plant.transform.position, transform.position));
+            if (currentPlantDist < interactRange)
+            {
+                closePlants.Add(plant);
+            }
+            else if (closePlants.Contains(plant))
+            {
+                closePlants.Remove(plant);
+            }
+        }
+    }
+
+
+    private void findClosestPlant()
+    {
+        float closestPlantDist = Screen.width;
+        closestPlant = null;
+        foreach (PlantScript plant in closePlants)
+        {
+            float currentPlantDist = Vector3.Distance(transform.position, plant.transform.position);
+            if (currentPlantDist < closestPlantDist)
+            {
+                closestPlantDist = currentPlantDist;
+                closestPlant = plant;
+            }
+        }
+    }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        Debug.Log("tried to interact");
-        plantScript.IncrementState();
+        
+        if (closestPlant)
+        {
+            closestPlant.IncrementState();
+            //Debug.Log("tried to interact");
+            //Debug.Log("closestPlant: " + closestPlant.name);
+            //Debug.Log("plantScripts[0]: " + plantScripts[0].name);
+            //Debug.Log("closePlants[0]: " + closePlants[0].name);
+        }
+        //else
+        //{
+        //    Debug.Log("no closestPlant");
+        //}
     }
 }
