@@ -114,7 +114,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""WASD"",
                     ""id"": ""8efbfb13-ddd2-46f0-93a1-97ef2b6238cb"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
