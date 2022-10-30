@@ -54,4 +54,23 @@ public class PlantScript : MonoBehaviour
     {
         spriteRenderer.sprite = spriteArray[currentStage];
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Replace with gameManager static singleton for simplicity
+            //Actually use FindObjectOfType of gameObject, are we using a game manager?
+            collision.gameObject.GetComponent<PlayerScript>().closePlants.Add(this);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            //Replace with gameManager static singleton for simplicity
+            //Actually use FindObjectOfType of gameObject, are we using a game manager?
+            collision.gameObject.GetComponent<PlayerScript>().closePlants.Remove(this);
+        }
+    }
 }
