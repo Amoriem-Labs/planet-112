@@ -17,7 +17,6 @@ public class PlayerScript : MonoBehaviour
 
     Controls controls;
     PlayerInput playerInput;
-    bool playerInputHasBeenInit = false;
     InputAction actionMovement;
     InputAction actionInteract;
     InputAction actionNewPlant;
@@ -51,15 +50,9 @@ public class PlayerScript : MonoBehaviour
     private void OnEnable()
     {
         controls.Main.Enable();
-    }
-
-    public void InitPlayerInput()
-    {
         actionInteract.started += OnInteract;
         actionNewPlant.started += GeneratePlant;
-        playerInputHasBeenInit = true;
         Debug.Log("playerInput has been init");
-
     }
 
     private void OnDisable()
@@ -67,8 +60,6 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Disable();
         actionInteract.started -= OnInteract;
         actionNewPlant.started -= GeneratePlant;
-
-        playerInputHasBeenInit = true;
     }
 
     // Start is called before the first frame update
@@ -80,11 +71,6 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playerInputHasBeenInit)
-        {
-            InitPlayerInput();
-        }
-
         AddPlantsToList();
         findClosestPlant();
     }
