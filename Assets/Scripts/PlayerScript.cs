@@ -92,25 +92,45 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         // character movement
+        //if (IsGrounded()) Debug.Log("IsGrounded");
+        //else Debug.Log("not grounded");
         moveInput.x = actionMovement.ReadValue<Vector2>().x;
+        moveInput.y = actionMovement.ReadValue<Vector2>().y;
         // flip sprite according to movement
         if (moveInput.x > 0)
         {
             spriteRenderer.flipX = true;
         }
-        else if (moveInput.x < 0)
+        else if (moveInput.x < 0 )
         {
             spriteRenderer.flipX = false;
         }
         //moveInput.y = 0f;
+        Debug.DrawRay(transform.position, Vector2.down, Color.green, 1, false);
+
         Vector2 vector2 = new Vector2(moveInput.x * speed, rb.velocity.y);
+        if (moveInput.y > 0 && IsGrounded()) //-2.799758
+        {
+            Debug.Log("try to jump");
+
+            vector2 = new Vector2(moveInput.x * speed, moveInput.y * speed);
+
+        }/*
+        else 
+        {
+            vector2 = new Vector2(moveInput.x * speed, rb.velocity.y);
+        }*/
         rb.velocity = vector2;
+        
     }
 
     private bool IsGrounded()
     {
-        var groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 0.7f);
-        return groundCheck.collider != null && groundCheck.collider.CompareTag("Ground");
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+        Debug.Log(groundCheck.collider); 
+ 
+
+        return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
     }
 
     public void AddPlantsToList()
