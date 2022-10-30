@@ -7,8 +7,7 @@ using UnityEngine.InputSystem;
 public class PlayerScript : MonoBehaviour
 {
     List<PlantScript> plantScripts = new List<PlantScript>();
-    List<PlantScript> closePlants = new List<PlantScript>();
-    PlantScript closestPlant;
+    public List<PlantScript> closePlants = new List<PlantScript>();
 
 
     [SerializeField] float speed = 5f;
@@ -71,8 +70,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        AddPlantsToList();
-        findClosestPlant();
+
     }
 
     private void FixedUpdate()
@@ -99,7 +97,7 @@ public class PlayerScript : MonoBehaviour
         return groundCheck.collider != null && groundCheck.collider.CompareTag("Ground");
     }
 
-    public void AddPlantsToList()
+    /*public void AddPlantsToList()
     {
         foreach (PlantScript plant in plantScripts)
         {
@@ -113,13 +111,13 @@ public class PlayerScript : MonoBehaviour
                 closePlants.Remove(plant);
             }
         }
-    }
+    }*/
 
 
-    private void findClosestPlant()
+    public PlantScript findClosestPlant()
     {
         float closestPlantDist = Screen.width;
-        closestPlant = null;
+        PlantScript closestPlant = null;
         foreach (PlantScript plant in closePlants)
         {
             float currentPlantDist = Vector3.Distance(transform.position, plant.transform.position);
@@ -129,11 +127,12 @@ public class PlayerScript : MonoBehaviour
                 closestPlant = plant;
             }
         }
+        return closestPlant; //null if empty, or closest plant is outside
     }
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        
+        PlantScript closestPlant = findClosestPlant();
         if (closestPlant)
         {
             closestPlant.IncrementState();
