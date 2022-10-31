@@ -13,17 +13,13 @@ public class PlantScript : MonoBehaviour
     [SerializeField] float stageTimeMax = 30f; // time until growth to next stage
 
     // private
-    PlayerScript playerScript;
     SpriteRenderer spriteRenderer;
     float stageTimeLeft;
 
-
     private void Awake()
     {
-        playerScript = Object.FindObjectOfType<PlayerScript>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         stageTimeLeft = stageTimeMax;
-
     }
 
     private void Update()
@@ -34,7 +30,6 @@ public class PlantScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("stageTimeLeft is up!");
             IncrementState();
             stageTimeLeft = stageTimeMax;
         }
@@ -46,7 +41,6 @@ public class PlantScript : MonoBehaviour
         {
             currentStage++;
             ChangeSprite();
-            Debug.Log("IncrementState() called!");
         }
     }
 
@@ -59,8 +53,6 @@ public class PlantScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            //Replace with gameManager static singleton for simplicity
-            //Actually use FindObjectOfType of gameObject, are we using a game manager?
             collision.gameObject.GetComponent<PlayerScript>().closePlants.Add(this);
         }
     }
@@ -68,8 +60,6 @@ public class PlantScript : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            //Replace with gameManager static singleton for simplicity
-            //Actually use FindObjectOfType of gameObject, are we using a game manager?
             collision.gameObject.GetComponent<PlayerScript>().closePlants.Remove(this);
         }
     }
