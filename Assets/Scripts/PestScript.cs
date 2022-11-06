@@ -13,10 +13,12 @@ public enum State
 public class PestScript : MonoBehaviour
 {
     [SerializeField] float speed = 5f;
+    [SerializeField] float attackRange = 5f;
 
     State currentState;
     List<PlantScript> plantScripts = new List<PlantScript>();
     GameObject closestPlant;
+    PlantScript closestPlantScript;
     const float MAX_DISTANCE = 2400f;
 
 
@@ -58,10 +60,11 @@ public class PestScript : MonoBehaviour
         foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
         {
             float currentDistance = Vector3.Distance(transform.position, plant.gameObject.transform.position);
-            if (currentDistance < closestDistance)
+            if (currentDistance < closestDistance && plant.attackers < plant.maxAttackers)
             {
                 closestDistance = currentDistance;
                 closestPlant = plant.gameObject;
+                closestPlantScript = plant;
             }
         }
         var dir = closestPlant.transform.position - transform.position;
@@ -76,7 +79,17 @@ public class PestScript : MonoBehaviour
 
     void DuringMove()
     {
+        if (closestPlantScript.attackers >= closestPlantScript.maxAttackers)
+        {
+            SearchForPlant();
+        }
+
         transform.position = Vector2.MoveTowards(transform.position, closestPlant.transform.position, speed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, closestPlant.transform.position) <= attackRange)
+        {
+            currentState = State.STATE_ATTACKING;
+            closestPlantScript.attackers++;
+        }
     }
 
     void DuringAttack()
