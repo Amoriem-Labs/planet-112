@@ -12,6 +12,8 @@ public class PlayerScript : MonoBehaviour
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] GameObject plantObject;
 
+    [SerializeField] GameObject currentLevel;
+
     Controls controls;
     PlayerInput playerInput;
 
@@ -104,6 +106,7 @@ public class PlayerScript : MonoBehaviour
     {
         // TODO: Figure out the y-coordinate computationally instead of hard-coding it
         Vector3 plantLocation = new Vector3(transform.position.x, -2.84f, transform.position.z);
-        Instantiate(plantObject, plantLocation, transform.rotation);
+        GameObject plant = Instantiate(plantObject, plantLocation, transform.rotation);
+        plant.GetComponent<PlantScript>().level = currentLevel.GetComponent<LevelControllerScript>();
     }
 }
