@@ -10,7 +10,6 @@ public class PlayerScript : MonoBehaviour
 
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
-    [SerializeField] float interactRange = 50f;
     [SerializeField] GameObject plantObject;
 
     Controls controls;
