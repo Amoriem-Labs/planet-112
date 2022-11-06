@@ -19,7 +19,7 @@ public class PestScript : MonoBehaviour
     List<PlantScript> plantScripts = new List<PlantScript>();
     GameObject closestPlant;
     PlantScript closestPlantScript;
-    const float MAX_DISTANCE = 2400f;
+    const float MAX_DISTANCE = 5000f;
 
 
     private void Awake()
