@@ -9,6 +9,8 @@ public class PlayerScript : MonoBehaviour
     public List<PlantScript> closePlants = new List<PlantScript>();
 
     [SerializeField] float speed = 5f;
+    [SerializeField] float jumpSpeed = 5f;
+    [SerializeField] float interactRange = 50f;
     [SerializeField] GameObject plantObject;
 
     Controls controls;
@@ -16,6 +18,7 @@ public class PlayerScript : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
+    [SerializeField] float groundedRay;
 
     private void Awake()
     {
@@ -67,7 +70,8 @@ public class PlayerScript : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 1f);
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8); 
+        //8 is binary -- to look at just layer 3, we need binary 1000 
 
         return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
     }

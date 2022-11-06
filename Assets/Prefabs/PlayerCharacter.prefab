@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 418788641033362184}
   - component: {fileID: 4721409493239636386}
   - component: {fileID: 6951981859433477780}
-  m_Layer: 2
+  m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -147,9 +147,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b79ef18efd54985bc3645ae5a84600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  closePlants: []
   speed: 5
   interactRange: 0.8
   plantObject: {fileID: 5392039749182135098, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
+  groundedRay: 0.6
 --- !u!114 &6951981859433477780
 MonoBehaviour:
   m_ObjectHideFlags: 0
