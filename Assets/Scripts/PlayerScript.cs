@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
 
 
     [SerializeField] float speed = 5f;
+    [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float interactRange = 50f;
     [SerializeField] GameObject plantObject;
 
@@ -23,6 +24,7 @@ public class PlayerScript : MonoBehaviour
     Rigidbody2D rb;
     Vector2 moveInput;
     SpriteRenderer spriteRenderer;
+    [SerializeField] float groundedRay;
 
     private void Awake()
     {
@@ -76,8 +78,6 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         // character movement
-        //if (IsGrounded()) Debug.Log("IsGrounded");
-        //else Debug.Log("not grounded");
         moveInput.x = actionMovement.ReadValue<Vector2>().x;
         moveInput.y = actionMovement.ReadValue<Vector2>().y;
         // flip sprite according to movement
@@ -89,30 +89,22 @@ public class PlayerScript : MonoBehaviour
         {
             spriteRenderer.flipX = false;
         }
-        //moveInput.y = 0f;
         Debug.DrawRay(transform.position, Vector2.down, Color.green, 1, false);
 
         Vector2 vector2 = new Vector2(moveInput.x * speed, rb.velocity.y);
-        if (moveInput.y > 0 && IsGrounded()) //-2.799758
+        //jump
+        if (moveInput.y > 0 && IsGrounded()) 
         {
-            Debug.Log("try to jump");
-
-            vector2 = new Vector2(moveInput.x * speed, moveInput.y * speed);
-
-        }/*
-        else 
-        {
-            vector2 = new Vector2(moveInput.x * speed, rb.velocity.y);
-        }*/
+            vector2 = new Vector2(moveInput.x * speed, moveInput.y * jumpSpeed);
+        }
         rb.velocity = vector2;
         
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, 1f);
-        Debug.Log(groundCheck.collider); 
- 
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8); 
+        //8 is binary -- to look at just layer 3, we need binary 1000 
 
         return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
     }
