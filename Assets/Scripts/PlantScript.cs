@@ -7,11 +7,11 @@ public class PlantScript : MonoBehaviour
     // public variables
     public int currentStage = 0;
     public int maxStage = 2;
+    public LevelControllerScript level;
 
     // serialized
     [SerializeField] Sprite[] spriteArray;
     [SerializeField] float stageTimeMax = 30f; // time until growth to next stage
-
     // private
     SpriteRenderer spriteRenderer;
     float stageTimeLeft;
@@ -40,6 +40,9 @@ public class PlantScript : MonoBehaviour
         if (currentStage != maxStage)
         {
             currentStage++;
+            if (currentStage == maxStage) {
+                level.oxygenLevel += 5;
+            }
             ChangeSprite();
         }
     }
