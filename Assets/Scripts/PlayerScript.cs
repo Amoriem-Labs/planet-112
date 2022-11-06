@@ -61,7 +61,7 @@ public class PlayerScript : MonoBehaviour
         
         if (moveInput.y > 0 && IsGrounded())
         {
-            velocity.y = moveInput.y * speed;
+            velocity.y = moveInput.y * jumpSpeed;
         }
         
         rb.velocity = velocity;
