@@ -41,6 +41,13 @@ public class PersistentData : MonoBehaviour
         return currLevelDatas[levelID];
     }
 
+    // This method is only called when a new level is unlocked. Once a level is unlocked, it stays unlocked. 
+    public static void AddLevelData(LevelData newLevelData) // Are they connected through same pass by value object? Test result: yes.
+    {
+        currSaveData.levelDatas.Add(newLevelData);
+        currLevelDatas.Add(newLevelData.levelID, newLevelData);
+    }
+
     // Thus this is why every data is categorized into a class; passed by reference: more intuitive and directly-reflected modification.
     public static PlayerData GetPlayerData()
     {
@@ -87,5 +94,21 @@ public class PersistentData : MonoBehaviour
         WriteToSave(0);
         LoadSave(0);
         Debug.Log(GetLevelData(9).plantDatas[0].currStageOfLife);
+        LoadSave(0);
+        PlantData plant = new PlantData
+        {
+            location = new Vector2(4, 5),
+            currStageOfLife = 2,
+            plantType = 5,
+            stageTimeLeft = 0.5f
+        };
+        LevelData levelData = new LevelData
+        {
+            levelID = 5,
+            plantDatas = new List<PlantData>() { plant }
+        };
+        AddLevelData(levelData);
+        GetLevelData(5).plantDatas[0].currStageOfLife = 99;
+        Debug.Log(currSaveData.levelDatas[1].plantDatas[0].currStageOfLife);
     } */
 }
