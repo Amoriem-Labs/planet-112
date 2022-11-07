@@ -10,28 +10,35 @@ public class PlantScript : MonoBehaviour
 
     // serialized
     [SerializeField] Sprite[] spriteArray;
-    [SerializeField] float stageTimeMax = 30f; // time until growth to next stage
+    [SerializeField] float stageTimeMax = 30; // time until growth to next stage
 
     // private
     SpriteRenderer spriteRenderer;
-    float stageTimeLeft;
+
+    PlantData plantData;
+
+    public void InitializePlant(PlantData newData)
+    {
+        //Assign data
+        plantData = newData;
+    }
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        stageTimeLeft = stageTimeMax;
+        plantData.stageTimeLeft = stageTimeMax;
     }
 
     private void Update()
     {
-        if (stageTimeLeft > 0)
+        if (plantData.stageTimeLeft > 0)
         {
-            stageTimeLeft -= Time.deltaTime;
+            plantData.stageTimeLeft -= Time.deltaTime;
         }
         else
         {
             IncrementState();
-            stageTimeLeft = stageTimeMax;
+            plantData.stageTimeLeft = stageTimeMax;
         }
     }
 
