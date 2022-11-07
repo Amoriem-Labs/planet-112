@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PersistentData : MonoBehaviour
 {
-    // Both of these are private. Modify through getters. 
+    // Both of these are private. Modified through getters. 
     SaveData currSaveData;
     Dictionary<int, LevelData> currLevelDatas; // Need this because indices don't always reflect level's id correctly.
 
@@ -36,21 +36,25 @@ public class PersistentData : MonoBehaviour
     }
 
     // Same here! LevelData class is passed by reference, so modifying the returned one will modify the one in SaveData as well.
-    public LevelData GetLevelData(int levelIndex)
+    public LevelData GetLevelData(int levelID)
     {
-        return currLevelDatas[levelIndex];
+        return currLevelDatas[levelID];
     }
 
-    // Start is called before the first frame update
-    void Start()
+    // Thus this is why every data is categorized into a class; passed by reference: more intuitive and directly-reflected modification.
+    public PlayerData GetPlayerData()
     {
-        
+        return currSaveData.playerData;
     }
 
-    // Update is called once per frame
-    void Update()
+    public GameStateData GetGameStateData()
     {
-        
+        return currSaveData.gameStateData;
+    }
+    
+    public EventsData GetEventsData()
+    {
+        return currSaveData.eventsData;
     }
 
     /* // This whole segment was used to test save/load system's functionality with PD. Worked!
