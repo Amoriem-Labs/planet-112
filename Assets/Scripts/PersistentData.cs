@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class PersistentData : MonoBehaviour
 {
-    // Both of these are private. Modified through getters. 
-    SaveData currSaveData;
-    Dictionary<int, LevelData> currLevelDatas; // Need this because indices don't always reflect level's id correctly.
+    // Both of these are private. Modified through getters. This is a local, global class that can be acessed through classname. 
+    static SaveData currSaveData;
+    static Dictionary<int, LevelData> currLevelDatas; // Need this because indices don't always reflect level's id correctly.
 
     // Save 0 is always auto save; Save 1-MAX is manual save. 
-    public void LoadSave(int saveIndex)
+    public static void LoadSave(int saveIndex)
     {
         currSaveData = null;
         if(currLevelDatas != null) currLevelDatas.Clear();
@@ -30,29 +30,29 @@ public class PersistentData : MonoBehaviour
 
     // Hopefully LevelData in currLevelDatas refers to the same levelDatas' LevelData in currSaveData.
     // Test result: it does! Dictionary is a class so it was passed by reference. Perfect. 
-    public void WriteToSave(int saveIndex)
+    public static void WriteToSave(int saveIndex)
     {
         DataManager.writeFile(ref currSaveData, saveIndex);
     }
 
     // Same here! LevelData class is passed by reference, so modifying the returned one will modify the one in SaveData as well.
-    public LevelData GetLevelData(int levelID)
+    public static LevelData GetLevelData(int levelID)
     {
         return currLevelDatas[levelID];
     }
 
     // Thus this is why every data is categorized into a class; passed by reference: more intuitive and directly-reflected modification.
-    public PlayerData GetPlayerData()
+    public static PlayerData GetPlayerData()
     {
         return currSaveData.playerData;
     }
 
-    public GameStateData GetGameStateData()
+    public static GameStateData GetGameStateData()
     {
         return currSaveData.gameStateData;
     }
     
-    public EventsData GetEventsData()
+    public static EventsData GetEventsData()
     {
         return currSaveData.eventsData;
     }
