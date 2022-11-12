@@ -3,6 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+// Interfaces. Can add more functions if preferred. 
+public interface IProduce
+{
+    void Produce();
+}
+
+public interface IAttack
+{
+    void Attack();
+}
+
+public interface IDefend
+{
+    void Defend();
+}
+
+
 public class ProduceOxygen : IProduce
 {
     ProductivePlant plant;
@@ -10,7 +27,7 @@ public class ProduceOxygen : IProduce
     public void Produce()
     {
         PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel += //this would be sufficient if they are increments...
-            plant.oxygenProductionLevels[plant.plantData.currStageOfLife];
+            plant.plantSO.oxygenProductionLevels[plant.plantData.currStageOfLife];
     }
 }
 
@@ -22,7 +39,7 @@ public class ProduceFruit : IProduce
     public ProduceFruit(ProductivePlant plant) { this.plant = plant; }
     public void Produce()
     {
-        plant.plantStageUpdateDelegate += StageUpdate; // subscribes resets cycle to the update. Unsubscribe when?
+        plant.plantSO.plantStageUpdateDelegate += StageUpdate; // subscribes resets cycle to the update. Unsubscribe when?
 
         p = ProduceOneFruit(ResetsCycle);
         plant.StartCoroutine(p); // resumes from previous fruitProduceTimeLeft.
@@ -30,7 +47,7 @@ public class ProduceFruit : IProduce
 
     private void ResetsCycle()
     {
-        plant.plantData.fruitProduceTimeLeft = plant.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife];
+        plant.plantData.fruitProduceTimeLeft = plant.plantSO.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife];
 
         Debug.Log("Fruit count ++!"); // Place holder, fruit process not sure yet.
 
@@ -39,8 +56,8 @@ public class ProduceFruit : IProduce
 
     private void StageUpdate() // affects coroutine implicitly
     {
-        if (plant.plantData.fruitProduceTimeLeft > plant.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife])
-            plant.plantData.fruitProduceTimeLeft = plant.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife];
+        if (plant.plantData.fruitProduceTimeLeft > plant.plantSO.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife])
+            plant.plantData.fruitProduceTimeLeft = plant.plantSO.secondsPerFruitProductionLevels[plant.plantData.currStageOfLife];
     }
 
     IEnumerator ProduceOneFruit(Action callback)
@@ -48,7 +65,7 @@ public class ProduceFruit : IProduce
         yield return new WaitForSeconds(TimeManager.timeUnit * TimeManager.gameTimeScale);
 
         plant.plantData.fruitProduceTimeLeft -= 1;
-        Debug.Log("Seconds left on fruit production: " + plant.plantData.fruitProduceTimeLeft);
+        //Debug.Log("Seconds left on fruit production: " + plant.plantData.fruitProduceTimeLeft);
 
         if (plant.plantData.fruitProduceTimeLeft <= 0)
         {

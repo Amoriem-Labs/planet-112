@@ -7,14 +7,15 @@ public class GameManager : MonoBehaviour
     public ProductivePlant bob;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         PersistentData.LoadSave(0);
 
+        /*
         GameObject tst = Instantiate(bob.gameObject);
         tst.GetComponent<ProductivePlant>().SpawnNewPlant(5, -3);
 
-        tst.GetComponent<ProductivePlant>().TryProduce();
+        tst.GetComponent<ProductivePlant>().TryProduce(); */
 
         //Debug.Log("Current level oxygen is: " + PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel);
         //StartCoroutine(TestFunc(tst.GetComponent<ProductivePlant>()));

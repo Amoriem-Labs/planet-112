@@ -11,13 +11,8 @@ public class TimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        gameStateData = PersistentData.GetGameStateData(); // need reassignment everytime a new save is loaded...
+        StartGameTimer();
     }
 
     // This function should ONLY be called after save data has been retrieved. 
@@ -47,6 +42,9 @@ public class TimeManager : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
+    + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
 
         StartCoroutine(CountTimeUnit()); // can store this in a variable, but don't see a need to do so rn so...
     }

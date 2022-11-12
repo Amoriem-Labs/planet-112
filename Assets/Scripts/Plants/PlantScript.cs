@@ -3,49 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public interface IProduce
-{
-    void Produce();
-}
-
-public interface IAttack
-{
-    void Attack();
-}
-
-public interface IDefend
-{
-    void Defend();
-}
-
 public abstract class PlantScript : MonoBehaviour // by being abstract, we can't create instances of this class.
 {
     // [SerializeField] allows a private var to appear visible in the inspector
-    // member variabels that define plant properties. To set by children.
-    public int maxStage; // ex 3 stages. Phases: 0-1, 1-2, 2-3. 0-3 indices per stage, but 3 intervals with ind 0 1 2. 
-    public Sprite[] spriteArray; // size = maxStage + 1
-    public float[] stageTimeMax; // time until growth to next stage, size = maxStage
-    public float maxHealth; // deafult HP of the plant (or an array too?)
-    public PlantNames pName; // oxygen boost is not in here because we might want some oxygen-consuming plants even for game balancing ;D
+    // The scriptable oxject that contains fixed data about this plant.
+    public Plant plantSO;
 
-    // private variables default to all plantscript object
+    // interfaces, they don't work in scriptable because you can't change them at run time... plus this is more per-plant dynamic here.
+    public List<IProduce> productionModules = new List<IProduce>();
+    public List<IAttack> attackModules = new List<IAttack>();
+    public List<IDefend> defenseModules = new List<IDefend>();
+
+    // this needs to be here, because each instance has its own sprite renderer
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
-    public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD
+
+    [HideInInspector] public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
-    // interfaces
-    public List<IProduce> productionModules = new List<IProduce>();
-    public List<IAttack> attackModules;
-    public List<IDefend> defendModules;
-
-    // delegates
-    public delegate void OnPlantStageUpdateDelegate();
-    public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
-
-    // Variables specific to productivePlant // currStageOfLife is the accessing index.
-    public int[] oxygenProductionLevels; // note: plant stage starts at 0, the seed! // size = maxStage + 1
-    public int[] secondsPerFruitProductionLevels; // size = maxStage + 1
-
+    // Everytime the below function is called, the modules will get executed. Ideally each module only needs to be called once.
     public void TryProduce()
     {
         foreach (IProduce produce in productionModules)
@@ -64,7 +39,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
 
     public void TryDefend()
     {
-        foreach (IDefend defend in defendModules)
+        foreach (IDefend defend in defenseModules)
         {
             defend.Defend();
         }
@@ -81,9 +56,9 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         plantData = new PlantData();
         plantData.location = new Vector2(xIndex, yIndex);
         plantData.currStageOfLife = 0;
-        plantData.plantName = (int)pName;
-        plantData.stageTimeLeft = stageTimeMax[plantData.currStageOfLife];
-        plantData.currentHealth = maxHealth;
+        plantData.plantName = (int)plantSO.pName;
+        plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
+        plantData.currentHealth = plantSO.maxHealth;
         PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData);
 
         VisualizePlant();
@@ -105,11 +80,11 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
 
         // update stats and visuals
         //UpdatePlantStats(plantData.currStageOfLife);
-        spriteRenderer.sprite = spriteArray[plantData.currStageOfLife];
+        spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
 
-        if (plantData.currStageOfLife != maxStage) // if they are equal then no need to keep growing.
+        if (plantData.currStageOfLife != plantSO.maxStage) // if they are equal then no need to keep growing.
         {
-            GrowPlant(PlantStageUpdate, stageTimeMax[plantData.currStageOfLife]);
+            GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]);
         }
     }
 
@@ -149,11 +124,11 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         plantData.currStageOfLife += 1;
         // update stats and visuals
         // trigger delegates so the subscribers will be notified. Want to reduce if statements and dependency!
-        plantStageUpdateDelegate();
+        plantSO.plantStageUpdateDelegate();
         //UpdatePlantStats(plantData.currStageOfLife);
-        spriteRenderer.sprite = spriteArray[plantData.currStageOfLife];
+        spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
 
-        if (plantData.currStageOfLife == maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
+        if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {
             // plant is fully grown; do something.
             Debug.Log("Plant is fully grown!");
@@ -161,7 +136,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         else
         {
             // continues growing
-            GrowPlant(PlantStageUpdate, stageTimeMax[plantData.currStageOfLife]); 
+            GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]); 
         }
     }
 

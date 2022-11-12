@@ -103,7 +103,12 @@ public class PlayerScript : MonoBehaviour
     public void GeneratePlant(InputAction.CallbackContext context)
     {
         // TODO: Figure out the y-coordinate computationally instead of hard-coding it
-        Vector3 plantLocation = new Vector3(transform.position.x, -2.84f, transform.position.z);
-        Instantiate(plantObject, plantLocation, transform.rotation);
+        //Vector3 plantLocation = new Vector3(transform.position.x, -2.84f, transform.position.z);
+        //Instantiate(plantObject, plantLocation, transform.rotation);
+
+        GameObject tst = Instantiate(FindObjectOfType<GameManager>().bob.gameObject);
+        tst.GetComponent<ProductivePlant>().SpawnNewPlant((int)transform.position.x, -3);
+
+        tst.GetComponent<ProductivePlant>().TryProduce();
     }
 }
