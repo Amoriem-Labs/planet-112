@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6679109946950141162}
   - component: {fileID: 4235680962436226040}
   - component: {fileID: 8049280942399924756}
-  - component: {fileID: 4650440248684989016}
   - component: {fileID: 1836785115747074028}
+  - component: {fileID: 2788011989100150727}
   m_Layer: 0
   m_Name: Plant
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5392039749182135098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 5, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -110,25 +110,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4650440248684989016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5392039749182135098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54d7f6023c88245cfbf2cdc0f6091e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentStage: 0
-  maxStage: 2
-  spriteArray:
-  - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  stageTimeMax: 20
 --- !u!61 &1836785115747074028
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -155,3 +136,30 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2788011989100150727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5392039749182135098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5291daf3ab062bc4a943dc997fc6a413, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxStage: 3
+  spriteArray:
+  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  stageTimeMax:
+  - 10
+  - 15
+  - 20
+  maxHealth: 500
+  pName: 0
+  oxygenProductionLevels: 000000000a000000140000001e000000
+  secondsPerFruitProductionLevels: e70300001e000000140000000a000000
+  oxygenProduction: 0

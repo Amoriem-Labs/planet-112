@@ -96,7 +96,7 @@ public class PlayerScript : MonoBehaviour
         PlantScript closestPlant = findClosestPlant();
         if (closestPlant) // Could be null, gotta check
         {
-            closestPlant.IncrementState();
+            //closestPlant.IncrementState();
         }
     }
 

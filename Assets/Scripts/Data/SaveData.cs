@@ -30,7 +30,7 @@ public class PlantData
 {
     public Vector2 location; // x_index, y_index of this plant in the map 2D array
     public int currStageOfLife; // plant's current stage of life
-    public int plantType; // the type of the plant, used to get the inherited, specific plant at run time.
+    public int plantName; // the type of the plant, used to get the inherited, specific plant at run time.
     public float stageTimeLeft; // time left before the plant evolves
     public float currentHealth; // remaining health of the plant
     //public float fruitProductionRate; //subject to status-effect, otherwise fixed.
@@ -75,7 +75,11 @@ public class InventoryItemData
 [Serializable]
 public class GameStateData
 {
-    public int totalGameTime; // the total time that has passed since the creation of the save, cumulative. 
+    // these together account for the total time that has passed since the creation of the save, cumulative. 
+    public int timePassedSeconds; 
+    public int timePassedMinutes;
+    public int timePassedHours;
+    public int timePassedDays;
     public SettingsData settingsData; // explained in the definition
 }
 
