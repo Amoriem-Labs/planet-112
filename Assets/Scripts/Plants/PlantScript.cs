@@ -3,6 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+public interface IProduce
+{
+    void Produce();
+}
+
+public interface IAttack
+{
+    void Attack();
+}
+
+public interface IDefend
+{
+    void Defend();
+}
+
 public abstract class PlantScript : MonoBehaviour // by being abstract, we can't create instances of this class.
 {
     // [SerializeField] allows a private var to appear visible in the inspector
@@ -15,8 +30,45 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
 
     // private variables default to all plantscript object
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
-    protected PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD
+    public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD
     IEnumerator g = null; // coroutine obj that controls plant growth.
+
+    // interfaces
+    public List<IProduce> productionModules = new List<IProduce>();
+    public List<IAttack> attackModules;
+    public List<IDefend> defendModules;
+
+    // delegates
+    public delegate void OnPlantStageUpdateDelegate();
+    public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
+
+    // Variables specific to productivePlant // currStageOfLife is the accessing index.
+    public int[] oxygenProductionLevels; // note: plant stage starts at 0, the seed! // size = maxStage + 1
+    public int[] secondsPerFruitProductionLevels; // size = maxStage + 1
+
+    public void TryProduce()
+    {
+        foreach (IProduce produce in productionModules)
+        {
+            produce.Produce();
+        }
+    }
+
+    public void TryAttack()
+    {
+        foreach (IAttack attack in attackModules)
+        {
+            attack.Attack();
+        }
+    }
+
+    public void TryDefend()
+    {
+        foreach (IDefend defend in defendModules)
+        {
+            defend.Defend();
+        }
+    }
 
     public void Awake()
     {
@@ -52,7 +104,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         gameObject.transform.SetPositionAndRotation(plantPosition, Quaternion.identity);
 
         // update stats and visuals
-        UpdatePlantStats(plantData.currStageOfLife);
+        //UpdatePlantStats(plantData.currStageOfLife);
         spriteRenderer.sprite = spriteArray[plantData.currStageOfLife];
 
         if (plantData.currStageOfLife != maxStage) // if they are equal then no need to keep growing.
@@ -61,14 +113,15 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         }
     }
 
-    public abstract void UpdatePlantStats(int currStage); // or use virtual, which only marks override. 
+    //public abstract void UpdatePlantStats(int currStage); // or use virtual, which only marks override. 
+    // Could be override in child class, but this method is not needed atm. 
 
     // gonna do a test. Does stopping g stop the corotine? 
     private void GrowPlant(Action callback, float stageTime) // if want input parameters, do Action<type, type, ...>
     {
         plantData.stageTimeLeft = stageTime;
         g = StartPlantGrowth(callback);
-        FindObjectOfType<TimeManager>().StartCoroutine(g);
+        StartCoroutine(g);
     }
 
     // Coroutine script that takes in a function and executes that function at the end of the count.
@@ -83,9 +136,9 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         }
         else
         {
-            Debug.Log("Current time left: " + plantData.stageTimeLeft);
+            //Debug.Log("Current time left: " + plantData.stageTimeLeft);
             g = StartPlantGrowth(callback);
-            FindObjectOfType<TimeManager>().StartCoroutine(g);
+            StartCoroutine(g);
         }
         // can execute a call back every iteration if want, like current % plant growth etc for growth animation if want.
         // the action can return more info to the callback, as long as parameters match!
@@ -95,7 +148,9 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
     {
         plantData.currStageOfLife += 1;
         // update stats and visuals
-        UpdatePlantStats(plantData.currStageOfLife);
+        // trigger delegates so the subscribers will be notified. Want to reduce if statements and dependency!
+        plantStageUpdateDelegate();
+        //UpdatePlantStats(plantData.currStageOfLife);
         spriteRenderer.sprite = spriteArray[plantData.currStageOfLife];
 
         if (plantData.currStageOfLife == maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.

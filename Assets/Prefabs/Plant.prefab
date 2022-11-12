@@ -160,6 +160,12 @@ MonoBehaviour:
   - 20
   maxHealth: 500
   pName: 0
+  plantData:
+    location: {x: 0, y: 0}
+    currStageOfLife: 0
+    plantName: 0
+    stageTimeLeft: 0
+    fruitProduceTimeLeft: 0
+    currentHealth: 0
   oxygenProductionLevels: 000000000a000000140000001e000000
   secondsPerFruitProductionLevels: e70300001e000000140000000a000000
-  oxygenProduction: 0

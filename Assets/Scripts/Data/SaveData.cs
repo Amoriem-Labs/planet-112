@@ -32,6 +32,7 @@ public class PlantData
     public int currStageOfLife; // plant's current stage of life
     public int plantName; // the type of the plant, used to get the inherited, specific plant at run time.
     public float stageTimeLeft; // time left before the plant evolves
+    public float fruitProduceTimeLeft; // optional data.
     public float currentHealth; // remaining health of the plant
     //public float fruitProductionRate; //subject to status-effect, otherwise fixed.
     // Status effects' durations?

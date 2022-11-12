@@ -11,15 +11,8 @@ public class TimeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //testing
-        /*PersistentData.LoadSave(0);
-        PlantData test = PersistentData.GetLevelData(9).plantDatas[0];
-        //IEnumerator t = null; // either do this, or a make a dictionary and a stop plant growth function (Cuz killed)
-        GrowPlant(test, testCallback, 20); // ref doesn't work. Need to do a tracker.
-        if (Input.GetKeyDown(KeyCode.G)) StopPlantGrowth(test);*/
-    }
 
-    public void testCallback(bool yes) { Debug.Log("Plant finished growing!");  }
+    }
 
     // Update is called once per frame
     void Update()
