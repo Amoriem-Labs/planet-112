@@ -12,7 +12,7 @@ public class Plant : ScriptableObject // blue print for Plant.
     public float[] maxHealth; // deafult HP of the plant (or an array too? yeah why not)
     public PlantNames pName; // oxygen boost is not in here because we might want some oxygen-consuming plants even for game balancing ;D
 
-    // delegates, can be kept here, tested.
+    // delegates, can be kept here, tested. Modules can subscribe to them to react to changes when called. 
     public delegate void OnPlantStageUpdateDelegate();
     public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
 

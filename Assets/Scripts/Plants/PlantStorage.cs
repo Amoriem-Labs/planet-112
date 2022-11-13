@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum PlantNames // Actual names of the plants! 
 {
-    BobPlant //0
+    Bob, //0
+    MrHealer
 }
 
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 

@@ -9,12 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6679109946950141162}
-  - component: {fileID: 4235680962436226040}
   - component: {fileID: 8049280942399924756}
   - component: {fileID: 1836785115747074028}
-  - component: {fileID: 2788011989100150727}
+  - component: {fileID: 3341357349453572801}
   m_Layer: 0
-  m_Name: Plant
+  m_Name: MrHealer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,29 +34,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4235680962436226040
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5392039749182135098}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c29cff538c195c249b69c6f2236de67b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Library:
-  - m_Name: Baby
-    m_Hash: 0
-    m_CategoryList: []
-  - m_Name: Teen
-    m_Hash: 0
-    m_CategoryList: []
-  - m_Name: Adult
-    m_Hash: 0
-    m_CategoryList: []
-  m_SpriteLibraryAsset: {fileID: 0}
 --- !u!212 &8049280942399924756
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -100,7 +76,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.14030313, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -136,7 +112,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2788011989100150727
+--- !u!114 &3341357349453572801
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,11 +121,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5392039749182135098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5291daf3ab062bc4a943dc997fc6a413, type: 3}
+  m_Script: {fileID: 11500000, guid: c5182fc339ebcd745bfef5b1b3fbf1d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plantSO: {fileID: 11400000, guid: a1ce24c7d37dedb49917300218efaa29, type: 2}
-  spriteRenderer: {fileID: 0}
+  plantSO: {fileID: 11400000, guid: 1397288e41ab23d449a99804a3fa7c1b, type: 2}
   plantData:
     location: {x: 0, y: 0}
     currStageOfLife: 0
@@ -157,3 +132,5 @@ MonoBehaviour:
     stageTimeLeft: 0
     fruitProduceTimeLeft: 0
     currentHealth: 0
+  healAmount: 50
+  healRadius: 999

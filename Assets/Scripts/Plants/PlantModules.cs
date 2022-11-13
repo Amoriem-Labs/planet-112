@@ -82,3 +82,26 @@ public class ProduceFruit : IProduce
         }
     }
 }
+
+// An example of unique support class. 
+public class HealNearbyPlants : ISupport
+{
+    PlantScript plant; // even though stored as a parent, script remembers the Type of children!
+    int healAmount;
+    int healRadius; // in terms of blocks of units
+
+    public HealNearbyPlants(PlantScript plant) { this.plant = plant; }  
+
+    public void Support()
+    {
+        // example of unique variables and properties. doing so avoids overloading the scriptable object. 
+        // below are the concept of reflection! Can also call functions with it similarity.
+        // cool thought: what about a reference to an action by field name? ;D
+        healAmount = (int)plant.GetType().GetField("healAmount").GetValue(plant);
+        healRadius = (int)plant.GetType().GetField("healRadius").GetValue(plant);
+        // Can run stuff with below, like coroutines, etc. Data fields can be lists too, for dynamic variations!
+        Debug.Log("The heal amount is " + healAmount + " and the heal radius is: " + healRadius);
+    }
+
+}
+

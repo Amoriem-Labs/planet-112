@@ -1,6 +1,6 @@
-public class ProductivePlant : PlantScript
+public class Bob : PlantScript
 {
-    public ProductivePlant() // automatically called by Unity.
+    public Bob() // automatically called by Unity.
     {
         productionModules.Add(new ProduceFruit(this));
         productionModules.Add(new ProduceOxygen(this));

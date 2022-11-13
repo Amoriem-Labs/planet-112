@@ -109,8 +109,8 @@ public class PlayerScript : MonoBehaviour
         /* if (TimeManager.IsGamePaused()) TimeManager.ResumeGame();
         else TimeManager.PauseGame(); */
 
-        GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantNames.BobPlant));
-        tst.GetComponent<ProductivePlant>().SpawnNewPlant((int)transform.position.x, -3);
-        tst.GetComponent<ProductivePlant>().TryProduce(); 
+        GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantNames.Bob));
+        tst.GetComponent<PlantScript>().SpawnNewPlant((int)transform.position.x, -3);
+        tst.GetComponent<PlantScript>().TryProduce(); 
     }
 }

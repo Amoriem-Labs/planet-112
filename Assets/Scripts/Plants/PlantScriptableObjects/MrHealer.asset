@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fe278a8699cded4595e4f6fed5f2022, type: 3}
-  m_Name: TestPlant
+  m_Name: MrHealer
   m_EditorClassIdentifier: 
   maxStage: 3
   spriteArray:
@@ -22,8 +22,13 @@ MonoBehaviour:
   - 10
   - 20
   - 30
-  maxHealth: 500
+  maxHealth:
+  - 100
+  - 300
+  - 500
+  - 1000
   pName: 0
-  spriteRenderer: {fileID: 0}
   oxygenProductionLevels: 000000000a000000140000001e000000
   secondsPerFruitProductionLevels: e70300001e000000140000000a000000
+  attackDamageLevels: 
+  tauntRadiusLevels: 

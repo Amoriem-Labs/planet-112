@@ -133,7 +133,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         plantData.currStageOfLife += 1;
         // update stats and visuals
         // trigger delegates so the subscribers will be notified. Want to reduce if statements and dependency!
-        plantSO.plantStageUpdateDelegate();
+        if(plantSO.plantStageUpdateDelegate != null) plantSO.plantStageUpdateDelegate();
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
         // current health refreshes? either leave this line or delete
