@@ -14,7 +14,7 @@ public class PlantStorage : MonoBehaviour // gonna switch to scriptable object i
     public PlantScript[] plantPrefabsInit; // declared in editor
     private static PlantScript[] plantPrefabs; //MAKE SURE THE PREFAB INDEX MATCHES ENUM OF NAME! // had to do this cuz Unity hides static.
 
-    private void Awake() // test if this can return null possibly. Test sult: nope, we good. 
+    private void Awake() // test if this can return null possibly
     {
         plantPrefabs = plantPrefabsInit; // passed by reference I think, so run time no need to worry. Static for convenience. 
     }
