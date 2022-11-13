@@ -512,6 +512,7 @@ GameObject:
   m_Component:
   - component: {fileID: 798319915}
   - component: {fileID: 798319916}
+  - component: {fileID: 798319917}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -547,6 +548,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bob: {fileID: 2788011989100150727, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
+--- !u!114 &798319917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798319914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 174ec314fd937bb4eac620b0bd01c880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantPrefabsInit:
+  - {fileID: 2788011989100150727, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
 --- !u!1 &1141297765
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,11 +19,15 @@ public interface IDefend
     void Defend();
 }
 
+public interface ISupport 
+{
+    void Support();
+}
 
 public class ProduceOxygen : IProduce
 {
-    ProductivePlant plant;
-    public ProduceOxygen(ProductivePlant plant) { this.plant = plant; }
+    PlantScript plant;
+    public ProduceOxygen(PlantScript plant) { this.plant = plant; }
     public void Produce()
     {
         PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel += //this would be sufficient if they are increments...
@@ -33,10 +37,10 @@ public class ProduceOxygen : IProduce
 
 public class ProduceFruit : IProduce
 {
-    ProductivePlant plant;
+    PlantScript plant;
     IEnumerator p = null;
 
-    public ProduceFruit(ProductivePlant plant) { this.plant = plant; }
+    public ProduceFruit(PlantScript plant) { this.plant = plant; }
     public void Produce()
     {
         plant.plantSO.plantStageUpdateDelegate += StageUpdate; // subscribes resets cycle to the update. Unsubscribe when?

@@ -106,9 +106,11 @@ public class PlayerScript : MonoBehaviour
         //Vector3 plantLocation = new Vector3(transform.position.x, -2.84f, transform.position.z);
         //Instantiate(plantObject, plantLocation, transform.rotation);
 
-        GameObject tst = Instantiate(FindObjectOfType<GameManager>().bob.gameObject);
-        tst.GetComponent<ProductivePlant>().SpawnNewPlant((int)transform.position.x, -3);
+        /* if (TimeManager.IsGamePaused()) TimeManager.ResumeGame();
+        else TimeManager.PauseGame(); */
 
-        tst.GetComponent<ProductivePlant>().TryProduce();
+        GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantNames.BobPlant));
+        tst.GetComponent<ProductivePlant>().SpawnNewPlant((int)transform.position.x, -3);
+        tst.GetComponent<ProductivePlant>().TryProduce(); 
     }
 }

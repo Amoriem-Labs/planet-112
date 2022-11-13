@@ -6,20 +6,22 @@ public class TimeManager : MonoBehaviour
 {
     GameStateData gameStateData; // grabbed from PD, automatically by reference
     public static int timeUnit = 1; // 1 second
-    public static float gameTimeScale = 1f; // tune this down, game time counts faster. Tune this up, game time counts slower.
+    public static float gameTimeScale = 1f; // tune this down, game time counts faster. Tune this up, game time counts slower. 
+    public IEnumerator t = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        gameStateData = PersistentData.GetGameStateData(); // need reassignment everytime a new save is loaded...
         StartGameTimer();
     }
 
     // This function should ONLY be called after save data has been retrieved. 
+    // These methods don't need to be static. Can just reference in between not-changing managers.
     public void StartGameTimer()
     {
         gameStateData = PersistentData.GetGameStateData();
-        StartCoroutine(CountTimeUnit());
+        t = CountTimeUnit();
+        StartCoroutine(t);
     }
 
     IEnumerator CountTimeUnit()
@@ -44,12 +46,37 @@ public class TimeManager : MonoBehaviour
         }
 
         Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
-    + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
 
-        StartCoroutine(CountTimeUnit()); // can store this in a variable, but don't see a need to do so rn so...
+        t = CountTimeUnit();
+        StartCoroutine(t); // can store this in a variable, but don't see a need to do so rn so...
     }
 
-    
+    public static void PauseGame() // this method might be called by pause menu or other stuff, just in case static.
+    {
+        Time.timeScale = 0; // this pauses all coroutines and time-depedent behaviors. Idk if the best solution... 
+        // other ideas if the above does work: start a coroutine that keeps all coroutines hostage, use if check statements
+        // + isPaused bool for each coroutine (if paused, then wait until paused, a bit more work), or set TimeScale to
+        // max float value and pray to god (worst idea). 
+    }
 
-    
+    public static void ResumeGame()
+    {
+        Time.timeScale = 1;
+    }
+
+    public static bool IsGamePaused()
+    {
+        return Time.timeScale == 0; 
+    }
+
+    // This function should ONLY be called before leaving the current save. For pausing, call the other ones above.
+    public void KillGameTimer()
+    {
+        if(t != null)
+        {
+            StopCoroutine(t);
+            t = null;
+        }
+    }
 }

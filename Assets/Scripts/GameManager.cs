@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public ProductivePlant bob;
-
     // Start is called before the first frame update
     void Awake()
     {
         PersistentData.LoadSave(0);
 
-        /*
-        GameObject tst = Instantiate(bob.gameObject);
+        // Testing scripts
+        GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantNames.BobPlant));
         tst.GetComponent<ProductivePlant>().SpawnNewPlant(5, -3);
-
-        tst.GetComponent<ProductivePlant>().TryProduce(); */
+        tst.GetComponent<ProductivePlant>().TryProduce(); 
 
         //Debug.Log("Current level oxygen is: " + PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel);
         //StartCoroutine(TestFunc(tst.GetComponent<ProductivePlant>()));
@@ -28,11 +25,5 @@ public class GameManager : MonoBehaviour
         plant.TryProduce();
         Debug.Log("Test func executed");
         Debug.Log("Current level oxygen is: " + PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

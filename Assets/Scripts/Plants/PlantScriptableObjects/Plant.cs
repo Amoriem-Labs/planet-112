@@ -9,7 +9,7 @@ public class Plant : ScriptableObject // blue print for Plant.
     public int maxStage; // ex 3 stages. Phases: 0-1, 1-2, 2-3. 0-3 indices per stage, but 3 intervals with ind 0 1 2. 
     public Sprite[] spriteArray; // size = maxStage + 1
     public float[] stageTimeMax; // time until growth to next stage, size = maxStage
-    public float maxHealth; // deafult HP of the plant (or an array too?)
+    public float[] maxHealth; // deafult HP of the plant (or an array too? yeah why not)
     public PlantNames pName; // oxygen boost is not in here because we might want some oxygen-consuming plants even for game balancing ;D
 
     // delegates, can be kept here, tested.
