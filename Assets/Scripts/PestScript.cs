@@ -15,12 +15,19 @@ public class PestScript : MonoBehaviour
     [SerializeField] float speed = 5f;
     [SerializeField] float attackRange = 5f;
 
+    [SerializeField] float attackRate = 2f;
+    [SerializeField] float attackDamage = 2f;
+
+    // remove once big timer implemented
+    float nextAttackTime;
+
+    Vector2 retreatPoint;
+
     State currentState;
     List<PlantScript> plantScripts = new List<PlantScript>();
     GameObject closestPlant;
     PlantScript closestPlantScript;
     const float MAX_DISTANCE = 5000f;
-
 
     private void Awake()
     {
@@ -89,16 +96,30 @@ public class PestScript : MonoBehaviour
         {
             currentState = State.STATE_ATTACKING;
             closestPlantScript.attackers++;
+            nextAttackTime = Time.time + attackRate;
         }
     }
 
     void DuringAttack()
     {
+        // should use big timer once implemented
+        if (Time.time > nextAttackTime)
+        {
+            Debug.Log("damage: " + attackDamage);
+            nextAttackTime = Time.time + attackRate;
+            // reduce plant health
+            // check if plant dies, if so call SearchForPlant()
+        }
 
+        // figure out when should enter retreat state
+        // set retreatPoint to corner of camera OR when we implement level bounds, to outside level bounds
+        // if setting to outside level bounds, can be done when initialized at the top of the script
+        
+        
     }
 
     void DuringRetreat()
     {
-
+        transform.position = Vector2.MoveTowards(transform.position, retreatPoint, speed * Time.deltaTime);
     }
 }
