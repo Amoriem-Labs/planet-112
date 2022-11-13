@@ -7,6 +7,8 @@ public class PlantScript : MonoBehaviour
     // public variables
     public int currentStage = 0;
     public int maxStage = 2;
+    public int attackers = 0;
+    public int maxAttackers = 3;
 
     // serialized
     [SerializeField] Sprite[] spriteArray;
