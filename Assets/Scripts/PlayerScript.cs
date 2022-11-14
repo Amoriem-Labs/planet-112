@@ -108,7 +108,8 @@ public class PlayerScript : MonoBehaviour
 
         /* if (TimeManager.IsGamePaused()) TimeManager.ResumeGame();
         else TimeManager.PauseGame(); */
-        Debug.Log((int)transform.position.x);
+        //Debug.Log((int)transform.position.x);
         GameObject tst = LevelManager.SpawnPlant(PlantName.Bob, (int)transform.position.x, -3);
-  }
+        tst.GetComponent<PlantScript>().RunPlantModules(new List<PlantModules>() { PlantModules.test });
+    }
 }

@@ -560,7 +560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantPrefabsInit:
-  - {fileID: 2788011989100150727, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
+  - {fileID: 4709815205496673212, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
   - {fileID: 3341357349453572801, guid: b8ef05b7c9f99dc40889e5076f5c51b2, type: 3}
 --- !u!1 &1141297765
 GameObject:

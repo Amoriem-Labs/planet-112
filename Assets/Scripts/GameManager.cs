@@ -5,13 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         PersistentData.LoadSave(0);
 
         // DEMO: create a new MrHealer plant
-        //GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantName.MrHealer));
-        //tst.GetComponent<PlantScript>().SpawnNewPlant(5, -3);
-        GameObject testPlant = LevelManager.SpawnPlant(PlantName.MrHealer, 5, -3);
+        GameObject testPlant = LevelManager.SpawnPlant(PlantName.Bob, 5, -3);
+        testPlant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModules>() { PlantModules.test });
     }
 }

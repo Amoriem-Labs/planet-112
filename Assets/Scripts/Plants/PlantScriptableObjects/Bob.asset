@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fe278a8699cded4595e4f6fed5f2022, type: 3}
   m_Name: Bob
   m_EditorClassIdentifier: 
+  pName: 0
   maxStage: 3
   spriteArray:
   - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
@@ -27,8 +28,6 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  pName: 0
+  defaultModules: 00000000
   oxygenProductionLevels: 000000000a000000140000001e000000
-  secondsPerFruitProductionLevels: e70300001e000000140000000a000000
-  attackDamageLevels: 
-  tauntRadiusLevels: 
+  productionTimes: []

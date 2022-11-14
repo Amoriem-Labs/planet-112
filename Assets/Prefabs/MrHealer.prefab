@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6679109946950141162}
   - component: {fileID: 8049280942399924756}
   - component: {fileID: 1836785115747074028}
-  - component: {fileID: 3341357349453572801}
+  - component: {fileID: 3408262346086830761}
   m_Layer: 0
   m_Name: MrHealer
   m_TagString: Untagged
@@ -112,7 +112,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3341357349453572801
+--- !u!114 &3408262346086830761
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5392039749182135098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5182fc339ebcd745bfef5b1b3fbf1d7, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c3e0c520f0e98444a160737649cc71e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   plantSO: {fileID: 11400000, guid: 1397288e41ab23d449a99804a3fa7c1b, type: 2}
@@ -132,5 +132,4 @@ MonoBehaviour:
     stageTimeLeft: 0
     fruitProduceTimeLeft: 0
     currentHealth: 0
-  healAmount: 50
-  healRadius: 999
+    plantModules: 

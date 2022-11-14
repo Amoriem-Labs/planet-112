@@ -9,11 +9,8 @@ public abstract class PlantScript : MonoBehaviour
     // The scriptable oxject that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
     
-    // Plant module lists. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
-    public List<IProduce> productionModules = new List<IProduce>();
-    public List<IAttack> attackModules = new List<IAttack>();
-    public List<IDefend> defenseModules = new List<IDefend>();
-    public List<ISupport> supportModules = new List<ISupport>();
+    // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
+    protected Dictionary<PlantModules, IDoStuff> plantModules = new Dictionary<PlantModules, IDoStuff>();
 
     // this needs to be here, because each instance has its own sprite renderer
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
@@ -23,40 +20,40 @@ public abstract class PlantScript : MonoBehaviour
     // TODO: name this something more descriptive
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
-    // Everytime the below function is called, the modules will get executed. Ideally each module only needs to be called once.
-    public void RunProduceModules()
+    // Everytime the below function is called, the commanded modules will get executed once. 
+    public void RunPlantModules(List<PlantModules> commands) 
     {
-        foreach (IProduce produce in productionModules)
+        foreach (var command in commands)
         {
-            produce.Produce();
+            plantModules[command].DoStuff();
         }
     }
 
-    public void RunAttackModules()
+    public void AddPlantModule(PlantModules module)
     {
-        foreach (IAttack attack in attackModules)
-        {
-            attack.Attack();
+
+        if (!plantModules.ContainsKey(module))
+        { // do we want multiple modules? rework if so.
+            plantModules.Add(module, PlantModuleArr.GetModule(module, this));
+            plantData.plantModules.Add((int)module); // dynamic module tracking
         }
     }
 
-    public void RunDefendModules()
+    public void RemovePlantModule(PlantModules module)
     {
-        foreach (IDefend defend in defenseModules)
+        if (plantModules.ContainsKey(module)) // do we want multiple modules? rework if so.
         {
-            defend.Defend();
+            plantModules.Remove(module); // user's responsibility to pause the module? or pause it here. 
+            plantData.plantModules.Remove((int)module);
         }
     }
 
-    public void RunSupportModules()
+    public IDoStuff GetPlantModule(PlantModules module)
     {
-        foreach (ISupport support in supportModules)
-        {
-            support.Support();
-        }
+        return plantModules[module];
     }
 
-    public void Awake()
+    public virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -68,6 +65,28 @@ public abstract class PlantScript : MonoBehaviour
         plantData.plantName = (int)plantSO.pName;
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
+        plantData.plantModules = new List<int>(); // size 0. Modules to be added in the child class
+    }
+
+    // If a plant is new, no modules. if it exists, then load em in!
+    public void SpawnInModules()
+    {
+        // no modules, fresh plant
+        if (plantData.plantModules.Count == 0)
+        {
+            // add in the default modules!
+            foreach (PlantModules plantModule in plantSO.defaultModules)
+            {
+                AddPlantModule(plantModule);
+            }
+        }
+        else // has modules, spawn in previous plant
+        {
+            foreach (int plantModule in plantData.plantModules)
+            {
+                AddPlantModule((PlantModules)plantModule);
+            }
+        }
     }
 
     // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.

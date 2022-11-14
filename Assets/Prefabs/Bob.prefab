@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4235680962436226040}
   - component: {fileID: 8049280942399924756}
   - component: {fileID: 1836785115747074028}
-  - component: {fileID: 2788011989100150727}
+  - component: {fileID: 4709815205496673212}
   m_Layer: 0
   m_Name: Bob
   m_TagString: Untagged
@@ -136,7 +136,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &2788011989100150727
+--- !u!114 &4709815205496673212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,11 +145,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5392039749182135098}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5291daf3ab062bc4a943dc997fc6a413, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c3e0c520f0e98444a160737649cc71e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   plantSO: {fileID: 11400000, guid: a1ce24c7d37dedb49917300218efaa29, type: 2}
-  spriteRenderer: {fileID: 0}
   plantData:
     location: {x: 0, y: 0}
     currStageOfLife: 0
@@ -157,3 +156,4 @@ MonoBehaviour:
     stageTimeLeft: 0
     fruitProduceTimeLeft: 0
     currentHealth: 0
+  plantModulesInit: 00000000

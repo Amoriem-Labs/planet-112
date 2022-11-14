@@ -14,6 +14,8 @@ public class Plant : ScriptableObject
     public Sprite[] spriteArray; // Array of sprites per each growth stage
     public float[] stageTimeMax; // Time spent in each growth stage
     public float[] maxHealth; // Max HP for each stage
+
+    public PlantModules[] defaultModules; // default modules to this class of plants
     
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
