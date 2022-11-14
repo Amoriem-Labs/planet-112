@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class DataManager : MonoBehaviour
 {
-    // Test: does c# pass by value or pass by reference for a class instance?
-    // Test result: pass by value. So I need to pass by reference manually.
+    // `ref` keyword to make sure saveData is passed by reference
     public static void readFile(ref SaveData saveData, int saveIndex)
     {
         // Generate the pathway to get the data
@@ -19,7 +18,7 @@ public class DataManager : MonoBehaviour
             // Deserialize the JSON data into a pattern matching the SaveData class.
             saveData = JsonUtility.FromJson<SaveData>(fileContents);
 
-            // Populate the scene accordingly in PD
+            // TODO: Populate the scene accordingly in PD
         }
     }
 
@@ -35,10 +34,10 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(saveFile, jsonString);
     }
 
-    // Create a field/pathway for the save file.
-    // If saveIndex is 0 then it's autosave; otherwise it's a manual save. 
+    // Get the filepath for this saveIndex
     private static string getSaveFilePath(int saveIndex)
     {
+        // saveIndex 0 is autosave?
         return Application.persistentDataPath + "/save" + saveIndex + "data.json";
     }
 }
