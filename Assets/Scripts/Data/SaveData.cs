@@ -20,6 +20,7 @@ public class LevelData
 {
     public int levelID; // id of the level. Each level (individual scene) has a unique id, labeled on the game map.
     public List<PlantData> plantDatas; // a list of all the existing, planted plants in a level. 
+    // TODO: should this be an "agentsData" list containing pests, neutrals, NPCs, etc (non-player agents)
     public List<PestData> pestDatas; // similar. could be null (since using probaility model) or existing (aka saved during battle).
     public int oxygenLevel; // total oxygen level of the level, updated every time a plant spawns / dies.
 }
@@ -57,7 +58,6 @@ public class PestData
 [Serializable]
 public class PlayerData
 {
-    public int numFruits; // the number of fruits (currency) the player has
     public List<InventoryItemData> inventoryItemDatas; // a list of all the items that the player has in the inventory
 }
 
@@ -66,8 +66,7 @@ public class PlayerData
 public class InventoryItemData
 {
     public int itemType; // the type of the item, used to get the inherited, specific item at run time.
-    public int quantityCount; // the amount of this item that the player has
-    public int slotIndex; // Which slot in the inventory is the item placed in? If MC: 0-9 hand, 10-MAX backpack, etc.
+    public int count; // the amount of this item that the player has
 }
 #endregion
 
@@ -97,6 +96,7 @@ public class SettingsData
 [Serializable]
 public class EventsData
 {
-    public bool tutorialCompleted; // marks whether the player has done the tutorial
+  // DEMO: marks whether the player has done the tutorial
+  public bool tutorialCompleted;
 }
 #endregion

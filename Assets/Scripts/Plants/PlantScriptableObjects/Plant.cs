@@ -3,28 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Plant", menuName = "Plant")]
-public class Plant : ScriptableObject // blue print for Plant.
+// Blueprint for easily designing new plant types
+public class Plant : ScriptableObject
 {
-    // member variabels that define plant properties. To set by children.
-    public int maxStage; // ex 3 stages. Phases: 0-1, 1-2, 2-3. 0-3 indices per stage, but 3 intervals with ind 0 1 2. 
-    public Sprite[] spriteArray; // size = maxStage + 1
-    public float[] stageTimeMax; // time until growth to next stage, size = maxStage
-    public float[] maxHealth; // deafult HP of the plant (or an array too? yeah why not)
-    public PlantNames pName; // oxygen boost is not in here because we might want some oxygen-consuming plants even for game balancing ;D
+    // Member variables that define plant properties. To be set by children. They don't have to all be filled! Only fill the parts that are needed for the module.
+    public PlantName pName;
+    public int maxStage; // TODO: have an array of stage names instead, use stages.
+    
+    // currStageOfLife is the accessing index to everything below. Stage 0 is a seed, everything builds on this.
+    public Sprite[] spriteArray; // Array of sprites per each growth stage
+    public float[] stageTimeMax; // Time spent in each growth stage
+    public float[] maxHealth; // Max HP for each stage
+    
+    // Produce:
+    public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
+    public float[] productionTimes; // Time to produce one unit of whatever the plant makes
 
-    // delegates, can be kept here, tested. Modules can subscribe to them to react to changes when called. 
+    // Modules can subscribe to these delegates to react to changes when called. 
     public delegate void OnPlantStageUpdateDelegate();
     public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
-
-    // currStageOfLife is the accessing index to everything below.
-    // They don't have to all be filled! Only fill the parts that are needed for the module.
-    // Variables specific to plant's productivity
-    public int[] oxygenProductionLevels; // note: plant stage starts at 0, the seed! // size = maxStage + 1
-    public int[] secondsPerFruitProductionLevels; // size = maxStage + 1
-
-    // Variables specific to plant's attack ability
-    public int[] attackDamageLevels; 
-
-    // Variables specific to plant's defensiveness
-    public int[] tauntRadiusLevels; // for example
 }

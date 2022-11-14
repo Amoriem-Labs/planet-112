@@ -10,6 +10,6 @@ public class MrHealer : PlantScript
 
     public MrHealer() // automatically called by Unity.
     {
-        supportModules.Add(new HealNearbyPlants(this));
+        // Eg. supportModules.Add(new HealNearbyPlants(this));
     }
 }

@@ -1,9 +1,10 @@
 public class Bob : PlantScript
 {
-    public Bob() // automatically called by Unity.
+    public Bob() // Constructor is automatically called by Unity.
     {
-        productionModules.Add(new ProduceFruit(this));
-        productionModules.Add(new ProduceOxygen(this));
+        // Add modules
+        // Eg. productionModules.Add(new ProduceFruit(this));
+        // productionModules.Add(new ProduceOxygen(this));
     }
 }
 
