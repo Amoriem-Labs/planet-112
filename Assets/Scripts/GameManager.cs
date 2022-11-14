@@ -9,21 +9,9 @@ public class GameManager : MonoBehaviour
     {
         PersistentData.LoadSave(0);
 
-        // Testing scripts
-        GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantNames.MrHealer));
-        tst.GetComponent<PlantScript>().SpawnNewPlant(5, -3);
-        tst.GetComponent<PlantScript>().TrySupport(); 
-
-        //Debug.Log("Current level oxygen is: " + PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel);
-        //StartCoroutine(TestFunc(tst.GetComponent<ProductivePlant>()));
-    }
-
-    IEnumerator TestFunc(PlantScript plant)
-    {
-        yield return new WaitForSeconds(5);
-
-        plant.TryProduce();
-        Debug.Log("Test func executed");
-        Debug.Log("Current level oxygen is: " + PersistentData.GetLevelData(LevelManager.currentLevelID).oxygenLevel);
+        // DEMO: create a new MrHealer plant
+        //GameObject tst = Instantiate(PlantStorage.GetPlantPrefab(PlantName.MrHealer));
+        //tst.GetComponent<PlantScript>().SpawnNewPlant(5, -3);
+        GameObject testPlant = LevelManager.SpawnPlant(PlantName.MrHealer, 5, -3);
     }
 }
