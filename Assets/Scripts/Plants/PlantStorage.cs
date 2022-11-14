@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum PlantNames // Actual names of the plants! 
+public enum PlantName // Actual names of the plants! 
 {
     Bob, //0
     MrHealer
 }
-
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 
 public class PlantStorage : MonoBehaviour // gonna switch to scriptable object in the future, or no need? Ask Jacob. 
 {
@@ -19,8 +18,12 @@ public class PlantStorage : MonoBehaviour // gonna switch to scriptable object i
         plantPrefabs = plantPrefabsInit; // passed by reference I think, so run time no need to worry. Static for convenience. 
     }
 
-    public static GameObject GetPlantPrefab(PlantNames plantName)
+    public static GameObject GetPlantPrefab(PlantName plantName)
     {
+        //Debug.Log((int)plantName);
+        //Debug.Log(plantPrefabs);
+        //Debug.Log(plantPrefabs[(int)plantName]);
+        //Debug.Log(plantPrefabs[(int)plantName].gameObject);
         return plantPrefabs[(int)plantName].gameObject; // returns the prefab blueprint
     } 
 } 
