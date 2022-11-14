@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public abstract class PlantScript : MonoBehaviour // by being abstract, we can't create instances of this class.
+// This is an abstract class: we can't create instances of it, but other (non-abstract) classes can inherit from this. In general, you can have specific variables to child classes (which inherit from this class).
+public abstract class PlantScript : MonoBehaviour
 {
-    // [SerializeField] allows a private var to appear visible in the inspector
-    // The scriptable oxject that contains fixed data about this plant.
+    // The scriptable oxject that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
-
-    // interfaces, they don't work in scriptable because you can't change them at run time... plus this is more per-plant dynamic here.
+    
+    // Plant module lists. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     public List<IProduce> productionModules = new List<IProduce>();
     public List<IAttack> attackModules = new List<IAttack>();
     public List<IDefend> defenseModules = new List<IDefend>();
@@ -20,10 +20,11 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
 
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/ public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD 
+    // TODO: name this something more descriptive
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
     // Everytime the below function is called, the modules will get executed. Ideally each module only needs to be called once.
-    public void TryProduce()
+    public void RunProduceModules()
     {
         foreach (IProduce produce in productionModules)
         {
@@ -31,7 +32,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         }
     }
 
-    public void TryAttack()
+    public void RunAttackModules()
     {
         foreach (IAttack attack in attackModules)
         {
@@ -39,7 +40,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         }
     }
 
-    public void TryDefend()
+    public void RunDefendModules()
     {
         foreach (IDefend defend in defenseModules)
         {
@@ -47,7 +48,7 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
         }
     }
 
-    public void TrySupport() // can keep support function variables and stuff within child inheritance class, cuz unique.
+    public void RunSupportModules()
     {
         foreach (ISupport support in supportModules)
         {
@@ -59,48 +60,41 @@ public abstract class PlantScript : MonoBehaviour // by being abstract, we can't
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
-
-    // Call this to spawn a new plant instance
-    public void SpawnNewPlant(int xIndex, int yIndex) // virtual allows it to be overridden
-    {
+    
+    public void InitializePlantData(int x, int y) {
         plantData = new PlantData();
-        plantData.location = new Vector2(xIndex, yIndex);
+        plantData.location = new Vector2(x, y);
         plantData.currStageOfLife = 0;
         plantData.plantName = (int)plantSO.pName;
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
-        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData);
-
-        VisualizePlant();
     }
 
-    // Call this to spawn an existing plant instance
-    public void SpawnExistingPlant(PlantData plantData)
+    // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.
+    public void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
     {
-        this.plantData = plantData;
-
-        VisualizePlant();
-    }
-
-    // This step is called after spawn new / existing plant is called, after data fill-ins
-    private void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
-    {
-        Vector2 plantPosition = plantData.location; // in the future do some math to convert from X Y indices to real world coords
+        Vector3 plantPosition = new Vector3(plantData.location.x, plantData.location.y, 0); // in the future do some math to convert from X Y indices to real world coords
         gameObject.transform.SetPositionAndRotation(plantPosition, Quaternion.identity);
+        Debug.Log("Set position to: " + plantPosition);
 
-        // update visuals
+        // Set sprite
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
 
         if (plantData.currStageOfLife != plantSO.maxStage) // if they are equal then no need to keep growing.
         {
+            // TODO: call this something different to indicate that growth doesn't happen immediately
             GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]);
         }
     }
 
+    // TODO: rewrite this coroutine stuff when implementing the time system
+
+    // TODO: make an UpdatePlantStats function?
     //public abstract void UpdatePlantStats(int currStage); // or use virtual, which only marks override. 
     // Could be override in child class, but this method is not needed atm. 
 
-    // gonna do a test. Does stopping g stop the corotine? 
+    // gonna do a test. Does stopping g stop the coroutine? 
+    // TODO does this need a callback argument? If all it does is call PlantStageUpdate
     private void GrowPlant(Action callback, float stageTime) // if want input parameters, do Action<type, type, ...>
     {
         plantData.stageTimeLeft = stageTime;
