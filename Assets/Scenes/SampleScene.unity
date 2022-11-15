@@ -123,6 +123,63 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &105858653
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8519673207704955755, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
+      propertyPath: m_Name
+      value: Pest
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +547,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &798319916
 MonoBehaviour:
@@ -650,7 +707,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1256713451
 PrefabInstance:
@@ -661,7 +718,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_LocalPosition.x
@@ -709,11 +766,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
---- !u!4 &1256713452 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4337848627275779359, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
-  m_PrefabInstance: {fileID: 1256713451}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1985826452
 GameObject:
   m_ObjectHideFlags: 0
@@ -749,8 +801,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 1256713452}
-  m_Follow: {fileID: 1256713452}
+  m_LookAt: {fileID: 0}
+  m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 2.7

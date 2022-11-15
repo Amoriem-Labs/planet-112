@@ -20,6 +20,8 @@ public abstract class PlantScript : MonoBehaviour
     // TODO: name this something more descriptive
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
+    public int attackers = 0;
+
     // Everytime the below function is called, the commanded modules will get executed once. 
     public void RunPlantModules(List<PlantModules> commands) 
     {

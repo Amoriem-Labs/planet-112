@@ -9,6 +9,7 @@ public class Plant : ScriptableObject
     // Member variables that define plant properties. To be set by children. They don't have to all be filled! Only fill the parts that are needed for the module.
     public PlantName pName;
     public int maxStage; // TODO: have an array of stage names instead, use stages.
+    public int maxAttackers; // max number of pests that can target it at a time
     
     // currStageOfLife is the accessing index to everything below. Stage 0 is a seed, everything builds on this.
     public Sprite[] spriteArray; // Array of sprites per each growth stage
