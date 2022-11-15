@@ -111,5 +111,6 @@ public class PlayerScript : MonoBehaviour
         //Debug.Log((int)transform.position.x);
         GameObject tst = LevelManager.SpawnPlant(PlantName.Bob, (int)transform.position.x, -3);
         tst.GetComponent<PlantScript>().RunPlantModules(new List<PlantModules>() { PlantModules.test });
+        GridScript.SpawnObjectAtGrid(GridScript.CoordinatesToGrid(transform.position), plantObject);
     }
 }
