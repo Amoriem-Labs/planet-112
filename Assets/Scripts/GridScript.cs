@@ -90,31 +90,29 @@ public class GridScript : MonoBehaviour
         }
 
         // Have space! Time to add it in. 
-        mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = TileState.OCCUPIED_STATE;
-        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)TileState.OCCUPIED_STATE;
-        foreach (Vector2 gridPos in additionRelativeGrids)
-        {
-            Vector2 tile = centerGridPos + gridPos;
-            mapGrid[(int)tile.y, (int)tile.x] = TileState.OCCUPIED_STATE;
-            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)TileState.OCCUPIED_STATE;
-        }
+        SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
         Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
         
         return Instantiate(prefab, GridToCoordinates(centerGridPos), prefab.transform.rotation);
+    }
+
+    public static void SetTileStates(Vector2 centerGridPos, TileState state, Vector2[] additionRelativeGrids = null)
+    {
+        mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = state;
+        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)state;
+        foreach (Vector2 gridPos in additionRelativeGrids)
+        {
+            Vector2 tile = centerGridPos + gridPos;
+            mapGrid[(int)tile.y, (int)tile.x] = state;
+            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)state;
+        }
     }
 
     // Marks that grid location as available. Also, other object's responsibility to destroy itself.
     // TODO: pass in a list or width/height of gridPositions to enable, ex. a wide and tall tree occupies more than 1 space. 
     public static void RemoveObjectFromGrid(Vector2 centerGridPos, Vector2[] additionRelativeGrids = null)
     {
-        mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = TileState.AVAILABLE_STATE;
-        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)TileState.AVAILABLE_STATE;
-        foreach (Vector2 gridPos in additionRelativeGrids)
-        {
-            Vector2 tile = centerGridPos + gridPos;
-            mapGrid[(int)tile.y, (int)tile.x] = TileState.AVAILABLE_STATE;
-            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)TileState.AVAILABLE_STATE;
-        }
+        SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
     }
 
     private static bool CheckOutOfBounds(Vector2 tile) // (col, row)

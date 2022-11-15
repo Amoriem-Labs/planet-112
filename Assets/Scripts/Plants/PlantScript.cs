@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 // This is an abstract class: we can't create instances of it, but other (non-abstract) classes can inherit from this. In general, you can have specific variables to child classes (which inherit from this class).
 public abstract class PlantScript : MonoBehaviour
@@ -20,7 +21,7 @@ public abstract class PlantScript : MonoBehaviour
     // TODO: name this something more descriptive
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
-    public int attackers = 0;
+    public int attackers = 0; // prob need to be dynamic from save data?
 
     // Everytime the below function is called, the commanded modules will get executed once. 
     public void RunPlantModules(List<PlantModules> commands) 
@@ -179,10 +180,23 @@ public abstract class PlantScript : MonoBehaviour
         // update stats and visuals
         // trigger delegates so the subscribers will be notified. Want to reduce if statements and dependency!
         if(plantSO.plantStageUpdateDelegate != null) plantSO.plantStageUpdateDelegate();
+
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+
         // current health refreshes? either leave this line or delete
-        plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife]; 
+        plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
+
+        // update tiles occupied in the grid, not checking intersections rn, from Victor's constant width. 
+        GridScript.SetTileStates(plantData.location, TileState.OCCUPIED_STATE,
+            plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
+        // a1.except(a2) is anything in a1 that's not in a2. We are basically finding the spaces freed up from prev just incase it shrinks
+        // we can do this knowing plantstageupdate will be called with currStage at least 1
+        Vector2[] freedUpSpaceFromPrev = (plantSO.relativeGridsOccupied[plantData.currStageOfLife-1].vec2Array).Except(
+            plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).ToArray();
+        if (freedUpSpaceFromPrev.Length > 0) GridScript.SetTileStates(plantData.location, TileState.AVAILABLE_STATE, freedUpSpaceFromPrev);
+        // TODO: the stage restriction model based on grid availability, as described to Victor. Wait for results to implement or not.
+
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum State
 {
-    //STATE_SEARCHING,
+    STATE_SEARCHING,
     STATE_MOVING,
     STATE_ATTACKING,
     STATE_RETREAT
@@ -25,14 +25,14 @@ public class PestScript : MonoBehaviour
 
     State currentState;
     List<PlantScript> plantScripts = new List<PlantScript>();
-    GameObject closestPlant;
-    PlantScript closestPlantScript;
+    PlantScript targetPlantScript;
     const float MAX_DISTANCE = 5000f;
 
     private void Awake()
     {
-        currentState = State.STATE_MOVING;
-        SearchForPlant();
+        //currentState = State.STATE_MOVING;
+        currentState = State.STATE_SEARCHING;
+        //SearchForPlant();
     }
 
     // Start is called before the first frame update
@@ -46,9 +46,9 @@ public class PestScript : MonoBehaviour
     {
         switch (currentState)
         {
-            //case State.STATE_SEARCHING:
-            //    DuringSearch();
-            //    break;
+            case State.STATE_SEARCHING:
+                DuringSearch();
+                break;
             case State.STATE_MOVING:
                 DuringMove();
                 break;
@@ -66,56 +66,61 @@ public class PestScript : MonoBehaviour
         float closestDistance = MAX_DISTANCE;
         foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
         {
-            float currentDistance = Vector3.Distance(transform.position, plant.gameObject.transform.position);
+            float currentDistance = Vector3.Distance(transform.position, plant.transform.position);
             if (currentDistance < closestDistance && plant.attackers < plant.plantSO.maxAttackers)
             {
                 closestDistance = currentDistance;
-                closestPlant = plant.gameObject;
-                closestPlantScript = plant;
+                targetPlantScript = plant;
             }
         }
-        var dir = closestPlant.transform.position - transform.position;
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);        
+        if(targetPlantScript != null)
+        {
+            var dir = targetPlantScript.transform.position - transform.position;
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            currentState = State.STATE_MOVING;
+        }
     }
 
     void DuringSearch()
     {
-
+        SearchForPlant();
     }
 
     void DuringMove()
     {
-        if (closestPlantScript.attackers >= closestPlantScript.plantSO.maxAttackers)
+        // TODO: fix this alg below. The bug could get stuck focusing on that plant.
+        if (targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
         {
             SearchForPlant();
         }
 
-        transform.position = Vector2.MoveTowards(transform.position, closestPlant.transform.position, speed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, closestPlant.transform.position) <= attackRange)
+        transform.position = Vector2.MoveTowards(transform.position, targetPlantScript.transform.position, speed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange)
         {
             currentState = State.STATE_ATTACKING;
-            closestPlantScript.attackers++;
+            targetPlantScript.attackers++;
             nextAttackTime = Time.time + attackRate;
         }
     }
 
     void DuringAttack()
     {
+        // check if plant dies, if so call SearchForPlant()
+        if (targetPlantScript == null) currentState = State.STATE_SEARCHING;
+
         // should use big timer once implemented
         if (Time.time > nextAttackTime)
         {
-            Debug.Log("damage: " + attackDamage);
+            Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
             nextAttackTime = Time.time + attackRate;
             // reduce plant health
-            // check if plant dies, if so call SearchForPlant()
+            targetPlantScript.TakeDamage((int)attackDamage);
         }
 
-        // figure out when should enter retreat state
+        // TODO: figure out when should enter retreat state
         // set retreatPoint to corner of camera OR when we implement level bounds, to outside level bounds
         // if setting to outside level bounds, can be done when initialized at the top of the script
-        
-        
     }
 
     void DuringRetreat()
