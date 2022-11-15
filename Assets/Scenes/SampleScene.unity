@@ -766,6 +766,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+--- !u!4 &1329112796 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4337848627275779359, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+  m_PrefabInstance: {fileID: 1256713451}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1985826452
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,8 +806,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_LookAt: {fileID: 1329112796}
+  m_Follow: {fileID: 1329112796}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 2.7
