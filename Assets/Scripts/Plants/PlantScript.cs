@@ -65,6 +65,7 @@ public abstract class PlantScript : MonoBehaviour
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
         plantData.plantModules = new List<int>(); // size 0. Modules to be added in the child class
+        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData); // add this plant into save. 
     }
 
     // If a plant is new, no modules. if it exists, then load em in!
@@ -99,6 +100,16 @@ public abstract class PlantScript : MonoBehaviour
             // TODO: call this something different to indicate that growth doesn't happen immediately
             GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]);
         }
+    }
+
+    // This is called upon plant destruction.
+    public void OnPlantDeath()
+    {
+        // remove this plant from save
+        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Remove(plantData);
+        // TODO: probably need to call module terminations. Be mindful that some modules are automatically terminated when the gameObject destructs.
+        // remove the gameObject from scene. Make sure to check for null in other objects! (after destruction -> null, but might still be in other lists atm)
+        Destroy(gameObject);
     }
 
     // TODO: rewrite this coroutine stuff when implementing the time system

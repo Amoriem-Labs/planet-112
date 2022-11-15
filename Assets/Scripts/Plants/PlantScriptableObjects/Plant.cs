@@ -16,6 +16,7 @@ public class Plant : ScriptableObject
     public float[] maxHealth; // Max HP for each stage
 
     public PlantModules[] defaultModules; // default modules to this class of plants
+    public Vector2[] relativeGridsOccupied; // spaces this plant will occupy. Could make it scale with stage of life. 
     
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?

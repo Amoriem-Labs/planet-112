@@ -91,12 +91,12 @@ public class PlayerScript : MonoBehaviour
         return closestPlant; // null if empty, or closest plant is outside
     }
 
-    public void OnInteract(InputAction.CallbackContext context)
+    public void OnInteract(InputAction.CallbackContext context) // testing rn: kills the plant on interact. Can add more func in future.
     {
         PlantScript closestPlant = findClosestPlant();
         if (closestPlant) // Could be null, gotta check
         {
-            //closestPlant.IncrementState();
+            LevelManager.KillPlant(closestPlant);
         }
     }
 

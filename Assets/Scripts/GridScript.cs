@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+//!!!!!!! To uniform terminology: every Vector2(x, y) has x = col and y = row !!!!!!!!!
+
 // Enum that contains serializable ints to mark the state of each grid. 
 public enum TileState
 {
@@ -69,28 +71,56 @@ public class GridScript : MonoBehaviour
 
     // encapsulates here, returns the instantiated object to the user.
     // TODO: pass in a list or width/height of gridPositions to disable, ex. a wide and tall tree occupies more than 1 space. 
-    public static GameObject SpawnObjectAtGrid(Vector2 gridPos, GameObject prefab)
+    public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
     {
-        if (GetTileState(gridPos) == TileState.OCCUPIED_STATE)
+        // Check if the grid tiles satisfy the current spacing availabilities. 
+        if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.OCCUPIED_STATE)
         {
-            Debug.Log("Grid " + gridPos.ToString() + " is occupied!");
+            Debug.Log("Grid " + centerGridPos.ToString() + " is occupied!");
             return null;
         }
-        else
+        foreach (Vector2 gridPos in additionRelativeGrids)
         {
-            Debug.Log("New Plant spawned at grid " + gridPos.ToString());
-            mapGrid[(int)gridPos.y, (int)gridPos.x] = TileState.OCCUPIED_STATE;
-            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)gridPos.y, (int)gridPos.x, columns)] = (int)TileState.OCCUPIED_STATE;
-            return Instantiate(prefab, GridToCoordinates(gridPos), prefab.transform.rotation);
+            Vector2 tile = centerGridPos + gridPos;
+            if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.OCCUPIED_STATE)
+            {
+                Debug.Log("Relative grid " + gridPos.ToString() + " is occupied!");
+                return null;
+            }
         }
+
+        // Have space! Time to add it in. 
+        mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = TileState.OCCUPIED_STATE;
+        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)TileState.OCCUPIED_STATE;
+        foreach (Vector2 gridPos in additionRelativeGrids)
+        {
+            Vector2 tile = centerGridPos + gridPos;
+            mapGrid[(int)tile.y, (int)tile.x] = TileState.OCCUPIED_STATE;
+            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)TileState.OCCUPIED_STATE;
+        }
+        Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
+        
+        return Instantiate(prefab, GridToCoordinates(centerGridPos), prefab.transform.rotation);
     }
 
     // Marks that grid location as available. Also, other object's responsibility to destroy itself.
     // TODO: pass in a list or width/height of gridPositions to enable, ex. a wide and tall tree occupies more than 1 space. 
-    public static void RemoveObjectFromGrid(Vector2 gridPos)
+    public static void RemoveObjectFromGrid(Vector2 centerGridPos, Vector2[] additionRelativeGrids = null)
     {
-        mapGrid[(int)gridPos.y, (int)gridPos.x] = TileState.AVAILABLE_STATE;
-        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)gridPos.y, (int)gridPos.x, columns)] = (int)TileState.AVAILABLE_STATE;
+        mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = TileState.AVAILABLE_STATE;
+        levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)TileState.AVAILABLE_STATE;
+        foreach (Vector2 gridPos in additionRelativeGrids)
+        {
+            Vector2 tile = centerGridPos + gridPos;
+            mapGrid[(int)tile.y, (int)tile.x] = TileState.AVAILABLE_STATE;
+            levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)TileState.AVAILABLE_STATE;
+        }
+    }
+
+    private static bool CheckOutOfBounds(Vector2 tile) // (col, row)
+    {
+        int col = (int)tile.x, row = (int)tile.y;
+        return row < 0 || row >= rows || col < 0 || col >= columns;
     }
 
     // Visualization of the grid squares. Internal testing function. Important! Don't delete. Save for manual map measurements.

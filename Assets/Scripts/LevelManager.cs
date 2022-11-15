@@ -8,15 +8,15 @@ public class LevelManager : MonoBehaviour
      
     // We should prob keep the functions below in game manager. Level manager only deals with scene transitions. 
     // Spawns in a new plant
-    public static GameObject SpawnPlant(PlantName plantName, Vector2 location)
+    public static GameObject SpawnPlant(PlantName plantName, Vector2 location) // location has to be mapGrid int coords!
     {
-        GameObject plantObj = GridScript.SpawnObjectAtGrid(location, PlantStorage.GetPlantPrefab(plantName));
+        GameObject plantPrefab = PlantStorage.GetPlantPrefab(plantName);
+        GameObject plantObj = GridScript.SpawnObjectAtGrid(location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied);
 
         if(plantObj != null)
         {
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.InitializePlantData(location);
-            PersistentData.GetLevelData(currentLevelID).plantDatas.Add(plantScript.plantData);
 
             plantScript.SpawnInModules();
             plantScript.VisualizePlant();
@@ -28,7 +28,8 @@ public class LevelManager : MonoBehaviour
     // Spawns in an existing plant
     public static GameObject SpawnPlant(PlantData plantData)
     {
-        GameObject plantObj = GridScript.SpawnObjectAtGrid(plantData.location, PlantStorage.GetPlantPrefab((PlantName)plantData.plantName));
+        GameObject plantPrefab = PlantStorage.GetPlantPrefab((PlantName)plantData.plantName);
+        GameObject plantObj = GridScript.SpawnObjectAtGrid(plantData.location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied);
         
         if(plantObj != null)
         {
@@ -42,15 +43,11 @@ public class LevelManager : MonoBehaviour
         return plantObj;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public static void KillPlant(PlantScript plantScript) // plantScript belonging to an existing plant
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Free up the space
+        GridScript.RemoveObjectFromGrid(plantScript.plantData.location, plantScript.plantSO.relativeGridsOccupied);
+        // Call some internal matters plant deals with
+        plantScript.OnPlantDeath();
     }
 }
