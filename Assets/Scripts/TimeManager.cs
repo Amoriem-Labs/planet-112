@@ -45,8 +45,8 @@ public class TimeManager : MonoBehaviour
             }
         }
 
-        Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
-        + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        //Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
+        //+ gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
 
         t = CountTimeUnit();
         StartCoroutine(t); // can store this in a variable, but don't see a need to do so rn so...

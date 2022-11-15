@@ -96,13 +96,14 @@ public class PlayerScript : MonoBehaviour
         PlantScript closestPlant = findClosestPlant();
         if (closestPlant) // Could be null, gotta check
         {
-            LevelManager.KillPlant(closestPlant);
+            closestPlant.TakeDamage(10);
+            Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
         }
     }
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        GameObject plant = LevelManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
+        GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
 
         if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModules>() { PlantModules.Test });
 

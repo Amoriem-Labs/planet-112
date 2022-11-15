@@ -102,6 +102,30 @@ public abstract class PlantScript : MonoBehaviour
         }
     }
 
+    // called by the attacker upon attacking this plant. Also, notice how taking negative damage HEALS the plant!
+    public void TakeDamage(int damage)
+    {
+        plantData.currentHealth -= damage;
+
+        // check if plant dies.
+        StartCoroutine(CheckPlantHealthInTheEndOfFrame());
+    } // PLEASE DON'T DELETE THIS. I do this to make sure that in the same frame, if you heal a <0 plant as it's attacked, it doesn't die.
+    IEnumerator CheckPlantHealthInTheEndOfFrame()
+    {
+        yield return new WaitForEndOfFrame(); // hopefully this phrase makes sense.
+
+        CheckPlantHealth();
+    }
+    private void CheckPlantHealth() // only used here
+    {
+        // TODO: different behaviors / presentation based on different stages of health (by percentage)?
+        if (plantData.currentHealth <= 0)
+        {
+            // sadly, plant dies.
+            GameManager.KillPlant(this);
+        }
+    }
+
     // This is called upon plant destruction.
     public void OnPlantDeath()
     {

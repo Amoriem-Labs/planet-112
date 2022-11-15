@@ -16,8 +16,9 @@ public class Plant : ScriptableObject
     public float[] maxHealth; // Max HP for each stage
 
     public PlantModules[] defaultModules; // default modules to this class of plants
-    public Vector2[] relativeGridsOccupied; // spaces this plant will occupy. Could make it scale with stage of life. 
-    
+    // TODO: what if two plants grow larger into conflict... should we halt growth or? Simple approach: just outline the biggest space it occupies at beginning.
+    public MultiDimensionalArray[] relativeGridsOccupied; // spaces this plant will occupy, scales with different stages in life?
+
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
     public float[] productionTimes; // Time to produce one unit of whatever the plant makes
@@ -25,4 +26,10 @@ public class Plant : ScriptableObject
     // Modules can subscribe to these delegates to react to changes when called. 
     public delegate void OnPlantStageUpdateDelegate();
     public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
+}
+
+[System.Serializable]
+public class MultiDimensionalArray // for 2D array in the editor, up to 7
+{
+    public Vector2[] vec2Array;
 }

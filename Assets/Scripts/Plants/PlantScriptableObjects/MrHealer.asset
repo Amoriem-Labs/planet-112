@@ -29,5 +29,6 @@ MonoBehaviour:
   - 500
   - 1000
   defaultModules: 00000000
+  relativeGridsOccupied: []
   oxygenProductionLevels: 000000000a000000140000001e000000
   productionTimes: []

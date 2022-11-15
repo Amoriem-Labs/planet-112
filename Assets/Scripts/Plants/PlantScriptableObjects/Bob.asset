@@ -29,5 +29,11 @@ MonoBehaviour:
   - 500
   - 1000
   defaultModules: 00000000
+  relativeGridsOccupied:
+  - vec2Array:
+    - {x: 0, y: 1}
+  - vec2Array: []
+  - vec2Array: []
+  - vec2Array: []
   oxygenProductionLevels: 000000000a000000140000001e000000
   productionTimes: []
