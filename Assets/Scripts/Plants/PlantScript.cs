@@ -31,7 +31,6 @@ public abstract class PlantScript : MonoBehaviour
 
     public void AddPlantModule(PlantModules module)
     {
-
         if (!plantModules.ContainsKey(module))
         { // do we want multiple modules? rework if so.
             plantModules.Add(module, PlantModuleArr.GetModule(module, this));
@@ -58,9 +57,9 @@ public abstract class PlantScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
     
-    public void InitializePlantData(int x, int y) {
+    public void InitializePlantData(Vector2 location) {
         plantData = new PlantData();
-        plantData.location = new Vector2(x, y);
+        plantData.location = location;
         plantData.currStageOfLife = 0;
         plantData.plantName = (int)plantSO.pName;
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
@@ -91,11 +90,7 @@ public abstract class PlantScript : MonoBehaviour
 
     // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.
     public void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
-    {
-        Vector3 plantPosition = new Vector3(plantData.location.x, plantData.location.y, 0); // in the future do some math to convert from X Y indices to real world coords
-        gameObject.transform.SetPositionAndRotation(plantPosition, Quaternion.identity);
-        Debug.Log("Set position to: " + plantPosition);
-
+    {   
         // Set sprite
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
 

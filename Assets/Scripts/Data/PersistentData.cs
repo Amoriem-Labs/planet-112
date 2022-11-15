@@ -65,4 +65,33 @@ public class PersistentData : MonoBehaviour
     {
         return currSaveData.eventsData;
     }
+
+    // This function is subject to change and finalization as dynamic variables increase!
+    public static void CreateNewSave(int saveIndex) // things we ignore are automatically obvious default values.
+    {
+        SaveData newSave = new SaveData();
+
+        // deal with level datas
+        newSave.levelDatas = new List<LevelData>();
+        LevelData firstLevel = new LevelData();
+        firstLevel.levelID = 0;
+        newSave.levelDatas.Add(firstLevel);
+
+        // deal with player data
+        PlayerData initPlayerData = new PlayerData();
+        newSave.playerData = initPlayerData;
+
+        // deal with gamestate data
+        GameStateData initGameStateData = new GameStateData();
+        SettingsData initSettingsData = new SettingsData();
+        initGameStateData.settingsData = initSettingsData;
+        newSave.gameStateData = initGameStateData;
+
+        // deal with event data
+        EventsData initEventData = new EventsData();
+        newSave.eventsData = initEventData;
+
+        // write the current save data to the saveIndex save
+        DataManager.writeFile(ref newSave, saveIndex);
+    }
 }

@@ -6,7 +6,7 @@ using System.Reflection;
 
 public enum PlantModules // serialized names of each of the modules
 {
-    test
+    Test
 }
 
 // Plant module interfaces (can be customized to include new functions)
