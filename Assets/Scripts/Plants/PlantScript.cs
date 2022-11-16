@@ -141,12 +141,11 @@ public abstract class PlantScript : MonoBehaviour
 
     // TODO: rewrite this coroutine stuff when implementing the time system
 
-    // TODO: make an UpdatePlantStats function?
+    // TODO: make an UpdatePlantStats function? No need atm.
     //public abstract void UpdatePlantStats(int currStage); // or use virtual, which only marks override. 
     // Could be override in child class, but this method is not needed atm. 
 
-    // gonna do a test. Does stopping g stop the coroutine? 
-    // TODO does this need a callback argument? If all it does is call PlantStageUpdate
+    // TODO does this need a callback argument? If all it does is call PlantStageUpdate. Hmm lemme think about it... flexibility and frame order maybe?
     private void GrowPlant(Action callback, float stageTime) // if want input parameters, do Action<type, type, ...>
     {
         plantData.stageTimeLeft = stageTime;

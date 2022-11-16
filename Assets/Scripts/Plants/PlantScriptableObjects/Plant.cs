@@ -17,8 +17,7 @@ public class Plant : ScriptableObject
     public float[] maxHealth; // Max HP for each stage
 
     public PlantModules[] defaultModules; // default modules to this class of plants
-    // TODO: what if two plants grow larger into conflict... should we halt growth or? Simple approach: just outline the biggest space it occupies at beginning.
-    public MultiDimensionalArray[] relativeGridsOccupied; // spaces this plant will occupy, scales with different stages in life?
+    public MultiDimensionalArray[] relativeGridsOccupied; // spaces this plant will occupy, scales with different stages in life
 
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?

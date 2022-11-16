@@ -96,7 +96,7 @@ public class PlayerScript : MonoBehaviour
         PlantScript closestPlant = findClosestPlant();
         if (closestPlant) // Could be null, gotta check
         {
-            closestPlant.TakeDamage(10);
+            closestPlant.TakeDamage(50);
             Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
         }
     }

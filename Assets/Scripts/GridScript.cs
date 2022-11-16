@@ -95,7 +95,6 @@ public class GridScript : MonoBehaviour
     }
 
     // encapsulates here, returns the instantiated object to the user.
-    // TODO: pass in a list or width/height of gridPositions to disable, ex. a wide and tall tree occupies more than 1 space. 
     public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
     {
         // Check if the grid tiles satisfy the current spacing availabilities. 
@@ -121,7 +120,6 @@ public class GridScript : MonoBehaviour
     }
 
     // Marks that grid location as available. Also, other object's responsibility to destroy itself.
-    // TODO: pass in a list or width/height of gridPositions to enable, ex. a wide and tall tree occupies more than 1 space. 
     public static void RemoveObjectFromGrid(Vector2 centerGridPos, Vector2[] additionRelativeGrids = null)
     {
         SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
