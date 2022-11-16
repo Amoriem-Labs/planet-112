@@ -70,25 +70,36 @@ public class GridScript : MonoBehaviour
         return mapGrid[(int)gridPos.y, (int)gridPos.x];
     }
 
-    // encapsulates here, returns the instantiated object to the user.
-    // TODO: pass in a list or width/height of gridPositions to disable, ex. a wide and tall tree occupies more than 1 space. 
-    public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
+    // Ensures that the entire space is cleared.
+    public static bool CheckCenterTileAvailability(Vector2 centerGridPos)
     {
-        // Check if the grid tiles satisfy the current spacing availabilities. 
         if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.OCCUPIED_STATE)
         {
             Debug.Log("Grid " + centerGridPos.ToString() + " is occupied!");
-            return null;
+            return false;
         }
+        return true;
+    }
+    public static bool CheckOtherTilesAvailability(Vector2 centerGridPos, Vector2[] additionRelativeGrids = null)
+    {
         foreach (Vector2 gridPos in additionRelativeGrids)
         {
             Vector2 tile = centerGridPos + gridPos;
             if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.OCCUPIED_STATE)
             {
                 Debug.Log("Relative grid " + gridPos.ToString() + " is occupied!");
-                return null;
+                return false;
             }
         }
+        return true;
+    }
+
+    // encapsulates here, returns the instantiated object to the user.
+    // TODO: pass in a list or width/height of gridPositions to disable, ex. a wide and tall tree occupies more than 1 space. 
+    public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
+    {
+        // Check if the grid tiles satisfy the current spacing availabilities. 
+        if(!CheckCenterTileAvailability(centerGridPos) || !CheckOtherTilesAvailability(centerGridPos, additionRelativeGrids)) return null; // need to make sure enough space.
 
         // Have space! Time to add it in. 
         SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);

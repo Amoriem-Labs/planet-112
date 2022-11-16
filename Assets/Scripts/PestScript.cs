@@ -112,7 +112,7 @@ public class PestScript : MonoBehaviour
         // should use big timer once implemented
         if (Time.time > nextAttackTime)
         {
-            Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
+            //Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
             nextAttackTime = Time.time + attackRate;
             // reduce plant health
             targetPlantScript.TakeDamage((int)attackDamage);

@@ -177,9 +177,22 @@ public abstract class PlantScript : MonoBehaviour
     private void PlantStageUpdate()
     {
         plantData.currStageOfLife += 1;
+
+        // First check if there's space for all the new space needed at this next stage. 
+        // we can do this knowing plantstageupdate will be called with currStage at least 1
+        Vector2[] newSpaceNeeded = (plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).Except(
+            plantSO.relativeGridsOccupied[plantData.currStageOfLife - 1].vec2Array).ToArray();
+        if (!GridScript.CheckOtherTilesAvailability(plantData.location, newSpaceNeeded)) // if the spaces are not available, pause the growth.
+        {         
+            // TODO: what's a way to resume the growth later on?
+            Debug.Log("Plant growth is paused. Need more space.");
+            plantData.currStageOfLife -= 1; // revert
+            return; 
+        }
+
         // update stats and visuals
         // trigger delegates so the subscribers will be notified. Want to reduce if statements and dependency!
-        if(plantSO.plantStageUpdateDelegate != null) plantSO.plantStageUpdateDelegate();
+        if (plantSO.plantStageUpdateDelegate != null) plantSO.plantStageUpdateDelegate();
 
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
@@ -187,15 +200,12 @@ public abstract class PlantScript : MonoBehaviour
         // current health refreshes? either leave this line or delete
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
 
-        // update tiles occupied in the grid, not checking intersections rn, from Victor's constant width. 
-        GridScript.SetTileStates(plantData.location, TileState.OCCUPIED_STATE,
-            plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
+        // update new tiles that needed to be occupied in the grid
+        GridScript.SetTileStates(plantData.location, TileState.OCCUPIED_STATE, newSpaceNeeded);
         // a1.except(a2) is anything in a1 that's not in a2. We are basically finding the spaces freed up from prev just incase it shrinks
-        // we can do this knowing plantstageupdate will be called with currStage at least 1
-        Vector2[] freedUpSpaceFromPrev = (plantSO.relativeGridsOccupied[plantData.currStageOfLife-1].vec2Array).Except(
+        Vector2[] freedUpSpaceFromPrev = (plantSO.relativeGridsOccupied[plantData.currStageOfLife - 1].vec2Array).Except(
             plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).ToArray();
         if (freedUpSpaceFromPrev.Length > 0) GridScript.SetTileStates(plantData.location, TileState.AVAILABLE_STATE, freedUpSpaceFromPrev);
-        // TODO: the stage restriction model based on grid availability, as described to Victor. Wait for results to implement or not.
 
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
