@@ -51,7 +51,7 @@ public class BezierPattern : PestMovement
             // several of them in the same frame.
             float distanceToWaypoint;
             reachedEndOfPath = false;
-            Debug.Log("Before while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+            //Debug.Log("Before while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
             // The distance to the next waypoint in the path
             while (true)
             {
@@ -71,11 +71,11 @@ public class BezierPattern : PestMovement
                         // You can use this to trigger some special code if your game requires that.
                         reachedEndOfPath = true;
 
-                        Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
-                        Debug.Log("END OF PATH REACHED");
+                        //Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
+                        Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
                         // if target is stationary and no more movement etc, then keepPathing = false.
-                        // else call UpdatePath() and keep var true. 
+                        // else call UpdatePath() and keep var true. Nevermind outdated thought.
                         //keepPathing = false;
 
                         // The problem with calling UpdatePath here, aka at the end of every seg, is that
@@ -92,7 +92,7 @@ public class BezierPattern : PestMovement
                     break;
                 }
             }
-            Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+            //Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
         }
 
         if (t <= 1) // movement if during movement pattern phase
@@ -146,10 +146,10 @@ public class BezierPattern : PestMovement
 
             UpdatePath(); // update the path at the end of every path division.
 
-            Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
+            //Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
             if (pathDivisions.Count == 0) // generate a new path division
             {
-                Debug.Log("NEW PATH DIV GENERATED! Current waypoint is " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+                //Debug.Log("NEW PATH DIV GENERATED! Current waypoint is " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
 
                 // Problem with this is that the AI cuts through curves based on the alg since direct lerping.
                 // which makes it weird since the AI passes through obstacles.
@@ -181,7 +181,7 @@ public class BezierPattern : PestMovement
                 //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
                 if (newRelativePosition != relativePosition)
                 {
-                    Debug.Log("Sign Flipped");
+                    //Debug.Log("Sign Flipped");
                     relativePosition = newRelativePosition;
                     alternatingFactor *= -1;
                 }
@@ -195,10 +195,10 @@ public class BezierPattern : PestMovement
             Vector2 rot3 = (p3 - p0).normalized / (1 / curveExtrusionFactor);
             p1 = p0 + RotateVector(rot0, uniformalBezDegree * alternatingFactor);
             p2 = p3 + RotateVector(rot3, -uniformalBezDegree * alternatingFactor);
-            Debug.Log("Sign Flipped");
+            //Debug.Log("Sign Flipped");
             alternatingFactor *= -1;
 
-            Debug.Log("Bez: " + p0 + " " + p1 + " " + p2 + " " + p3);
+            //Debug.Log("Bez: " + p0 + " " + p1 + " " + p2 + " " + p3);
             //Debug.Log("Character trans: " + FindObjectOfType<PlayerScript>().transform.position);
         }
     }

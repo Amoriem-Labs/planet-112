@@ -8,6 +8,20 @@ public class SimplePattern : PestMovement
     public override void Start()
     {
         base.Start();
+
+        InvokeRepeating("UpdatePath", 0f, 0.5f);
+    }
+
+    public override void StartPathing()
+    {
+        base.StartPathing();
+        InvokeRepeating("UpdatePath", 0f, 0.5f);
+    }
+
+    public override void StopPathing()
+    {
+        base.StopPathing();
+        CancelInvoke();
     }
 
 
@@ -52,10 +66,11 @@ public class SimplePattern : PestMovement
                     // Set a status variable to indicate that the agent has reached the end of the path.
                     // You can use this to trigger some special code if your game requires that.
                     reachedEndOfPath = true;
+
+                    Debug.Log("END OF PATH REACHED. Execute an Action here.");
+
                     break;
                 }
-
-                UpdatePath(); // put it here so it constantly updates for a new path towards target ;D
             }
             else
             {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
+// This is the parent class to all the movement patterns!
+
 public class PestMovement : MonoBehaviour
 {
     // These values are in the inspector! and they overwrite the ones set in here!
@@ -30,7 +32,7 @@ public class PestMovement : MonoBehaviour
     public virtual void Start()
     {
         currentWaypoint = 0;
-        keepPathing = true;
+        keepPathing = true; // if this is set to false, then pest won't move at start until it's true.
         reachedEndOfPath = false;
 
         seeker = GetComponent<Seeker>();
@@ -38,6 +40,9 @@ public class PestMovement : MonoBehaviour
         UpdatePath();
     }
 
+    // start/resume statement for the pest; pause statement for the pest
+    public virtual void StartPathing() { keepPathing = true; }
+    public virtual void StopPathing() { keepPathing = false; }
 
     protected void UpdatePath()
     {
