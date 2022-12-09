@@ -1182,32 +1182,28 @@ MonoBehaviour:
   enemyGraphics: {fileID: 904687396}
   speed: 2
   nextWaypointDistance: 1
+  keepPathing: 1
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
-  keepPathing: 1
   slowdownDetectionRange: 3
---- !u!50 &904687402
-Rigidbody2D:
-  serializedVersion: 4
+--- !u!114 &904687405
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 904687395}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 1.5
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97c1ca3fe6999447a357e6f5949b7f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetPosition: {fileID: 975295827}
+  enemyGraphics: {fileID: 904687396}
+  speed: 2
+  nextWaypointDistance: 0.5
+  keepPathing: 1
 --- !u!4 &975295827 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}

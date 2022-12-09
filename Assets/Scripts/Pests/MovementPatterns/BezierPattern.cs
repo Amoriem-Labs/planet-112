@@ -3,107 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
-public class EnemyAI : MonoBehaviour
+public class BezierPattern : PestMovement
 {
-    // rigidBody2D is optional. can use forced movements. 
-
-    /*
-    public Transform target;
-
-    public float speed = 200f;
-    public float nextWayPointDistance = 3f;
-
-    public Transform enemyGraphics;
-
-    Path path;
-    int currentWaypoint = 0;
-    bool reachedEndOfPath = false;
-
-    Seeker seeker;
-    Rigidbody2D rb;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
-
-        InvokeRepeating("UpdatePath", 0f, 0.5f); //insta call it then repeat every 0.5s
-    }
-
-    void UpdatePath()
-    {
-        if (seeker.IsDone())
-            seeker.StartPath(rb.position, target.position, OnPathComplete);
-    }
-
-    void OnPathComplete(Path p)
-    {
-        if(!p.error)
-        {
-            path = p;
-            currentWaypoint = 0;
-        }
-    }
-
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (path == null) {
-            return;
-        }
-
-        if(currentWaypoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
-            return;
-        } 
-        else
-        {
-            reachedEndOfPath = false;
-        }
-
-        // Vector from our position to the current waypoint, normalize it to set length to 1
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
-        
-        rb.AddForce(force); // add linear drag / air resistence to slow it down
-
-        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
-        
-        if (distance < nextWayPointDistance)
-        {
-            currentWaypoint++;
-        }
-
-        if (force.x >= 0.01f) // velocity enemy desires to travel with based on the current path
-        {
-            enemyGraphics.localScale = new Vector3(1f, 1f, 1f); // if do velocity.x, then has delay because acts with velocity
-        }
-        else if (force.x <= -0.01f)
-        {
-            enemyGraphics.localScale = new Vector3(-1f, 1f, 1f);
-        }
-    }*/
-
-    // These values are in the inspector! and they overwrite the ones set in here!
-
-    public Transform targetPosition;
-
-    private Seeker seeker;
-
-    public Path path;
-
-    public Transform enemyGraphics;
-
-    public float speed;
-
-    public float nextWaypointDistance; // smaller the more accurate
-
-    private int currentWaypoint = 0;
-
-    private bool reachedEndOfPath;
-
     // Bezier Experimental
     private Vector2 p0, p1, p2, p3;
 
@@ -123,66 +24,22 @@ public class EnemyAI : MonoBehaviour
 
     public float slowdownDetectionRange = 2; // range, in radius, of slowdown activation. Set to 0 for no slowdown.
 
-    public bool keepPathing = true; // true to activate perma pathing, false to keep the path one-time
 
-    //public GameObject testPrefab;
-
-    public void Start()
+    public override void Start()
     {
-        seeker = GetComponent<Seeker>();
         pathDivisions = new Queue<Vector2>();
         relativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
 
-        UpdatePath();
+        base.Start();
     }
 
-    void UpdatePath()
-    {
-        // Create a new path object, the last parameter is a callback function
-        // but it will be used internally by the seeker, so we will set it to null here
-        // Paths are created using the static Construct call because then it can use
-        // pooled paths instead of creating a new path object all the time
-        // which is a nice way to avoid frequent GC spikes.
-        //var p = ABPath.Construct(transform.position, transform.position + transform.forward * 10, null);
-        //var p = RandomPath.Construct(transform.position, transform.position + transform.forward * 10, null);
-
-        // By default, a search for the closest walkable nodes to the start and end nodes will be carried out
-        // but for example in a turn based game, you might not want it to search for the closest walkable node, but return an error if the target point
-        // was at an unwalkable node. Setting the NNConstraint to None will disable the nearest walkable node search
-        //p.nnConstraint = NNConstraint.None;
-
-        if (seeker.IsDone())
-            // Start a new path to the targetPosition, call the the OnPathComplete function
-            // when the path has been calculated (which may take a few frames depending on the complexity)
-            seeker.StartPath(transform.position, targetPosition.position, OnPathComplete);
-    }
-
-    public void OnPathComplete(Path p)
-    {
-        Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
-
-        if (!p.error)
-        {
-            path = p;
-            // Reset the waypoint counter so that we start to move towards the first point in the path
-            currentWaypoint = 0;
-
-            // this is used to visualize vector points
-            /*for(int i=0; i<path.vectorPath.Count; i++)
-            {
-                var obj = Instantiate(testPrefab, path.vectorPath[i], Quaternion.identity);
-                obj.transform.localScale = Vector3.one / 10;
-                obj.GetComponent<SpriteRenderer>().color = Color.green;
-            }*/
-        }
-    }
 
     public void Update()
     {
         if (path == null)
         {
             // We have no path to follow yet, so don't do anything
-            Debug.Log("NO PATH");
+            //Debug.Log("NO PATH");
             return;
         }
 
@@ -277,7 +134,7 @@ public class EnemyAI : MonoBehaviour
             //Debug.Log("Called");
         }
         else // if t > 1 and keepPathing (usually true, only false when the target is stationary, set at reaching. 
-        { // *can remove the && !reachedEndOfPath and the path = null condition if hit bug. Suspicious.
+        { 
             if(!keepPathing)
             {
                 // This basically means you've reached a set destination to the target.
@@ -375,6 +232,7 @@ public class EnemyAI : MonoBehaviour
             );
     }
 
+    /*
     float Angle(Vector3 v)
     {
         // normalize the vector: this makes the x and y components numerically
@@ -392,5 +250,5 @@ public class EnemyAI : MonoBehaviour
             ang = 360 + ang;
         }
         return ang;
-     }
+     }*/
 }
