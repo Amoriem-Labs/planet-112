@@ -106,13 +106,24 @@ public class EnemyAI : MonoBehaviour
 
     // Bezier Experimental
     private Vector2 p0, p1, p2, p3;
+
     private float t = 1.1f;
+
     private Queue<Vector2> pathDivisions;
-    public float minSegDist = 0.5f; // 1f
-    public int uniformalBezDegree = 90;
+
+    public float minSegDist = 0.5f; // width of each curve
+
+    public float curveExtrusionFactor = 0.5f; // outward extrudedness of each curve
+
+    public int uniformalBezDegree = 90; // degree of uniformal inward / outward extrusion
+
     private int alternatingFactor = 1;
+
     private float relativePosition;
-    public bool keepPathing = true;
+
+    public float slowdownDetectionRange = 2; // range, in radius, of slowdown activation. Set to 0 for no slowdown.
+
+    public bool keepPathing = true; // true to activate perma pathing, false to keep the path one-time
 
     //public GameObject testPrefab;
 
@@ -243,13 +254,23 @@ public class EnemyAI : MonoBehaviour
                 // This value will smoothly go from 1 to 0 as the agent approaches the last waypoint in the path.
                 // Optional line. 
                 var speedFactor = 1f;
+                float distToTarget = Vector3.Distance(transform.position, targetPosition.position);
+                if(distToTarget <= slowdownDetectionRange)
+                {
+                    //Debug.Log("Dist to target is: " + distToTarget);
+                    speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);
+                }
                 /*if(reachedEndOfPath)
                 {
-                    Debug.Log("REACHED END OF PATH TRIGGERED");
-                    var distanceToWaypoint = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
-                    speedFactor = Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance);
+                    Debug.LogError("REACHED END OF PATH TRIGGERED");
+                    var distanceToTarget = Vector3.Distance(transform.position, targetPosition.position);
+                    speedFactor = Mathf.Sqrt(distanceToTarget / nextWaypointDistance);
                 }*/
                 //var speedFactor = reachedEndOfPath ? Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance) : 1f;
+
+                // Run these two lines separately everytime creates a cool pausing effect.
+                //var distanceToWaypoint = Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]);
+                //speedFactor = Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance);
 
                 transform.position += dir * speed * Time.deltaTime * speedFactor;
             }
@@ -313,8 +334,8 @@ public class EnemyAI : MonoBehaviour
             t = 0;
             p0 = transform.position;
             p3 = pathDivisions.Dequeue();
-            Vector2 rot0 = (p0 - p3).normalized / (1 / minSegDist); // / by int to change length
-            Vector2 rot3 = (p3 - p0).normalized / (1 / minSegDist);
+            Vector2 rot0 = (p0 - p3).normalized / (1 / curveExtrusionFactor); //minSegDist); // / by int to change length
+            Vector2 rot3 = (p3 - p0).normalized / (1 / curveExtrusionFactor);
             p1 = p0 + RotateVector(rot0, uniformalBezDegree * alternatingFactor);
             p2 = p3 + RotateVector(rot3, -uniformalBezDegree * alternatingFactor);
             Debug.Log("Sign Flipped");

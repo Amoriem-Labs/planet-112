@@ -1182,12 +1182,11 @@ MonoBehaviour:
   enemyGraphics: {fileID: 904687396}
   speed: 2
   nextWaypointDistance: 1
-  approachSlowdownDistance: 0.1
-  reachedEndOfPath: 0
   minSegDist: 0.5
+  curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
   keepPathing: 1
-  testPrefab: {fileID: 702774887531869047, guid: 97eeb00a2c5eb8b4fb9c592aa2f7b991, type: 3}
+  slowdownDetectionRange: 3
 --- !u!50 &904687402
 Rigidbody2D:
   serializedVersion: 4
