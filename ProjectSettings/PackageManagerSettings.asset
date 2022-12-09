@@ -25,20 +25,18 @@ MonoBehaviour:
     m_Scopes: []
     m_IsDefault: 1
     m_Capabilities: 7
-  m_UserSelectedRegistryName: 
+  - m_Id: scoped:A* Pathfinding Project
+    m_Name: A* Pathfinding Project
+    m_Url: https://arongranberg.com/packages/10051a01f6ac5b6f74e0ede034995c736376effe41608
+    m_Scopes:
+    - com.arongranberg.astar
+    m_IsDefault: 0
+    m_Capabilities: 0
+  m_UserSelectedRegistryName: A* Pathfinding Project
   m_UserAddingNewScopedRegistry: 0
   m_RegistryInfoDraft:
-    m_ErrorMessage: 
-    m_Original:
-      m_Id: 
-      m_Name: 
-      m_Url: 
-      m_Scopes: []
-      m_IsDefault: 0
-      m_Capabilities: 0
     m_Modified: 0
-    m_Name: 
-    m_Url: 
-    m_Scopes:
-    - 
-    m_SelectedScopeIndex: 0
+    m_ErrorMessage: 
+    m_UserModificationsInstanceId: -826
+    m_OriginalInstanceId: -828
+  m_LoadAssets: 0
