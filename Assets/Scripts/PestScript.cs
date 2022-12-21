@@ -90,7 +90,47 @@ public class PestScript : MonoBehaviour
 
         if(targetPlantScript != null)
         {
-            // TODO: find a location from that plant to target/attack
+            // TODO: find a location from that plant to target/attack'
+            var offset = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[0];
+            var dim = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[1];
+            //var corners = targetPlantScript.GetPlantTargetBoundary();
+            //Vector2 bottomLeft = corners[0], topRight = corners[1];
+
+            //Compute the discrete cumulative density function(CDF) of your list-- or in simple terms the array of
+            //cumulative sums of the weights. Then generate a random number in the range between 0 and the sum of
+            //all weights(might be 1 in your case), do a binary search to find this random number in your discrete
+            //CDF array and get the value corresponding to this entry-- this is your weighted random number.
+            // no need for Binary Search, only 4 elements. Right now the Pr of each side is determined by relative length, not inspector-defined
+            float perimeter = 2 * dim.x + 2 * dim.y;
+            float vertWeight = dim.y / perimeter, horiWeight = dim.x / perimeter;
+            float totalWeight = vertWeight * 2 + horiWeight * 2;
+            float[] cdfArray = { horiWeight, vertWeight + horiWeight, horiWeight + vertWeight + horiWeight, totalWeight }; // [top, right, bottom, left]
+            float randVal = Random.Range(0, totalWeight);
+            int i = 0;
+            for (; i < cdfArray.Length; i++)
+            {
+                if (randVal <= cdfArray[i]) break;
+            }
+            // side is based on i
+            switch(i)
+            {
+                case 0: //top
+                    GetComponent<PestMovement>().targetOffsetFromCenter =
+                        new Vector2(offset.x + Random.Range(-dim.x / 2, dim.x / 2), offset.y + dim.y);
+                    break;
+                case 1: //right
+                    GetComponent<PestMovement>().targetOffsetFromCenter =
+                        new Vector2(offset.x + dim.x / 2, offset.y + Random.Range(0, dim.y));
+                    break;
+                case 2: //bottom
+                    GetComponent<PestMovement>().targetOffsetFromCenter =
+                        new Vector2(offset.x + Random.Range(-dim.x / 2, dim.x / 2), offset.y);
+                    break;
+                case 3: //left
+                    GetComponent<PestMovement>().targetOffsetFromCenter =
+                        new Vector2(offset.x - dim.x / 2, offset.y + Random.Range(0, dim.y));
+                    break;
+            }
 
             /*var dir = targetPlantScript.transform.position - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -184,6 +224,8 @@ public class PestScript : MonoBehaviour
 
     public bool TargetPlantInAttackRange()
     {
+        if(targetPlantScript == null) return false; // destroyed during check
+
         return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
     }
 

@@ -11,6 +11,8 @@ public class PestMovement : MonoBehaviour
 
     public Transform targetPosition;
 
+    public Vector3 targetOffsetFromCenter;
+
     protected Seeker seeker;
 
     public Path path;
@@ -62,15 +64,17 @@ public class PestMovement : MonoBehaviour
         // was at an unwalkable node. Setting the NNConstraint to None will disable the nearest walkable node search
         //p.nnConstraint = NNConstraint.None;
 
-        if (seeker.IsDone())
+        if (seeker.IsDone() && targetPosition != null) // prevent midway destruction
             // Start a new path to the targetPosition, call the the OnPathComplete function
             // when the path has been calculated (which may take a few frames depending on the complexity)
-            seeker.StartPath(transform.position, targetPosition.position, OnPathComplete);
+            seeker.StartPath(transform.position, (targetPosition.position + targetOffsetFromCenter), OnPathComplete);
     }
 
     private void OnPathComplete(Path p)
     {
         Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
+
+        targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
 
         if (!p.error)
         {
@@ -101,6 +105,17 @@ public class PestMovement : MonoBehaviour
             GetComponent<PestScript>().StartAttack();
         }
 
-        if(turnOffPathing) enabled = false; // turns off the movement script
+        if (turnOffPathing)
+        {
+            // fix the orientation once in the end
+            if(targetPosition != null)
+            {
+                if (transform.position.x < targetPosition.position.x) enemyGraphics.localScale = new Vector3(1f, 1f, 1f);
+                else if (transform.position.x > targetPosition.position.x) enemyGraphics.localScale = new Vector3(-1f, 1f, 1f);
+            }
+            // else if want to rotate whenever pass plant x mid line, remove offset to relativePosition part in movements?
+
+            enabled = false; // turns off the movement script
+        }
     }
 }

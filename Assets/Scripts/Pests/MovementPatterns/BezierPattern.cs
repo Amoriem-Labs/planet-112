@@ -28,7 +28,7 @@ public class BezierPattern : PestMovement
     public override void OnEnable()
     {
         pathDivisions = new Queue<Vector2>();
-        relativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
+        relativePosition = Mathf.Sign(transform.position.x - (targetPosition.transform.position.x + targetOffsetFromCenter.x)); // + targetOffsetFromCenter.x to make it follow through dir first
 
         base.OnEnable();
     }
@@ -117,7 +117,7 @@ public class BezierPattern : PestMovement
                 var speedFactor = 1f; // hopefully doesn't cause weird speed behaviors
                 if(targetPosition != null) // just in case a target is destroyed during movement
                 {
-                    float distToTarget = Vector3.Distance(transform.position, targetPosition.position);
+                    float distToTarget = Vector3.Distance(transform.position, (targetPosition.position + targetOffsetFromCenter));
                     if (distToTarget <= slowdownDetectionRange)
                     {
                         //Debug.Log("Dist to target is: " + distToTarget);
@@ -187,7 +187,7 @@ public class BezierPattern : PestMovement
                 // Place this at a reachable spot
                 if(targetPosition != null) // just in case target is destroyed during this process
                 {
-                    float newRelativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
+                    float newRelativePosition = Mathf.Sign(transform.position.x - (targetPosition.transform.position.x + targetOffsetFromCenter.x));
                     //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
                     if (newRelativePosition != relativePosition)
                     {

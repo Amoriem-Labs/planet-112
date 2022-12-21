@@ -20,6 +20,7 @@ public class Plant : ScriptableObject
     public PlantModules[] defaultModules; // default modules to this class of plants
     public MultiDimensionalArray[] relativeGridsOccupied; // additional spaces this plant will occupy, scales with different stages in life
     // DUMB IDEA.. bad visual. //public MultiDimensionalArray[] relativeGridsOfPestInterest; // spots that the pest will stay to attack, scales as well. Notice need at least 1. 
+    public MultiDimensionalArray[] targetRectParameters; // first x,y is offset of bottom center from bottom center, second x,y is width and height. Diff for diff stage.
 
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?

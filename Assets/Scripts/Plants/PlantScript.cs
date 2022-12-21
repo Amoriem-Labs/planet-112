@@ -284,6 +284,23 @@ public abstract class PlantScript : MonoBehaviour
         return false;
     }
 
+    // Returns the bottomLeft and topRight coord for the pest target loc rect. 
+    public void VisualizePlantTargetBoundary()
+    {
+        var offset = plantSO.targetRectParameters[plantData.currStageOfLife].vec2Array[0];
+        var dim = plantSO.targetRectParameters[plantData.currStageOfLife].vec2Array[1];
+        var offsetBottomCenter = new Vector2(transform.position.x + offset.x, transform.position.y + offset.y);
+        Vector2 bottomLeft = new Vector2(offsetBottomCenter.x - dim.x / 2, offsetBottomCenter.y),
+            topRight = new Vector2(offsetBottomCenter.x + dim.x / 2, offsetBottomCenter.y + dim.y);
+        Vector2 bottomRight = new Vector2(offsetBottomCenter.x + dim.x / 2, offsetBottomCenter.y),
+            topLeft = new Vector2(offsetBottomCenter.x - dim.x / 2, offsetBottomCenter.y + dim.y);
+        Debug.DrawLine(topLeft, topRight, Color.red, 0.5f, false);
+        Debug.DrawLine(bottomLeft, bottomRight, Color.red, 0.5f, false);
+        Debug.DrawLine(topLeft, bottomLeft, Color.red, 0.5f, false);
+        Debug.DrawLine(topRight, bottomRight, Color.red, 0.5f, false);
+        Debug.DrawLine(offsetBottomCenter, transform.position, Color.red, 0.5f, false);
+    }
+
     // Player interaction.
     private void OnTriggerEnter2D(Collider2D collision)
     {
