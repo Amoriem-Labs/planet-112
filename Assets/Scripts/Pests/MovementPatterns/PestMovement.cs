@@ -27,12 +27,15 @@ public class PestMovement : MonoBehaviour
 
     public bool keepPathing; // true to activate perma pathing, false to keep the path one-time
 
+    public bool resetPath;
+
     //public GameObject testPrefab;
 
-    public virtual void Start()
+    public virtual void OnEnable()
     {
         currentWaypoint = 0;
         keepPathing = true; // if this is set to false, then pest won't move at start until it's true.
+        resetPath = false;
         reachedEndOfPath = false;
 
         seeker = GetComponent<Seeker>();
@@ -65,7 +68,6 @@ public class PestMovement : MonoBehaviour
             seeker.StartPath(transform.position, targetPosition.position, OnPathComplete);
     }
 
-
     private void OnPathComplete(Path p)
     {
         Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
@@ -84,5 +86,21 @@ public class PestMovement : MonoBehaviour
                 obj.GetComponent<SpriteRenderer>().color = Color.green;
             }*/
         }
+    }
+
+    protected void EndPathing(bool turnOffPathing)
+    {
+        //Debug.Log("ENDPATHING IS CALLED WITH turnOffPathing " + turnOffPathing + " and resetPath " + resetPath);
+
+        if(resetPath) // pathing ended because it needs a reset
+        {
+            GetComponent<PestScript>().SetSearchingState();
+        }
+        else // pathing ended because acutally reached the target; 
+        {
+            GetComponent<PestScript>().StartAttack();
+        }
+
+        if(turnOffPathing) enabled = false; // turns off the movement script
     }
 }

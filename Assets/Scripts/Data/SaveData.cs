@@ -24,6 +24,7 @@ public class LevelData
     public List<PestData> pestDatas; // similar. could be null (since using probaility model) or existing (aka saved during battle).
     public int oxygenLevel; // total oxygen level of the level, updated every time a plant spawns / dies.
     public int[] mapGrid; // the current distribution of this level's map's grids. Use 1D array math thingy to represent 2D array.
+    public PlantData plantInHand; // if any, the plant the player picked up. Can move it to personal data for cross level or make it into a list. 
 }
 
 // Contains the dynamic data of a plant object to be stored into json. 

@@ -107,6 +107,18 @@ public class GridScript : MonoBehaviour
         return Instantiate(prefab, GridToCoordinates(centerGridPos), prefab.transform.rotation);
     }
 
+    public static bool PlaceObjectAtGrid(Vector2 centerGridPos, GameObject gameObject, Vector2[] additionRelativeGrids = null)
+    {
+        // Check if the grid tiles satisfy the current spacing availabilities. 
+        if (!CheckCenterTileAvailability(centerGridPos) || !CheckOtherTilesAvailability(centerGridPos, additionRelativeGrids)) return false; // need to make sure enough space.
+        // Have space! Time to add it in. 
+        SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
+        Debug.Log("Plant placed at grid " + centerGridPos.ToString());
+        gameObject.transform.position = GridToCoordinates(centerGridPos);
+
+        return true;
+    }
+
     public static void SetTileStates(Vector2 centerGridPos, TileState state, Vector2[] additionRelativeGrids = null)
     {
         mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = state;

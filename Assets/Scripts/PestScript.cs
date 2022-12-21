@@ -12,8 +12,11 @@ public enum State
 
 public class PestScript : MonoBehaviour
 {
+    // The scriptable oxject that contains fixed (non-dynamic) data about this pest.
+    public Plant pestSO;
+
     [SerializeField] float speed = 5f;
-    [SerializeField] float attackRange = 5f;
+    [SerializeField] float attackRange = 2f;
 
     [SerializeField] float attackRate = 2f;
     [SerializeField] float attackDamage = 2f;
@@ -25,8 +28,8 @@ public class PestScript : MonoBehaviour
 
     State currentState;
     List<PlantScript> plantScripts = new List<PlantScript>();
-    PlantScript targetPlantScript;
-    const float MAX_DISTANCE = 5000f;
+    public PlantScript targetPlantScript;
+    const float MAX_WEIGHT = 5000f;
 
     private void Awake()
     {
@@ -61,23 +64,42 @@ public class PestScript : MonoBehaviour
         }
     }
 
-    void SearchForPlant()
+    public void SetSearchingState()
     {
-        float closestDistance = MAX_DISTANCE;
+        currentState = State.STATE_SEARCHING;
+    }
+
+    public void SearchForPlant()
+    {
+        float maxWeight = 0;
         foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
         {
-            float currentDistance = Vector3.Distance(transform.position, plant.transform.position);
-            if (currentDistance < closestDistance && plant.attackers < plant.plantSO.maxAttackers)
+            float distanceToPlant = Vector3.Distance(transform.position, plant.transform.position); // might need to use seeker's path generated total distance
+            float plantPriority = (float)plant.plantSO.pestAttackPriority;
+
+            // TODO: the function below is subject to modification. Might need a better math model. 
+            // current thought: less distance = more weight; more priority = more weight. Most weight plant is the target
+            float totalWeight = (1000 / distanceToPlant) + plantPriority;
+
+            if (totalWeight > maxWeight && plant.attackers < plant.plantSO.maxAttackers)
             {
-                closestDistance = currentDistance;
+                maxWeight = totalWeight;
                 targetPlantScript = plant;
             }
         }
+
         if(targetPlantScript != null)
         {
-            var dir = targetPlantScript.transform.position - transform.position;
+            // TODO: find a location from that plant to target/attack
+
+            /*var dir = targetPlantScript.transform.position - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            currentState = State.STATE_MOVING;*/
+
+            // initiates movement script
+            GetComponent<PestMovement>().targetPosition = targetPlantScript.transform;
+            GetComponent<PestMovement>().enabled = true;
             currentState = State.STATE_MOVING;
         }
     }
@@ -92,35 +114,77 @@ public class PestScript : MonoBehaviour
         // TODO: fix this alg below. The bug could get stuck focusing on that plant.
         if (targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
         {
-            SearchForPlant();
+            GetComponent<PestMovement>().resetPath = true;
+            GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
+            //SearchForPlant(); // wait for callback from the script
         }
 
+        /*
         transform.position = Vector2.MoveTowards(transform.position, targetPlantScript.transform.position, speed * Time.deltaTime);
         if (Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange)
         {
             currentState = State.STATE_ATTACKING;
             targetPlantScript.attackers++;
             nextAttackTime = Time.time + attackRate;
+        }*/
+    }
+
+    public void StartAttack() // make sure this is only called once. The initialization process
+    {
+        if(currentState != State.STATE_ATTACKING) // need to do this. Else plant in motion -> multiple end path calls -> perma reset
+        {
+            currentState = State.STATE_ATTACKING;
+            targetPlantScript.attackers++;
+            targetPlantScript.pestScripts.Add(this);
+            nextAttackTime = Time.time + attackRate;
+        }
+    }
+
+    // this is to deal with the case where a staionary plant already being attacked is being moved
+    public void ChaseAfterPlant()
+    {
+        if(currentState == State.STATE_ATTACKING)
+        {
+            GetComponent<PestMovement>().enabled = true;
         }
     }
 
     void DuringAttack()
     {
         // check if plant dies, if so call SearchForPlant()
-        if (targetPlantScript == null) currentState = State.STATE_SEARCHING;
+        if (targetPlantScript == null)
+        {
+            currentState = State.STATE_SEARCHING;
+            return;
+        }
 
         // should use big timer once implemented
-        if (Time.time > nextAttackTime)
+        // Thought here:
+        // As long as pest's AA off cd, it will attack the plant even if you hold it and run past it in range.
+        // so this adds a bit of mecahnics yay
+        if (Time.time > nextAttackTime) // the attack is ready
         {
-            //Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
-            nextAttackTime = Time.time + attackRate;
-            // reduce plant health
-            targetPlantScript.TakeDamage((int)attackDamage);
+            // reduce plant health if in attack range. Otherwise no.
+            if (TargetPlantInAttackRange())
+            {
+                // TODO: play attacking animation here
+                Debug.Log("Attack animation played");
+
+                targetPlantScript.TakeDamage((int)attackDamage);
+                //Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
+
+                nextAttackTime = Time.time + attackRate; // reset aa timer
+            }
         }
 
         // TODO: figure out when should enter retreat state
         // set retreatPoint to corner of camera OR when we implement level bounds, to outside level bounds
         // if setting to outside level bounds, can be done when initialized at the top of the script
+    }
+
+    public bool TargetPlantInAttackRange()
+    {
+        return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
     }
 
     void DuringRetreat()

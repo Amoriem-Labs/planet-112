@@ -22,6 +22,23 @@ public abstract class PlantScript : MonoBehaviour
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
     public int attackers = 0; // prob need to be dynamic from save data?
+    public List<PestScript> pestScripts = new List<PestScript>(); // all the attackers attacking it
+    public bool inMotion = false; // a boolean for whether the plant is in motion, aka being moved or moving.
+    public bool pickedUp = false; // a boolean for whether this plant have been picked up by the player
+
+    // Setter method. Make sure this is called whenever a plant's motion state is being set
+    public void SetInMotion(bool inMotion)
+    {
+        this.inMotion = inMotion;
+
+        if(inMotion)
+        {
+            foreach(PestScript pestScript in pestScripts)
+            {
+                pestScript.ChaseAfterPlant();
+            }
+        }
+    }
 
     // Everytime the below function is called, the commanded modules will get executed once. 
     public void RunPlantModules(List<PlantModules> commands) 
@@ -125,6 +142,7 @@ public abstract class PlantScript : MonoBehaviour
         if (plantData.currentHealth <= 0)
         {
             // sadly, plant dies.
+            Debug.Log("PLANT KILLED GG");
             GameManager.KillPlant(this);
         }
     }
@@ -222,6 +240,48 @@ public abstract class PlantScript : MonoBehaviour
     public void StopPlantGrowth()
     {
         if (g != null) StopCoroutine(g);
+    }
+
+    public void LiftPlant(Transform handTransform)
+    {
+        pickedUp = true;
+        // Free up the space
+        GridScript.RemoveObjectFromGrid(plantData.location,
+            plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
+        // Pause the growth
+        StopPlantGrowth(); // aware of potential bug? like coroutine generated after pausing? do we need a bool + if in coroutine?
+        // In motion now
+        SetInMotion(true);
+        // Remove it from plantDatas and put it onto plantInHand
+        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Remove(plantData);
+        PersistentData.GetLevelData(LevelManager.currentLevelID).plantInHand = plantData;
+        // Set parent (aka can play an animation here)
+        transform.SetParent(handTransform, false);
+        transform.localPosition = Vector3.zero;
+
+        Debug.Log("Plant has been lifted, and growth paused at " + plantData.stageTimeLeft + " seconds");
+    }
+
+    public bool PlacePlant(Vector2 location)
+    {
+        // Check grid and place
+        if(GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array)) {
+            pickedUp = false;
+            // No longer plantInHand, put back
+            PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData);
+            PersistentData.GetLevelData(LevelManager.currentLevelID).plantInHand = null;
+            plantData.location = location; // also update plantdata to this new loc
+            // Resume the growth
+            if(plantData.currStageOfLife < plantSO.maxStage) GrowPlant(PlantStageUpdate, plantData.stageTimeLeft);
+            // Set the object back to the root of the scene
+            transform.parent = null;
+            // No longer in motion
+            SetInMotion(false);
+
+            return true;
+        }
+
+        return false;
     }
 
     // Player interaction.

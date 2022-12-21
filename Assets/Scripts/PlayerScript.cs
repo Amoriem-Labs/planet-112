@@ -91,13 +91,30 @@ public class PlayerScript : MonoBehaviour
         return closestPlant; // null if empty, or closest plant is outside
     }
 
-    public void OnInteract(InputAction.CallbackContext context) // testing rn: kills the plant on interact. Can add more func in future.
+    PlantScript plantInHand = null;
+    public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        PlantScript closestPlant = findClosestPlant();
-        if (closestPlant) // Could be null, gotta check
+        //closestPlant.TakeDamage(50);
+        //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
+        if (plantInHand) // has a plant in hand
         {
-            closestPlant.TakeDamage(50);
-            Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
+            if(plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+            {
+                plantInHand = null;
+            }
+            else
+            {
+                Debug.Log("Can't place it here; not enough space.");
+            }
+        }
+        else // no plant in hand
+        {
+            PlantScript closestPlant = findClosestPlant();
+            if (closestPlant) // Could be null, gotta check
+            {
+                closestPlant.LiftPlant(transform);
+                plantInHand = closestPlant;
+            }
         }
     }
 

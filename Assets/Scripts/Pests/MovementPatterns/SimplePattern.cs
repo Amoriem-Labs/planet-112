@@ -5,9 +5,9 @@ using UnityEngine;
 public class SimplePattern : PestMovement
 {
     // Start is called before the first frame update
-    public override void Start()
+    public override void OnEnable()
     {
-        base.Start();
+        base.OnEnable();
 
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
@@ -40,6 +40,7 @@ public class SimplePattern : PestMovement
             // Call other functions etc
             // if KeepPathing stays true, then the ai following target continues as target moves. 
             Debug.Log("I shall stop HERE.");
+            EndPathing(true);
             return;
         }
 
@@ -68,6 +69,14 @@ public class SimplePattern : PestMovement
                     reachedEndOfPath = true;
 
                     Debug.Log("END OF PATH REACHED. Execute an Action here.");
+
+                    // if target is stationary and no more movement etc, then keepPathing = false.
+                    // else the pathing should continue
+                    if (GetComponent<PestScript>().TargetPlantInAttackRange()) // need to make sure this path is in range one
+                    {
+                        if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
+                        else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
+                    }
 
                     break;
                 }

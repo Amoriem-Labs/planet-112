@@ -54,8 +54,8 @@ public class GameManager : MonoBehaviour
     {
         if (plantScript != null) // could be null, if multiple sources kill one plant in the same frame.
         {
-            // Free up the space
-            GridScript.RemoveObjectFromGrid(plantScript.plantData.location,
+            // Free up the space if not picked up. If dies while in hand then no need to free since already freed when picked up
+            if(!plantScript.pickedUp) GridScript.RemoveObjectFromGrid(plantScript.plantData.location,
                 plantScript.plantSO.relativeGridsOccupied[plantScript.plantData.currStageOfLife].vec2Array);
             // Call some internal matters plant deals with
             plantScript.OnPlantDeath();

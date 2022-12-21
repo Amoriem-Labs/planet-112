@@ -25,12 +25,12 @@ public class BezierPattern : PestMovement
     public float slowdownDetectionRange = 2; // range, in radius, of slowdown activation. Set to 0 for no slowdown.
 
 
-    public override void Start()
+    public override void OnEnable()
     {
         pathDivisions = new Queue<Vector2>();
         relativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
 
-        base.Start();
+        base.OnEnable();
     }
 
 
@@ -43,7 +43,6 @@ public class BezierPattern : PestMovement
             return;
         }
 
-        // Don't place the seg here to avoid multiple calls during bezier curve execution. 
         if (t > 1 && pathDivisions.Count == 0 && keepPathing) // not during a movement pattern or sub pathing
         {
             // Check in a loop if we are close enough to the current waypoint to switch to the next one.
@@ -75,8 +74,13 @@ public class BezierPattern : PestMovement
                         Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
                         // if target is stationary and no more movement etc, then keepPathing = false.
-                        // else call UpdatePath() and keep var true. Nevermind outdated thought.
-                        //keepPathing = false;
+                        // else the pathing should continue
+                        // Here we assume that the target is reached within attack range, so...
+                        if (GetComponent<PestScript>().TargetPlantInAttackRange()) // need to make sure this path is in range one
+                        {
+                            if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
+                            else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
+                        }
 
                         // The problem with calling UpdatePath here, aka at the end of every seg, is that
                         // there could be a frame-delay between two different paths so the pest spins a
@@ -110,12 +114,15 @@ public class BezierPattern : PestMovement
                 // Slow down smoothly upon approaching the end of the path
                 // This value will smoothly go from 1 to 0 as the agent approaches the last waypoint in the path.
                 // Optional line. 
-                var speedFactor = 1f;
-                float distToTarget = Vector3.Distance(transform.position, targetPosition.position);
-                if(distToTarget <= slowdownDetectionRange)
+                var speedFactor = 1f; // hopefully doesn't cause weird speed behaviors
+                if(targetPosition != null) // just in case a target is destroyed during movement
                 {
-                    //Debug.Log("Dist to target is: " + distToTarget);
-                    speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);
+                    float distToTarget = Vector3.Distance(transform.position, targetPosition.position);
+                    if (distToTarget <= slowdownDetectionRange)
+                    {
+                        //Debug.Log("Dist to target is: " + distToTarget);
+                        speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);
+                    }
                 }
                 /*if(reachedEndOfPath)
                 {
@@ -135,12 +142,13 @@ public class BezierPattern : PestMovement
         }
         else // if t > 1 and keepPathing (usually true, only false when the target is stationary, set at reaching. 
         { 
-            if(!keepPathing)
+            if(!keepPathing) // remember this can also be set manually
             {
                 // This basically means you've reached a set destination to the target.
                 // Call other functions etc
                 // if KeepPathing stays true, then the ai following target continues as target moves. 
                 Debug.Log("I shall stop HERE.");
+                EndPathing(true);
                 return;
             }
 
@@ -177,13 +185,16 @@ public class BezierPattern : PestMovement
                 // this is the make sure sign smoothness
                 // we know x can't be negative. if target is left of obj, then ...
                 // Place this at a reachable spot
-                float newRelativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
-                //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
-                if (newRelativePosition != relativePosition)
+                if(targetPosition != null) // just in case target is destroyed during this process
                 {
-                    //Debug.Log("Sign Flipped");
-                    relativePosition = newRelativePosition;
-                    alternatingFactor *= -1;
+                    float newRelativePosition = Mathf.Sign(transform.position.x - targetPosition.transform.position.x);
+                    //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
+                    if (newRelativePosition != relativePosition)
+                    {
+                        //Debug.Log("Sign Flipped");
+                        relativePosition = newRelativePosition;
+                        alternatingFactor *= -1;
+                    }
                 }
             }
 

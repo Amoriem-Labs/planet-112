@@ -10,6 +10,7 @@ public class Plant : ScriptableObject
     public PlantName pName;
     public int maxStage; // TODO: have an array of stage names instead, use stages.
     public int maxAttackers; // max number of pests that can target it at a time
+    public PlantTargetPriority pestAttackPriority; // enum class for the priority of pest attack
     
     // currStageOfLife is the accessing index to everything below. Stage 0 is a seed, everything builds on this.
     public Sprite[] spriteArray; // Array of sprites per each growth stage
@@ -17,7 +18,8 @@ public class Plant : ScriptableObject
     public float[] maxHealth; // Max HP for each stage
 
     public PlantModules[] defaultModules; // default modules to this class of plants
-    public MultiDimensionalArray[] relativeGridsOccupied; // spaces this plant will occupy, scales with different stages in life
+    public MultiDimensionalArray[] relativeGridsOccupied; // additional spaces this plant will occupy, scales with different stages in life
+    // DUMB IDEA.. bad visual. //public MultiDimensionalArray[] relativeGridsOfPestInterest; // spots that the pest will stay to attack, scales as well. Notice need at least 1. 
 
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?

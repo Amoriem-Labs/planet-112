@@ -8,6 +8,15 @@ public enum PlantName // Actual names of the plants!
     MrHealer
 }
 
+public enum PlantTargetPriority // the priority of beginning targeted by pests.
+{
+    one = 1, // lowest currently
+    two,
+    three,
+    four,
+    five // highest currently
+}
+
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 
 public class PlantStorage : MonoBehaviour // gonna switch to scriptable object in the future, or no need? Ask Jacob. 
 {
