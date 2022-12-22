@@ -132,6 +132,54 @@ public class PestScript : MonoBehaviour
                     break;
             }
 
+            // treat this like a point RELATIVE to the offset, recalculate if in motion. different from main offset
+            float castAngle; // in radian
+            Vector3 castVector; // the direction vector
+            if(GetComponent<PestMovement>().targetOffsetFromCenter.x >= offset.x) // right side
+            {
+                castAngle = Random.Range(0, 90) * (Mathf.PI / 180);
+                castVector = RotateVector(Vector3.right, castAngle);
+            }
+            else // left side
+            {
+                castAngle = Random.Range(-90, 0) * (Mathf.PI / 180);
+                castVector = RotateVector(-Vector3.right, castAngle);
+            }
+            // Okay this is really weird. I used degree for rotate in Bezier but why is it radian here? I mean here it only works with radian
+            // is my Bezier wrong? try with radian later?
+            Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
+                targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter + castVector,
+                Color.red, 100, false);
+            float baseDetectionRange = 1 ; // TODO: make this generalizable over the longest side of the "?" instead of hard-coded
+            float radius = dim.x / 2; // make this size generalizable over what...
+            int maxDetectionRange = (int)(baseDetectionRange + attackRange);
+            var info = Physics2D.CircleCast(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
+                radius,
+                castVector,
+                maxDetectionRange,
+                (1<<LayerMask.NameToLayer("NonGroundObstacle")) // need to do this, because ground is also an obstacle, and we don't want that. Plus might be more in future.
+                // tip for above, can do (1<<i) | (1<<j) | ...; for multiple layers. 
+                );
+            //Debug.Log("Was there a collision: " + (info.collider != null));
+            //Debug.Log("Name of the collider is: " + info.collider.gameObject.name);
+            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, info.point, Color.magenta, 100, false);
+
+            Vector2 decoyTarget;
+            if(info.collider == null) // no collision on its way
+            {
+                decoyTarget = PickRandomPointInCircle(targetPlantScript.transform.position + 
+                    GetComponent<PestMovement>().targetOffsetFromCenter + castVector * maxDetectionRange, // no need to normalize dir. Already 1. 
+                    radius);
+            }
+            else // hit something, info parameters came to life
+            {
+                decoyTarget = PickRandomPointInCircle(info.centroid, radius);
+            }
+            Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, decoyTarget, Color.magenta, 100, false);
+            // Finally, do something with decoyTarget!
+            var decoyTargetOffsetFromCenter = (Vector3)decoyTarget - targetPlantScript.transform.position;
+            //GetComponent<PestMovement>().targetOffsetFromCenter = decoyTargetOffsetFromCenter; // can do this, for example. Use boolean "beentodecoyyet"
+
             /*var dir = targetPlantScript.transform.position - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -232,5 +280,22 @@ public class PestScript : MonoBehaviour
     void DuringRetreat()
     {
         transform.position = Vector2.MoveTowards(transform.position, retreatPoint, speed * Time.deltaTime);
+    }
+
+    Vector2 RotateVector(Vector2 v, float theta)
+    {
+        return new Vector2(
+            v.x * Mathf.Cos(theta) - v.y * Mathf.Sin(theta),
+            v.x * Mathf.Sin(theta) + v.y * Mathf.Cos(theta)
+            );
+    }
+
+    Vector2 PickRandomPointInCircle(Vector2 center, float radius)
+    {
+        var r = radius * Mathf.Sqrt(Random.Range(0f, 1f));
+        var theta = Random.Range(0f, 1f) * 2 * Mathf.PI;
+        var x = center.x + r * Mathf.Cos(theta);
+        var y = center.y + r * Mathf.Sin(theta);
+        return new Vector2(x, y);
     }
 }

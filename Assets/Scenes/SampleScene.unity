@@ -406,6 +406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 239054936}
   speed: 2
   nextWaypointDistance: 0.5
@@ -484,7 +485,8 @@ Transform:
   m_LocalPosition: {x: -1.3973, y: -2.51, z: 0}
   m_LocalScale: {x: 0.53832144, y: 0.66753256, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 401699343}
   m_Father: {fileID: 1022469714}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -566,6 +568,64 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &401699342
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 401699343}
+  - component: {fileID: 401699344}
+  m_Layer: 7
+  m_Name: DetectionLayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &401699343
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401699342}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 296307583}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &401699344
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401699342}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.5}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &434666070
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,7 +810,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -806,6 +866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 452233721}
   speed: 2
   nextWaypointDistance: 1
@@ -1046,7 +1107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -1102,6 +1163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 520607623}
   speed: 2
   nextWaypointDistance: 1
@@ -1622,6 +1684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 904687396}
   speed: 2
   nextWaypointDistance: 1
@@ -1948,7 +2011,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -1976,6 +2039,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 1169876474}
   speed: 2
   nextWaypointDistance: 1
@@ -2364,7 +2428,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -2420,6 +2484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
+  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 1988340632}
   speed: 2
   nextWaypointDistance: 1
