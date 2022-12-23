@@ -406,12 +406,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 239054936}
   speed: 2
   nextWaypointDistance: 0.5
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
 --- !u!114 &239054939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,7 +811,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -866,12 +867,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 452233721}
   speed: 2
   nextWaypointDistance: 1
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -1107,7 +1109,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -1163,12 +1165,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 520607623}
   speed: 2
   nextWaypointDistance: 1
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -1684,12 +1687,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 904687396}
   speed: 2
   nextWaypointDistance: 1
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -2011,7 +2015,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -2039,12 +2043,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 1169876474}
   speed: 2
   nextWaypointDistance: 1
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -2428,7 +2433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8613177303416706075, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b064a67ea96b4b1092da6f411735810, type: 3}
@@ -2484,12 +2489,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPosition: {fileID: 975295827}
   targetOffsetFromCenter: {x: 0, y: 0, z: 0}
-  targetSecondaryOffsetFromCenter: {x: 0, y: 0, z: 0}
+  coreOffsetCache: {x: 0, y: 0, z: 0}
   enemyGraphics: {fileID: 1988340632}
   speed: 2
   nextWaypointDistance: 1
   keepPathing: 1
   resetPath: 0
+  decoyState: 0
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90

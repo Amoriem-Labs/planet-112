@@ -77,6 +77,10 @@ public class SimplePattern : PestMovement
                         if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
                         else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
                     }
+                    else if (decoyState)
+                    {
+                        EndPathing(false);
+                    }
 
                     break;
                 }
@@ -89,7 +93,7 @@ public class SimplePattern : PestMovement
 
         // Slow down smoothly upon approaching the end of the path
         // This value will smoothly go from 1 to 0 as the agent approaches the last waypoint in the path.
-        var speedFactor = reachedEndOfPath ? Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance) : 1f;
+        var speedFactor = reachedEndOfPath && !decoyState ? Mathf.Sqrt(distanceToWaypoint / nextWaypointDistance) : 1f;
 
         // Direction to the next waypoint
         // Normalize it so that it has a length of 1 world unit

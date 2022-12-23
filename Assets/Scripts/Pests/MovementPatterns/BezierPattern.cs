@@ -81,6 +81,10 @@ public class BezierPattern : PestMovement
                             if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
                             else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
                         }
+                        else if(decoyState)
+                        {
+                            EndPathing(false);
+                        }
 
                         // The problem with calling UpdatePath here, aka at the end of every seg, is that
                         // there could be a frame-delay between two different paths so the pest spins a
@@ -118,7 +122,7 @@ public class BezierPattern : PestMovement
                 if(targetPosition != null) // just in case a target is destroyed during movement
                 {
                     float distToTarget = Vector3.Distance(transform.position, (targetPosition.position + targetOffsetFromCenter));
-                    if (distToTarget <= slowdownDetectionRange)
+                    if (distToTarget <= slowdownDetectionRange && !decoyState)
                     {
                         //Debug.Log("Dist to target is: " + distToTarget);
                         speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);

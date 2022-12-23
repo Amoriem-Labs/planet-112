@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
+using System.Linq;
 
 public enum State
 {
@@ -13,7 +15,7 @@ public enum State
 public class PestScript : MonoBehaviour
 {
     // The scriptable oxject that contains fixed (non-dynamic) data about this pest.
-    public Plant pestSO;
+    public Pest pestSO;
 
     [SerializeField] float speed = 5f;
     [SerializeField] float attackRange = 2f;
@@ -26,7 +28,7 @@ public class PestScript : MonoBehaviour
 
     Vector2 retreatPoint;
 
-    State currentState;
+    public State currentState; // put it back to private later. Public for now to debug. 
     List<PlantScript> plantScripts = new List<PlantScript>();
     public PlantScript targetPlantScript;
     const float MAX_WEIGHT = 5000f;
@@ -69,11 +71,89 @@ public class PestScript : MonoBehaviour
         currentState = State.STATE_SEARCHING;
     }
 
+    private void OnPathsComplete(Path p)
+    {
+        if (p.error)
+        {
+            Debug.Log("The multipather has an error." + p.errorLog);
+            return;
+        }
+
+        MultiTargetPath mp = p as MultiTargetPath;
+        if(mp == null)
+        {
+            Debug.LogError("The path was not a multi-target path");
+            return;
+        }
+
+        // All Paths
+        List<Vector3>[] paths = mp.vectorPaths;
+        float maxWeight = 0;
+        for (int i = 0; i < paths.Length; i++)
+        {
+            List<Vector3> path = paths[i];
+
+            if(path == null || currentPlantCache[i] == null)
+            {
+                Debug.Log("Path number " + i + " could not be found. Prehaps the plant is already destroyed.");
+                continue;
+            }
+
+            float distanceToPlant = 0;
+            for(int j = 0; j < path.Count-1; j++)
+            {
+                distanceToPlant += Vector2.Distance(path[j], path[j+1]);
+            }
+            float plantPriority = (float)currentPlantCache[i].plantSO.pestAttackPriority;
+
+            // TODO: the function below is subject to modification. Might need a better math model. 
+            // current thought: less distance = more weight; more priority = more weight. Most weight plant is the target
+            float totalWeight = (1000 / distanceToPlant) + plantPriority;
+
+            if (totalWeight > maxWeight && currentPlantCache[i].attackers < currentPlantCache[i].plantSO.maxAttackers)
+            {
+                maxWeight = totalWeight;
+                targetPlantScript = currentPlantCache[i];
+            }
+        }
+
+        queryFinished = true;
+    }
+
+    List<PlantScript> currentPlantCache;
+    bool queryStarted = false, queryFinished = false;
     public void SearchForPlant()
     {
+        if(!queryStarted) // need to make sure a query is finished first
+        {
+            targetPlantScript = null;
+
+            // two methods. 1. since all paths are returned in the order the targets are passed in, we can just do a 
+            // multi-pathing query and wait over some frames. Upside: more efficient, downside: can't detect new plant added in between. 
+            // 2. we can use blockuntilcalculated to get a path immediately instead of spreading it out over multiple
+            // frames, so we can run a for loop with indiv. path dist and weight calculation in one frame. Upside: 
+            // more new plant coverage, downside: much slower. Gonna go with approach 1 for now.
+            currentPlantCache = FindObjectsOfType<PlantScript>().ToList(); // replace with direct grabbing from plant storage later
+
+            // Searches all paths. Since boolean is set to true, not just returning the shortest one.
+            if (currentPlantCache.Count != 0)
+            {
+                GetComponent<Seeker>().StartMultiTargetPath(transform.position,
+                    currentPlantCache.Select(p => p.transform.position).ToArray(),
+                    true, OnPathsComplete);
+                queryStarted = true;
+            }
+        }
+
+        /* Method 2
         float maxWeight = 0;
         foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
         {
+            //Path p = GetComponent<Seeker>().StartPath(transform.position, plant.transform.position);
+            //p.BlockUntilCalculated();
+            //float distanceToPlant = p.GetTotalLength();
+            //float directDistance = Vector3.Distance(transform.position, plant.transform.position);
+            //Debug.Log("Total length of the path is " + distanceToPlant + " and direct distance is " + directDistance);
             float distanceToPlant = Vector3.Distance(transform.position, plant.transform.position); // might need to use seeker's path generated total distance
             float plantPriority = (float)plant.plantSO.pestAttackPriority;
 
@@ -86,9 +166,9 @@ public class PestScript : MonoBehaviour
                 maxWeight = totalWeight;
                 targetPlantScript = plant;
             }
-        }
+        } */
 
-        if(targetPlantScript != null)
+        if(queryFinished && targetPlantScript != null)
         {
             // TODO: find a location from that plant to target/attack'
             var offset = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[0];
@@ -131,6 +211,7 @@ public class PestScript : MonoBehaviour
                         new Vector2(offset.x - dim.x / 2, offset.y + Random.Range(0, dim.y));
                     break;
             }
+            GetComponent<PestMovement>().coreOffsetCache = GetComponent<PestMovement>().targetOffsetFromCenter; // store the data
 
             // treat this like a point RELATIVE to the offset, recalculate if in motion. different from main offset
             float castAngle; // in radian
@@ -147,9 +228,9 @@ public class PestScript : MonoBehaviour
             }
             // Okay this is really weird. I used degree for rotate in Bezier but why is it radian here? I mean here it only works with radian
             // is my Bezier wrong? try with radian later?
-            Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
-                targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter + castVector,
-                Color.red, 100, false);
+            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
+            //    targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter + castVector,
+            //    Color.red, 100, false);
             float baseDetectionRange = 1 ; // TODO: make this generalizable over the longest side of the "?" instead of hard-coded
             float radius = dim.x / 2; // make this size generalizable over what...
             int maxDetectionRange = (int)(baseDetectionRange + attackRange);
@@ -175,10 +256,11 @@ public class PestScript : MonoBehaviour
             {
                 decoyTarget = PickRandomPointInCircle(info.centroid, radius);
             }
-            Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, decoyTarget, Color.magenta, 100, false);
+            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, decoyTarget, Color.magenta, 100, false);
             // Finally, do something with decoyTarget!
             var decoyTargetOffsetFromCenter = (Vector3)decoyTarget - targetPlantScript.transform.position;
-            //GetComponent<PestMovement>().targetOffsetFromCenter = decoyTargetOffsetFromCenter; // can do this, for example. Use boolean "beentodecoyyet"
+            GetComponent<PestMovement>().decoyState = true;
+            GetComponent<PestMovement>().targetOffsetFromCenter = decoyTargetOffsetFromCenter; // can do this, for example. Use boolean "beentodecoyyet"
 
             /*var dir = targetPlantScript.transform.position - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -189,6 +271,9 @@ public class PestScript : MonoBehaviour
             GetComponent<PestMovement>().targetPosition = targetPlantScript.transform;
             GetComponent<PestMovement>().enabled = true;
             currentState = State.STATE_MOVING;
+
+            queryStarted = false;
+            queryFinished = false;
         }
     }
 
@@ -199,8 +284,8 @@ public class PestScript : MonoBehaviour
 
     void DuringMove()
     {
-        // TODO: fix this alg below. The bug could get stuck focusing on that plant.
-        if (targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
+        // if max pest or target plant dies
+        if (targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers || targetPlantScript == null)
         {
             GetComponent<PestMovement>().resetPath = true;
             GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
@@ -231,6 +316,7 @@ public class PestScript : MonoBehaviour
     // this is to deal with the case where a staionary plant already being attacked is being moved
     public void ChaseAfterPlant()
     {
+        Debug.Log("CHASE AFTER PLANT ACTIVATED");
         if(currentState == State.STATE_ATTACKING)
         {
             GetComponent<PestMovement>().enabled = true;

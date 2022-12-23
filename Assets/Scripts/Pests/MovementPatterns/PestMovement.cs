@@ -13,6 +13,8 @@ public class PestMovement : MonoBehaviour
 
     public Vector3 targetOffsetFromCenter;
 
+    public Vector3 coreOffsetCache;
+
     protected Seeker seeker;
 
     public Path path;
@@ -30,6 +32,8 @@ public class PestMovement : MonoBehaviour
     public bool keepPathing; // true to activate perma pathing, false to keep the path one-time
 
     public bool resetPath;
+
+    public bool decoyState;
 
     //public GameObject testPrefab;
 
@@ -99,6 +103,11 @@ public class PestMovement : MonoBehaviour
         if(resetPath) // pathing ended because it needs a reset
         {
             GetComponent<PestScript>().SetSearchingState();
+        }
+        else if(decoyState) // pathing has finished the decoy part, time for real part
+        {
+            decoyState = false;
+            targetOffsetFromCenter = coreOffsetCache;
         }
         else // pathing ended because acutally reached the target; 
         {
