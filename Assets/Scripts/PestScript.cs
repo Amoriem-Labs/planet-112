@@ -71,6 +71,60 @@ public class PestScript : MonoBehaviour
         currentState = State.STATE_SEARCHING;
     }
 
+    public int queryCount = 0;
+    public int expectedQueryCount = 69;
+    float maxWeight = 0;
+    IEnumerator Perform36PtQueryPerPlant(Vector3[] points, Vector3 center, Vector3[] pointOffsets, List<Vector3> path, int i, float dimY)
+    {
+        MultiTargetPath possPaths = GetComponent<Seeker>().StartMultiTargetPath(transform.position, points, true);
+        yield return StartCoroutine(possPaths.WaitForPath());
+        // The path is calculated now
+        List<Vector2> availablePosOffsets = new List<Vector2>();
+        for (int j = 0; j < 36; j++) // could i get less than 36 paths?
+        {
+            var pathToPossPoint = possPaths.vectorPaths[j];
+            //Debug.Log("Length of pathToPossPoint is " + pathToPossPoint.Count);
+            if (Vector2.Distance(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j]) <= attackRange)
+            {
+                // this point is reacheable
+                availablePosOffsets.Add(pointOffsets[j]);
+                //Debug.DrawLine(center, center + pointOffsets[j], Color.gray, 100, false);
+                //Debug.DrawLine(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j], Color.gray, 100, false);
+            }
+        }
+
+            //yield break; // leave the corou
+        if (availablePosOffsets.Count != 0) // if == 0, plant is unreacheable and thus ignored
+        {
+            // we could use a shortest path from one of the reacheable point as the distance, but it's not needed
+            // because the point picking process is randomized anyway. So let's just uniformaly count from center.
+            float distanceToPlant = 0; // to plant's center
+            for (int j = 0; j < path.Count - 1; j++)
+            {
+                distanceToPlant += Vector2.Distance(path[j], path[j + 1]);
+            }
+            float plantPriority = (float)currentPlantCache[i].plantSO.pestAttackPriority;
+
+            // TODO: the function below is subject to modification. Might need a better math model. 
+            // current thought: less distance = more weight; more priority = more weight. Most weight plant is the target
+            float totalWeight = (1000 / distanceToPlant) + plantPriority;
+
+            if (totalWeight > maxWeight && currentPlantCache[i].attackers < currentPlantCache[i].plantSO.maxAttackers)
+            {
+                maxWeight = totalWeight;
+                targetPlantScript = currentPlantCache[i];
+                // fix the two lines below to make line 1 equal to line 2
+                availablePosOffsetsOfTarget = availablePosOffsets.Select(o => o + Vector2.up * dimY / 2).ToList(); // convert from center to center bottom.
+                                                                                                                   //for(int j=0; j<availablePosOffsets.Count; j++) Debug.DrawLine(center - Vector3.up * dim.y / 2, (center - Vector3.up * dim.y / 2) + ((center + (Vector3)pointOffsets[j]) - (center - Vector3.up * dim.y / 2)), Color.gray, 100, false);
+            }
+        }
+
+        queryCount++; // curr query finished, move onto next one in queue
+        // if queue not empty, then next. This ensures no pather overlap.
+        if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue()); 
+    }
+
+    Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
     private void OnPathsComplete(Path p)
     {
         if (p.error)
@@ -88,7 +142,11 @@ public class PestScript : MonoBehaviour
 
         // All Paths
         List<Vector3>[] paths = mp.vectorPaths;
-        float maxWeight = 0;
+        //float maxWeight = 0;
+
+        queryCount = 0;
+        expectedQueryCount = paths.Length; // aka # of plants 
+        maxWeight = 0;
         for (int i = 0; i < paths.Length; i++)
         {
             List<Vector3> path = paths[i];
@@ -96,10 +154,48 @@ public class PestScript : MonoBehaviour
             if(path == null || currentPlantCache[i] == null)
             {
                 Debug.Log("Path number " + i + " could not be found. Prehaps the plant is already destroyed.");
+                queryCount++; // no path, no need to query
                 continue;
             }
+            
+            // tracking to the offset with the idea that if it can reach the plant regardless of the side...?
+            var offset = currentPlantCache[i].plantSO.targetRectParameters[currentPlantCache[i].plantData.currStageOfLife].vec2Array[0];
+            var dim = currentPlantCache[i].plantSO.targetRectParameters[currentPlantCache[i].plantData.currStageOfLife].vec2Array[1];
+            var center = currentPlantCache[i].transform.position + (Vector3)offset + Vector3.up * dim.y / 2;
+            Vector3[] points = new Vector3[36], pointOffsets = new Vector3[36];
+            for (int deg = 0; deg < 36; deg++)
+            {
+                var pointOffsetOnTargetBox = GetThePointOnRectParamByDegree(Vector2.zero, dim, deg * 10); // from center
+                var pointOnTargetBox = center + (Vector3)pointOffsetOnTargetBox;
+                //Debug.DrawLine(center, pointOnTargetBox, Color.green, 100, false); 
+                points[deg] = pointOnTargetBox;
+                pointOffsets[deg] = pointOffsetOnTargetBox; 
+            }
 
-            float distanceToPlant = 0;
+            coroutineQueue.Enqueue(Perform36PtQueryPerPlant(points, center, pointOffsets, path, i, dim.y));
+
+            /*
+            // somehow the call below alters points, so I have to use another array (offsets) to track OG data
+            MultiTargetPath possPaths = GetComponent<Seeker>().StartMultiTargetPath(transform.position, points, true);
+            possPaths.BlockUntilCalculated(); // no callback, but a bit slower, but 36 shouldn't be that much tbh...
+            //Debug.Log("possPaths have " + possPaths.vectorPaths.Length);
+            List<Vector2> availablePosOffsets = new List<Vector2>();
+            for(int j = 0; j < 36; j++)
+            {
+                var pathToPossPoint = possPaths.vectorPaths[j];
+                if (Vector2.Distance(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j]) <= attackRange)
+                {
+                    // this point is reacheable
+                    availablePosOffsets.Add(pointOffsets[j]);
+                    //Debug.DrawLine(center, center + pointOffsets[j], Color.gray, 100, false);
+                    //Debug.DrawLine(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j], Color.gray, 100, false);
+                }
+            }
+            if (availablePosOffsets.Count == 0) continue; // plant is unreacheable and thus ignored
+
+            // we could use a shortest path from one of the reacheable point as the distance, but it's not needed
+            // because the point picking process is randomized anyway. So let's just uniformaly count from center.
+            float distanceToPlant = 0; // to plant's center
             for(int j = 0; j < path.Count-1; j++)
             {
                 distanceToPlant += Vector2.Distance(path[j], path[j+1]);
@@ -114,19 +210,36 @@ public class PestScript : MonoBehaviour
             {
                 maxWeight = totalWeight;
                 targetPlantScript = currentPlantCache[i];
-            }
+                // fix the two lines below to make line 1 equal to line 2
+                availablePosOffsetsOfTarget = availablePosOffsets.Select(o => o + Vector2.up * dim.y / 2).ToList(); // convert from center to center bottom.
+                //for(int j=0; j<availablePosOffsets.Count; j++) Debug.DrawLine(center - Vector3.up * dim.y / 2, (center - Vector3.up * dim.y / 2) + ((center + (Vector3)pointOffsets[j]) - (center - Vector3.up * dim.y / 2)), Color.gray, 100, false);
+            } */
         }
 
-        queryFinished = true;
+        if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue()); // start the first one
+
+        /*
+        if(targetPlantScript == null) // query found nothing suitable, redo
+        {
+            queryFinished = false;
+            queryStarted = false;
+        }
+        else
+        {
+            queryFinished = true;
+        }*/
+
     }
 
     List<PlantScript> currentPlantCache;
-    bool queryStarted = false, queryFinished = false;
+    public bool queryStarted = false, queryFinished = false;
+    List<Vector2> availablePosOffsetsOfTarget;
     public void SearchForPlant()
     {
         if(!queryStarted) // need to make sure a query is finished first
         {
             targetPlantScript = null;
+            availablePosOffsetsOfTarget = null;
 
             // two methods. 1. since all paths are returned in the order the targets are passed in, we can just do a 
             // multi-pathing query and wait over some frames. Upside: more efficient, downside: can't detect new plant added in between. 
@@ -138,10 +251,32 @@ public class PestScript : MonoBehaviour
             // Searches all paths. Since boolean is set to true, not just returning the shortest one.
             if (currentPlantCache.Count != 0)
             {
+                StopAllCoroutines(); // cancel all prev corou
+                coroutineQueue.Clear();
+                queryCount = 0;
+                expectedQueryCount = 69; // set all the searching states back to default.
                 GetComponent<Seeker>().StartMultiTargetPath(transform.position,
                     currentPlantCache.Select(p => p.transform.position).ToArray(),
                     true, OnPathsComplete);
                 queryStarted = true;
+            }
+        }
+
+        if(queryCount < expectedQueryCount) // queries unfinished
+        {
+            Debug.Log("Dancin'~~~"); // could play idle animation? might no need.
+            return;
+        }
+        else // all queries finished
+        {
+            if (targetPlantScript == null) // query found nothing suitable, redo
+            {
+                queryFinished = false;
+                queryStarted = false;
+            }
+            else
+            {
+                queryFinished = true;
             }
         }
 
@@ -181,7 +316,7 @@ public class PestScript : MonoBehaviour
             //all weights(might be 1 in your case), do a binary search to find this random number in your discrete
             //CDF array and get the value corresponding to this entry-- this is your weighted random number.
             // no need for Binary Search, only 4 elements. Right now the Pr of each side is determined by relative length, not inspector-defined
-            float perimeter = 2 * dim.x + 2 * dim.y;
+            /*float perimeter = 2 * dim.x + 2 * dim.y;
             float vertWeight = dim.y / perimeter, horiWeight = dim.x / perimeter;
             float totalWeight = vertWeight * 2 + horiWeight * 2;
             float[] cdfArray = { horiWeight, vertWeight + horiWeight, horiWeight + vertWeight + horiWeight, totalWeight }; // [top, right, bottom, left]
@@ -210,8 +345,13 @@ public class PestScript : MonoBehaviour
                     GetComponent<PestMovement>().targetOffsetFromCenter =
                         new Vector2(offset.x - dim.x / 2, offset.y + Random.Range(0, dim.y));
                     break;
-            }
+            }*/
+            // Or just grab a point out of all the availble positions. The above one has a flaw, in the drawing notes.
+            // because sometimes the point randomly chosen can be an unreacheable area in a passing range. 
+            var randCoord = availablePosOffsetsOfTarget[Random.Range(0, availablePosOffsetsOfTarget.Count)];
+            GetComponent<PestMovement>().targetOffsetFromCenter = new Vector2(offset.x + randCoord.x, offset.y + randCoord.y);
             GetComponent<PestMovement>().coreOffsetCache = GetComponent<PestMovement>().targetOffsetFromCenter; // store the data
+            //Debug.DrawLine(targetPlantScript.transform.position, targetPlantScript.transform.position + GetComponent<PestMovement>().coreOffsetCache, Color.magenta, 100, false);
 
             // treat this like a point RELATIVE to the offset, recalculate if in motion. different from main offset
             float castAngle; // in radian
@@ -256,7 +396,7 @@ public class PestScript : MonoBehaviour
             {
                 decoyTarget = PickRandomPointInCircle(info.centroid, radius);
             }
-            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, decoyTarget, Color.magenta, 100, false);
+            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().coreOffsetCache, decoyTarget, Color.magenta, 100, false);
             // Finally, do something with decoyTarget!
             var decoyTargetOffsetFromCenter = (Vector3)decoyTarget - targetPlantScript.transform.position;
             GetComponent<PestMovement>().decoyState = true;
@@ -285,10 +425,19 @@ public class PestScript : MonoBehaviour
     void DuringMove()
     {
         // if max pest or target plant dies
-        if (targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers || targetPlantScript == null)
+        if (targetPlantScript == null || targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
         {
-            GetComponent<PestMovement>().resetPath = true;
-            GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
+            // handle a weird case where the pest is in state moving and movement script disabled, when the target is destroyed/missing.
+            if (GetComponent<PestMovement>().enabled != false) 
+            {
+                GetComponent<PestMovement>().resetPath = true;
+                GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
+            }
+            else
+            {
+                SetSearchingState();
+            }
+
             //SearchForPlant(); // wait for callback from the script
         }
 
@@ -383,5 +532,67 @@ public class PestScript : MonoBehaviour
         var x = center.x + r * Mathf.Cos(theta);
         var y = center.y + r * Mathf.Sin(theta);
         return new Vector2(x, y);
+    }
+
+    // input deg is in degree, rect.x is width, rect.y is height
+    Vector2 GetThePointOnRectParamByDegree(Vector2 center, Vector2 rect, float deg) 
+    {
+        var twoPI = Mathf.PI * 2;
+        var theta = deg * Mathf.PI / 180;
+
+        while (theta < -Mathf.PI)
+        {
+            theta += twoPI;
+        }
+
+        while (theta > Mathf.PI)
+        {
+            theta -= twoPI;
+        }
+
+        var rectAtan = Mathf.Atan2(rect.y, rect.x);
+        var tanTheta = Mathf.Tan(theta); 
+        int region;
+
+        if ((theta > -rectAtan) && (theta <= rectAtan))
+        {
+            region = 1;
+        }
+        else if ((theta > rectAtan) && (theta <= (Mathf.PI - rectAtan)))
+        {
+            region = 2;
+        }
+        else if ((theta > (Mathf.PI - rectAtan)) || (theta <= -(Mathf.PI - rectAtan)))
+        {
+            region = 3;
+        }
+        else
+        {
+            region = 4;
+        }
+
+        Vector2 edgePoint = center; // new Vector2(rect.x / 2, rect.y / 2); //for 0,0
+        var xFactor = 1;
+        var yFactor = 1;
+  
+        switch (region) {
+            case 1: yFactor = -1; break;
+            case 2: yFactor = -1; break;
+            case 3: xFactor = -1; break;
+            case 4: xFactor = -1; break;
+        }
+
+        if ((region == 1) || (region == 3))
+        {
+            edgePoint.x += xFactor * (rect.x / 2);                                     // "Z0"
+            edgePoint.y += yFactor * (rect.x / 2) * tanTheta;
+        }
+        else
+        {
+            edgePoint.x += xFactor * (rect.y / (2 * tanTheta));                        // "Z1"
+            edgePoint.y += yFactor * (rect.y / 2);
+        }
+
+        return edgePoint;
     }
 }
