@@ -8,20 +8,19 @@ public class SimplePattern : PestMovement
     public override void OnEnable()
     {
         base.OnEnable();
-
-        InvokeRepeating("UpdatePath", 0f, 0.5f);
+        //InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
     public override void StartPathing()
     {
         base.StartPathing();
-        InvokeRepeating("UpdatePath", 0f, 0.5f);
+        //InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
     public override void StopPathing()
     {
         base.StopPathing();
-        CancelInvoke();
+        //CancelInvoke();
     }
 
 
@@ -70,17 +69,39 @@ public class SimplePattern : PestMovement
 
                     Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
+                    // are you trapped trying to reach the unreacheable?
+                    if (targetPosition != null &&
+                        Vector2.Distance(path.vectorPath[currentWaypoint], (targetPosition.position + targetOffsetFromCenter))
+                        > GetComponent<PestScript>().attackRange)
+                    {
+                        consecUnreacheableCounter++;
+                    }
+                    else
+                    {
+                        consecUnreacheableCounter = 0;
+                    }
+
                     // if target is stationary and no more movement etc, then keepPathing = false.
                     // else the pathing should continue
+                    // Here we assume that the target is reached within attack range, so...
                     if (GetComponent<PestScript>().TargetPlantInAttackRange()) // need to make sure this path is in range one
                     {
                         if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
                         else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
                     }
+                    else if (targetPosition == null || consecUnreacheableCounter >= minAttemptUnreacheable) // new target time
+                    {
+                        resetPath = true;
+                        keepPathing = false;
+                        Debug.Log("Potentially idleling");
+                        //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
+                    }
                     else if (decoyState)
                     {
                         EndPathing(false);
                     }
+
+                    UpdatePath();
 
                     break;
                 }

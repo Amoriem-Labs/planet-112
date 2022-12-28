@@ -37,7 +37,7 @@ public class PestMovement : MonoBehaviour
 
     public int consecUnreacheableCounter = 0; // should be protected
 
-    public int minAttemptUnreacheable; // basically how many times the pest will try before giving up, prob will modify
+    public int minAttemptUnreacheable; // basically how many times the pest will try before giving up
 
     //public GameObject testPrefab;
 

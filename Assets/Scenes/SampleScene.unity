@@ -414,7 +414,7 @@ MonoBehaviour:
   resetPath: 0
   decoyState: 0
   consecUnreacheableCounter: 0
-  minAttemptUnreacheable: 0
+  minAttemptUnreacheable: 10
 --- !u!114 &239054939
 MonoBehaviour:
   m_ObjectHideFlags: 0

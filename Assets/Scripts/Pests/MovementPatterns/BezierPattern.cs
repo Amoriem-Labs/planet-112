@@ -71,9 +71,9 @@ public class BezierPattern : PestMovement
                         reachedEndOfPath = true;
 
                         //Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
-                        Debug.Log("END OF PATH REACHED. Execute an Action here.");
+                        //Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
-                        // satisfied?
+                        // are you trapped trying to reach the unreacheable?
                         if (targetPosition != null &&
                             Vector2.Distance(path.vectorPath[currentWaypoint], (targetPosition.position + targetOffsetFromCenter))
                             > GetComponent<PestScript>().attackRange)
@@ -93,10 +93,11 @@ public class BezierPattern : PestMovement
                             if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
                             else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
                         }
-                        else if(GetComponent<PestScript>().targetPlantScript == null || consecUnreacheableCounter >= minAttemptUnreacheable)
+                        else if(targetPosition == null || consecUnreacheableCounter >= minAttemptUnreacheable) // new target time
                         {
                             resetPath = true;
                             keepPathing = false;
+                            Debug.Log("Potentially idleling");
                             //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
                         }
                         else if(decoyState)
@@ -106,8 +107,7 @@ public class BezierPattern : PestMovement
 
                         // The problem with calling UpdatePath here, aka at the end of every seg, is that
                         // there could be a frame-delay between two different paths so the pest spins a
-                        // circle again on the previous n-1 waypoint path. So it's better to call invoker
-                        // to update seeker path continuously.
+                        // circle again on the previous n-1 waypoint path. 
                         //UpdatePath(); // comment this out to make it path once only. 
 
                         break;
@@ -265,7 +265,7 @@ public class BezierPattern : PestMovement
             );
     }
 
-    /*
+    /* // good for debugging. Will keep for now. Tells you the angle in deg of V3
     float Angle(Vector3 v)
     {
         // normalize the vector: this makes the x and y components numerically

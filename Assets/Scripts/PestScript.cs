@@ -18,7 +18,7 @@ public class PestScript : MonoBehaviour
     public Pest pestSO;
 
     [SerializeField] float speed = 5f;
-    [SerializeField] public float attackRange = 2f;
+    public float attackRange = 2f;
 
     [SerializeField] float attackRate = 2f;
     [SerializeField] float attackDamage = 2f;
@@ -29,21 +29,11 @@ public class PestScript : MonoBehaviour
     Vector2 retreatPoint;
 
     public State currentState; // put it back to private later. Public for now to debug. 
-    List<PlantScript> plantScripts = new List<PlantScript>();
     public PlantScript targetPlantScript;
-    const float MAX_WEIGHT = 5000f;
 
     private void Awake()
     {
-        //currentState = State.STATE_MOVING;
         currentState = State.STATE_SEARCHING;
-        //SearchForPlant();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -93,7 +83,7 @@ public class PestScript : MonoBehaviour
             }
         }
 
-            //yield break; // leave the corou
+        //yield break; // leave the corou
         if (availablePosOffsets.Count != 0) // if == 0, plant is unreacheable and thus ignored
         {
             // we could use a shortest path from one of the reacheable point as the distance, but it's not needed
@@ -264,7 +254,7 @@ public class PestScript : MonoBehaviour
 
         if(queryCount < expectedQueryCount) // queries unfinished
         {
-            Debug.Log("Dancin'~~~"); // could play idle animation? might no need.
+            Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
             return;
         }
         else // all queries finished
@@ -440,15 +430,6 @@ public class PestScript : MonoBehaviour
 
             //SearchForPlant(); // wait for callback from the script
         }
-
-        /*
-        transform.position = Vector2.MoveTowards(transform.position, targetPlantScript.transform.position, speed * Time.deltaTime);
-        if (Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange)
-        {
-            currentState = State.STATE_ATTACKING;
-            targetPlantScript.attackers++;
-            nextAttackTime = Time.time + attackRate;
-        }*/
     }
 
     public void StartAttack() // make sure this is only called once. The initialization process
@@ -465,7 +446,7 @@ public class PestScript : MonoBehaviour
     // this is to deal with the case where a staionary plant already being attacked is being moved
     public void ChaseAfterPlant()
     {
-        Debug.Log("CHASE AFTER PLANT ACTIVATED");
+        //Debug.Log("CHASE AFTER PLANT ACTIVATED");
         if(currentState == State.STATE_ATTACKING)
         {
             GetComponent<PestMovement>().enabled = true;
