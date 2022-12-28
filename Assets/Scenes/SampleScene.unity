@@ -413,6 +413,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 0
 --- !u!114 &239054939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,6 +876,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 10
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -1172,6 +1176,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 10
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -1694,6 +1700,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 10
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -2050,6 +2058,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 10
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
@@ -2496,6 +2506,8 @@ MonoBehaviour:
   keepPathing: 1
   resetPath: 0
   decoyState: 0
+  consecUnreacheableCounter: 0
+  minAttemptUnreacheable: 10
   minSegDist: 0.5
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90

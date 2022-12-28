@@ -18,7 +18,7 @@ public class PestScript : MonoBehaviour
     public Pest pestSO;
 
     [SerializeField] float speed = 5f;
-    [SerializeField] float attackRange = 2f;
+    [SerializeField] public float attackRange = 2f;
 
     [SerializeField] float attackRate = 2f;
     [SerializeField] float attackDamage = 2f;

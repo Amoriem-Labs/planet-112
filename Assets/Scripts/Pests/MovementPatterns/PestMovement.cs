@@ -35,6 +35,10 @@ public class PestMovement : MonoBehaviour
 
     public bool decoyState;
 
+    public int consecUnreacheableCounter = 0; // should be protected
+
+    public int minAttemptUnreacheable; // basically how many times the pest will try before giving up, prob will modify
+
     //public GameObject testPrefab;
 
     public virtual void OnEnable()
@@ -78,10 +82,22 @@ public class PestMovement : MonoBehaviour
     {
         Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
 
-        targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
+        if(targetPosition != null) targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
 
         if (!p.error)
         {
+            // If the reacheable check is here, then the threshhold value becomes weird. Keep for a possibility.
+            /*if(targetPosition != null && 
+                Vector2.Distance(p.vectorPath[p.vectorPath.Count - 1], (targetPosition.position + targetOffsetFromCenter)) > 
+                GetComponent<PestScript>().attackRange)
+            {
+                consecUnreacheableCounter++;
+            }
+            else
+            {
+                consecUnreacheableCounter = 0;
+            }*/
+
             path = p;
             // Reset the waypoint counter so that we start to move towards the first point in the path
             currentWaypoint = 0;

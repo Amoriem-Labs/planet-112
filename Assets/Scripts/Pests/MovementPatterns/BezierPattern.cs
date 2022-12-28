@@ -73,6 +73,18 @@ public class BezierPattern : PestMovement
                         //Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
                         Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
+                        // satisfied?
+                        if (targetPosition != null &&
+                            Vector2.Distance(path.vectorPath[currentWaypoint], (targetPosition.position + targetOffsetFromCenter))
+                            > GetComponent<PestScript>().attackRange)
+                        {
+                            consecUnreacheableCounter++;
+                        }
+                        else
+                        {
+                            consecUnreacheableCounter = 0;
+                        }
+
                         // if target is stationary and no more movement etc, then keepPathing = false.
                         // else the pathing should continue
                         // Here we assume that the target is reached within attack range, so...
@@ -80,6 +92,12 @@ public class BezierPattern : PestMovement
                         {
                             if (!GetComponent<PestScript>().targetPlantScript.inMotion) keepPathing = false; // naturally 
                             else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
+                        }
+                        else if(GetComponent<PestScript>().targetPlantScript == null || consecUnreacheableCounter >= minAttemptUnreacheable)
+                        {
+                            resetPath = true;
+                            keepPathing = false;
+                            //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
                         }
                         else if(decoyState)
                         {
