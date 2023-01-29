@@ -37,7 +37,8 @@ public class PlantData
     public float stageTimeLeft; // time left before the plant evolves
     public float fruitProduceTimeLeft; // optional data.
     public float currentHealth; // remaining health of the plant
-    public List<int> plantModules; // modules that this plant currently has
+    //public List<int> plantModules; // OLD VERSION modules that this plant currently has
+    public Dictionary<PlantModuleEnum, String> plantModuleData;
     //public float fruitProductionRate; //subject to status-effect, otherwise fixed.
     // Status effects' durations?
 }

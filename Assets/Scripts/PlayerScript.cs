@@ -122,7 +122,7 @@ public class PlayerScript : MonoBehaviour
     {
         GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
 
-        if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModules>() { PlantModules.Test });
+        if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
 
     }
 }

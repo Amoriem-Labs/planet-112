@@ -11,7 +11,7 @@ public abstract class PlantScript : MonoBehaviour
     public Plant plantSO;
     
     // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
-    protected Dictionary<PlantModules, IDoStuff> plantModules = new Dictionary<PlantModules, IDoStuff>();
+    protected Dictionary<PlantModuleEnum, IPlantModule> plantModules = new Dictionary<PlantModuleEnum, IPlantModule>();
 
     // this needs to be here, because each instance has its own sprite renderer
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
@@ -41,33 +41,39 @@ public abstract class PlantScript : MonoBehaviour
     }
 
     // Everytime the below function is called, the commanded modules will get executed once. 
-    public void RunPlantModules(List<PlantModules> commands) 
+    public void RunPlantModules(List<PlantModuleEnum> commands) 
     {
         foreach (var command in commands)
         {
-            plantModules[command].DoStuff();
+            plantModules[command].Run();
         }
     }
 
-    public void AddPlantModule(PlantModules module)
+    public void AddPlantModule(PlantModuleEnum module, String dataString = null)
     {
         if (!plantModules.ContainsKey(module))
         { // do we want multiple modules? rework if so.
-            plantModules.Add(module, PlantModuleArr.GetModule(module, this));
-            plantData.plantModules.Add((int)module); // dynamic module tracking
+            var moduleInstance = PlantModuleArr.GetModule(module, this);
+            if (dataString != null) {
+                moduleInstance.AssignDataFromString(dataString);
+            } else {
+                dataString = moduleInstance.EncodeDataToString();
+            }
+            plantModules.Add(module, moduleInstance);
+            plantData.plantModuleData.Add(module, dataString);
         }
     }
 
-    public void RemovePlantModule(PlantModules module)
+    public void RemovePlantModule(PlantModuleEnum module)
     {
         if (plantModules.ContainsKey(module)) // do we want multiple modules? rework if so.
         {
             plantModules.Remove(module); // user's responsibility to pause the module? or pause it here. 
-            plantData.plantModules.Remove((int)module);
+            plantData.plantModuleData.Remove(module);
         }
     }
 
-    public IDoStuff GetPlantModule(PlantModules module)
+    public IPlantModule GetPlantModule(PlantModuleEnum module)
     {
         return plantModules[module];
     }
@@ -84,7 +90,7 @@ public abstract class PlantScript : MonoBehaviour
         plantData.plantName = (int)plantSO.pName;
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
-        plantData.plantModules = new List<int>(); // size 0. Modules to be added in the child class
+        plantData.plantModuleData = new Dictionary<PlantModuleEnum, string>(); // size 0. Modules to be added in the child class
         PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData); // add this plant into save. 
     }
 
@@ -92,19 +98,19 @@ public abstract class PlantScript : MonoBehaviour
     public void SpawnInModules()
     {
         // no modules, fresh plant
-        if (plantData.plantModules.Count == 0)
+        if (plantData.plantModuleData.Count == 0)
         {
             // add in the default modules!
-            foreach (PlantModules plantModule in plantSO.defaultModules)
+            foreach (PlantModuleEnum module in plantSO.defaultModules)
             {
-                AddPlantModule(plantModule);
+                AddPlantModule(module);
             }
         }
         else // has modules, spawn in previous plant
         {
-            foreach (int plantModule in plantData.plantModules)
+            foreach (PlantModuleEnum module in plantData.plantModuleData.Keys)
             {
-                AddPlantModule((PlantModules)plantModule);
+                AddPlantModule(module, plantData.plantModuleData[module]);
             }
         }
     }
