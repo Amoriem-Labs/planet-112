@@ -6,97 +6,75 @@ using System.Reflection;
 
 public enum PlantModuleEnum // serialized names of each of the modules
 {
-    Test,
-    Test2
+  Test,
+  Test2
 }
 
 // Plant module interfaces (can be customized to include new functions)
 // Plant modules define a single behavior of a plant type.
 public interface IPlantModule
 {
-    void Run();
-    void AssignDataFromString(String dataString);
-    String EncodeDataToString();
+  void Run();
+  void AssignDataFromString(String dataString);
+  String EncodeDataToString();
 }
 
 public static class PlantModuleArr
 {
-    static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
+  static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
     {
-        {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
-        {PlantModuleEnum.Test2, (plantScript) => new Test2Module(plantScript)}
+        {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)}
     };
 
-    // returns a new instance of the targetted plantModule 
-    public static IPlantModule GetModule(PlantModuleEnum module, PlantScript plantScript)
-    {
-        return moduleConstructors[module].Invoke(plantScript);
-    }
-}
+  // returns a new instance of the targetted plantModule 
+  public static IPlantModule GetModule(PlantModuleEnum module, PlantScript plantScript)
+  {
+    return moduleConstructors[module].Invoke(plantScript);
+  }
 
-public class TestModule : IPlantModule
-{
-    string name;
-    int age;
-    string job;
+  // Modules
+
+  public abstract class StatefulPlantModule<ModuleData> : IPlantModule
+  {
+    protected ModuleData moduleData;
+    PlantScript plantScript;
+    public virtual String EncodeDataToString()
+    {
+      return JsonUtility.ToJson(moduleData);
+    }
+    public virtual void AssignDataFromString(String dataString)
+    {
+      moduleData = JsonUtility.FromJson<ModuleData>(dataString);
+    }
+    public virtual void Run() {}
+    
+  }
+
+  [System.Serializable]
+  public class TestModuleData
+  {
+    public string name;
+    public int age;
+    public string job;
+  }
+  public class TestModule : StatefulPlantModule<TestModuleData>
+  {
     PlantScript plantScript;
     public TestModule(PlantScript plantScript)
     {
-        this.plantScript = plantScript;
-        name = "default";
-        age = 0;
-        job = "tesla engineer";
+      this.plantScript = plantScript;
+      moduleData = new TestModuleData
+      {
+        name = "default",
+        age = 0,
+        job = "tesla engineer",
+      };
     }
 
-    public void Run()
+    public override void Run()
     {
-        Debug.Log("Test Module output: the plant's time left is " + plantScript.plantData.stageTimeLeft);
+      //Debug.Log("Test Module output: the plant's time left is " + plantScript.plantData.stageTimeLeft);
+      Debug.Log("TEST MODULE: " + EncodeDataToString() + moduleData.name);
     }
-    
-    public String EncodeDataToString() {
-        Dictionary<String, dynamic> map = new Dictionary<string, dynamic> {
-            {"name", name},
-            {"age", age},
-            {"job", job}
-        };
-        return JsonUtility.ToJson(map);
-    }
-    
-    public void AssignDataFromString(String dataString) {
-        Dictionary<String, dynamic> map = JsonUtility.FromJson<Dictionary<String, dynamic>>(dataString);
-        name = map["name"];
-        age = map["age"];
-        job = map["job"];
-    }
-}
-
-public class Test2Module : IPlantModule
-{
-    int timeLeft;
-    int hp;
-    PlantScript plantScript;
-    public Test2Module(PlantScript plantScript) {
-        this.plantScript = plantScript;
-        timeLeft = 0;
-        hp = 10000;
-    }
-    public void Run() {
-        Debug.Log("Test 2 running");
-    }
-
-  public String EncodeDataToString()
-  {
-    Dictionary<String, dynamic> map = new Dictionary<string, dynamic> {
-            {"timeLeft", timeLeft},
-            {"hp", hp}
-    };
-    return JsonUtility.ToJson(map);
-  }
-
-  public void AssignDataFromString(String dataString)
-  {
-    Dictionary<String, dynamic> map = JsonUtility.FromJson<Dictionary<String, dynamic>>(dataString);
-    timeLeft = map["timeLeft"];
-    hp = map["hp"];
   }
 }
