@@ -80,7 +80,7 @@ public class PestMovement : MonoBehaviour
 
     private void OnPathComplete(Path p)
     {
-        Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
+        //Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
 
         if(targetPosition != null) targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
 

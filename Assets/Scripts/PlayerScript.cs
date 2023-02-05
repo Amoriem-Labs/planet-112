@@ -37,7 +37,6 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Enable();
         controls.Main.Interact.started += OnInteract;
         controls.Main.NewPlant.started += GeneratePlant;
-        Debug.Log("playerInput has been init");
     }
 
     private void OnDisable()

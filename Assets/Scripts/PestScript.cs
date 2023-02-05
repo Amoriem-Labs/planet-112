@@ -254,7 +254,7 @@ public class PestScript : MonoBehaviour
 
         if(queryCount < expectedQueryCount) // queries unfinished
         {
-            Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
+            //Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
             return;
         }
         else // all queries finished
@@ -472,7 +472,7 @@ public class PestScript : MonoBehaviour
             if (TargetPlantInAttackRange())
             {
                 // TODO: play attacking animation here
-                Debug.Log("Attack animation played");
+                //Debug.Log("Attack animation played");
 
                 targetPlantScript.TakeDamage((int)attackDamage);
                 //Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);

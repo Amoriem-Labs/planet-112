@@ -35,7 +35,7 @@ public class GridScript : MonoBehaviour
 
         if (levelData.mapGrid == null || levelData.mapGrid.Length == 0) // new level data. Spawn in default config for this level.
         {
-            Debug.Log("New Map detected, Loading in default map config: ");
+            //Debug.Log("New Map detected, Loading in default map config: ");
             var mapGrid = GridConfigs.levelGridConfigs[LevelManager.currentLevelID](); // only need to flip for default. 
             GridConfigs.FlipRows(ref mapGrid, rows, columns);
             levelData.mapGrid = GridConfigs.Convert2DArrayTo1D(ref mapGrid, rows, columns);

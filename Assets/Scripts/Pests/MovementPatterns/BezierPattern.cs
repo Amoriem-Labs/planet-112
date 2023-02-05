@@ -169,7 +169,7 @@ public class BezierPattern : PestMovement
                 // This basically means you've reached a set destination to the target.
                 // Call other functions etc
                 // if KeepPathing stays true, then the ai following target continues as target moves. 
-                Debug.Log("I shall stop HERE.");
+                //Debug.Log("I shall stop HERE.");
                 EndPathing(true);
                 return;
             }
