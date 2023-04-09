@@ -56,6 +56,13 @@ public class PestScript : MonoBehaviour
         }
     }
 
+    public void OnDeath()
+    {
+        // TODO: properly destroy the whole pest
+        Debug.Log("Called OnDeath for PestScript: " + gameObject.name);
+        Destroy(gameObject);
+    }
+
     public void SetSearchingState()
     {
         currentState = State.STATE_SEARCHING;
@@ -111,7 +118,7 @@ public class PestScript : MonoBehaviour
 
         queryCount++; // curr query finished, move onto next one in queue
         // if queue not empty, then next. This ensures no pather overlap.
-        if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue()); 
+        if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue());
     }
 
     Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
@@ -124,7 +131,7 @@ public class PestScript : MonoBehaviour
         }
 
         MultiTargetPath mp = p as MultiTargetPath;
-        if(mp == null)
+        if (mp == null)
         {
             Debug.LogError("The path was not a multi-target path");
             return;
@@ -141,13 +148,13 @@ public class PestScript : MonoBehaviour
         {
             List<Vector3> path = paths[i];
 
-            if(path == null || currentPlantCache[i] == null)
+            if (path == null || currentPlantCache[i] == null)
             {
                 Debug.Log("Path number " + i + " could not be found. Prehaps the plant is already destroyed.");
                 queryCount++; // no path, no need to query
                 continue;
             }
-            
+
             // tracking to the offset with the idea that if it can reach the plant regardless of the side...?
             var offset = currentPlantCache[i].plantSO.targetRectParameters[currentPlantCache[i].plantData.currStageOfLife].vec2Array[0];
             var dim = currentPlantCache[i].plantSO.targetRectParameters[currentPlantCache[i].plantData.currStageOfLife].vec2Array[1];
@@ -159,7 +166,7 @@ public class PestScript : MonoBehaviour
                 var pointOnTargetBox = center + (Vector3)pointOffsetOnTargetBox;
                 //Debug.DrawLine(center, pointOnTargetBox, Color.green, 100, false); 
                 points[deg] = pointOnTargetBox;
-                pointOffsets[deg] = pointOffsetOnTargetBox; 
+                pointOffsets[deg] = pointOffsetOnTargetBox;
             }
 
             coroutineQueue.Enqueue(Perform36PtQueryPerPlant(points, center, pointOffsets, path, i, dim.y));
@@ -226,7 +233,7 @@ public class PestScript : MonoBehaviour
     List<Vector2> availablePosOffsetsOfTarget;
     public void SearchForPlant()
     {
-        if(!queryStarted) // need to make sure a query is finished first
+        if (!queryStarted) // need to make sure a query is finished first
         {
             targetPlantScript = null;
             availablePosOffsetsOfTarget = null;
@@ -252,7 +259,7 @@ public class PestScript : MonoBehaviour
             }
         }
 
-        if(queryCount < expectedQueryCount) // queries unfinished
+        if (queryCount < expectedQueryCount) // queries unfinished
         {
             //Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
             return;
@@ -293,7 +300,7 @@ public class PestScript : MonoBehaviour
             }
         } */
 
-        if(queryFinished && targetPlantScript != null)
+        if (queryFinished && targetPlantScript != null)
         {
             // TODO: find a location from that plant to target/attack'
             var offset = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[0];
@@ -346,7 +353,7 @@ public class PestScript : MonoBehaviour
             // treat this like a point RELATIVE to the offset, recalculate if in motion. different from main offset
             float castAngle; // in radian
             Vector3 castVector; // the direction vector
-            if(GetComponent<PestMovement>().targetOffsetFromCenter.x >= offset.x) // right side
+            if (GetComponent<PestMovement>().targetOffsetFromCenter.x >= offset.x) // right side
             {
                 castAngle = Random.Range(0, 90) * (Mathf.PI / 180);
                 castVector = RotateVector(Vector3.right, castAngle);
@@ -361,24 +368,24 @@ public class PestScript : MonoBehaviour
             //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
             //    targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter + castVector,
             //    Color.red, 100, false);
-            float baseDetectionRange = 1 ; // TODO: make this generalizable over the longest side of the "?" instead of hard-coded
+            float baseDetectionRange = 1; // TODO: make this generalizable over the longest side of the "?" instead of hard-coded
             float radius = dim.x / 2; // make this size generalizable over what...
             int maxDetectionRange = (int)(baseDetectionRange + attackRange);
             var info = Physics2D.CircleCast(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
                 radius,
                 castVector,
                 maxDetectionRange,
-                (1<<LayerMask.NameToLayer("NonGroundObstacle")) // need to do this, because ground is also an obstacle, and we don't want that. Plus might be more in future.
-                // tip for above, can do (1<<i) | (1<<j) | ...; for multiple layers. 
+                (1 << LayerMask.NameToLayer("NonGroundObstacle")) // need to do this, because ground is also an obstacle, and we don't want that. Plus might be more in future.
+                                                                  // tip for above, can do (1<<i) | (1<<j) | ...; for multiple layers. 
                 );
             //Debug.Log("Was there a collision: " + (info.collider != null));
             //Debug.Log("Name of the collider is: " + info.collider.gameObject.name);
             //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, info.point, Color.magenta, 100, false);
 
             Vector2 decoyTarget;
-            if(info.collider == null) // no collision on its way
+            if (info.collider == null) // no collision on its way
             {
-                decoyTarget = PickRandomPointInCircle(targetPlantScript.transform.position + 
+                decoyTarget = PickRandomPointInCircle(targetPlantScript.transform.position +
                     GetComponent<PestMovement>().targetOffsetFromCenter + castVector * maxDetectionRange, // no need to normalize dir. Already 1. 
                     radius);
             }
@@ -418,7 +425,7 @@ public class PestScript : MonoBehaviour
         if (targetPlantScript == null || targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
         {
             // handle a weird case where the pest is in state moving and movement script disabled, when the target is destroyed/missing.
-            if (GetComponent<PestMovement>().enabled != false) 
+            if (GetComponent<PestMovement>().enabled != false)
             {
                 GetComponent<PestMovement>().resetPath = true;
                 GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
@@ -434,7 +441,7 @@ public class PestScript : MonoBehaviour
 
     public void StartAttack() // make sure this is only called once. The initialization process
     {
-        if(currentState != State.STATE_ATTACKING) // need to do this. Else plant in motion -> multiple end path calls -> perma reset
+        if (currentState != State.STATE_ATTACKING) // need to do this. Else plant in motion -> multiple end path calls -> perma reset
         {
             currentState = State.STATE_ATTACKING;
             targetPlantScript.attackers++;
@@ -447,7 +454,7 @@ public class PestScript : MonoBehaviour
     public void ChaseAfterPlant()
     {
         //Debug.Log("CHASE AFTER PLANT ACTIVATED");
-        if(currentState == State.STATE_ATTACKING)
+        if (currentState == State.STATE_ATTACKING)
         {
             GetComponent<PestMovement>().enabled = true;
         }
@@ -488,7 +495,7 @@ public class PestScript : MonoBehaviour
 
     public bool TargetPlantInAttackRange()
     {
-        if(targetPlantScript == null) return false; // destroyed during check
+        if (targetPlantScript == null) return false; // destroyed during check
 
         return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
     }
@@ -516,7 +523,7 @@ public class PestScript : MonoBehaviour
     }
 
     // input deg is in degree, rect.x is width, rect.y is height
-    Vector2 GetThePointOnRectParamByDegree(Vector2 center, Vector2 rect, float deg) 
+    Vector2 GetThePointOnRectParamByDegree(Vector2 center, Vector2 rect, float deg)
     {
         var twoPI = Mathf.PI * 2;
         var theta = deg * Mathf.PI / 180;
@@ -532,7 +539,7 @@ public class PestScript : MonoBehaviour
         }
 
         var rectAtan = Mathf.Atan2(rect.y, rect.x);
-        var tanTheta = Mathf.Tan(theta); 
+        var tanTheta = Mathf.Tan(theta);
         int region;
 
         if ((theta > -rectAtan) && (theta <= rectAtan))
@@ -555,8 +562,9 @@ public class PestScript : MonoBehaviour
         Vector2 edgePoint = center; // new Vector2(rect.x / 2, rect.y / 2); //for 0,0
         var xFactor = 1;
         var yFactor = 1;
-  
-        switch (region) {
+
+        switch (region)
+        {
             case 1: yFactor = -1; break;
             case 2: yFactor = -1; break;
             case 3: xFactor = -1; break;

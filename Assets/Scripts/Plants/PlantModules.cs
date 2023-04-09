@@ -7,6 +7,7 @@ using System.Reflection;
 public enum PlantModuleEnum // serialized names of each of the modules
 {
     Test,
+    InstaKillPests,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -23,9 +24,10 @@ public interface IPlantModule
 public static class PlantModuleArr
 {
     static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
-    {
-        {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)}
-    };
+  {
+      {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
+      {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
+  };
 
     // returns a new instance of the targetted plantModule 
     public static IPlantModule GetModule(PlantModuleEnum module, PlantScript plantScript)
@@ -38,7 +40,7 @@ public static class PlantModuleArr
     public abstract class StatefulPlantModule<ModuleData> : IPlantModule
     {
         protected ModuleData moduleData;
-        PlantScript plantScript;
+        protected PlantScript plantScript;
         public virtual String EncodeDataToString()
         {
             return JsonUtility.ToJson(moduleData);
@@ -64,7 +66,6 @@ public static class PlantModuleArr
     }
     public class TestModule : StatefulPlantModule<TestModuleData>
     {
-        PlantScript plantScript;
         public TestModule(PlantScript plantScript)
         {
             this.plantScript = plantScript;
@@ -90,6 +91,55 @@ public static class PlantModuleArr
         public override void OnModuleRemove()
         {
             Debug.Log("OnModuleRemove was called for a TestModule");
+        }
+    }
+
+    [System.Serializable]
+    public class TriggerModuleData
+    {
+
+    }
+    public class TriggerModule : StatefulPlantModule<TriggerModuleData>
+    {
+        DynamicColliderScript colliderScript;
+        public TriggerModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+        }
+
+        public override void OnModuleAdd()
+        {
+            GameObject childObject = new GameObject();
+            childObject.transform.SetParent(plantScript.gameObject.transform);
+            childObject.transform.localPosition = Vector2.zero;
+            colliderScript = childObject.AddComponent<DynamicColliderScript>();
+            colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            colliderScript.onTriggerExit2D = OnTriggerExit2D;
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerEnter2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerExit2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
+        }
+    }
+
+    public class InstaKillPestsModule : TriggerModule
+    {
+        public InstaKillPestsModule(PlantScript plantScript) : base(plantScript)
+        { }
+
+        protected override void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("pest"))
+            {
+                collider.gameObject.GetComponent<PestScript>().OnDeath();
+            }
+
         }
     }
 }
