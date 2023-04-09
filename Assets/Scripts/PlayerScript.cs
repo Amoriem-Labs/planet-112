@@ -50,25 +50,25 @@ public class PlayerScript : MonoBehaviour
     {
         // Get character movement
         Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
-        
+
         // Flip sprite according to movement
         if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
-        
+
         Vector2 velocity = rb.velocity;
-        
+
         velocity.x = moveInput.x * speed;
-        
+
         if (moveInput.y > 0 && IsGrounded())
         {
             velocity.y = moveInput.y * jumpSpeed;
         }
-        
+
         rb.velocity = velocity;
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8); 
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8);
         //8 is binary -- to look at just layer 3, we need binary 1000 
 
         return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
@@ -97,7 +97,7 @@ public class PlayerScript : MonoBehaviour
         //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
         if (plantInHand) // has a plant in hand
         {
-            if(plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+            if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
             {
                 plantInHand = null;
             }
@@ -121,7 +121,7 @@ public class PlayerScript : MonoBehaviour
     {
         GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
 
-        if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
+        //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
 
     }
 }

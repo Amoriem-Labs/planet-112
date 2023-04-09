@@ -9,7 +9,7 @@ public abstract class PlantScript : MonoBehaviour
 {
     // The scriptable oxject that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
-    
+
     // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     protected Dictionary<PlantModuleEnum, IPlantModule> plantModules = new Dictionary<PlantModuleEnum, IPlantModule>();
 
@@ -17,7 +17,8 @@ public abstract class PlantScript : MonoBehaviour
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
 
     // no need to hideininspector for now. Use for demo.
-    /*[HideInInspector]*/ public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD 
+    /*[HideInInspector]*/
+    public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD 
     // TODO: name this something more descriptive
     IEnumerator g = null; // coroutine obj that controls plant growth.
 
@@ -31,9 +32,9 @@ public abstract class PlantScript : MonoBehaviour
     {
         this.inMotion = inMotion;
 
-        if(inMotion)
+        if (inMotion)
         {
-            foreach(PestScript pestScript in pestScripts)
+            foreach (PestScript pestScript in pestScripts)
             {
                 pestScript.ChaseAfterPlant();
             }
@@ -41,11 +42,19 @@ public abstract class PlantScript : MonoBehaviour
     }
 
     // Everytime the below function is called, the commanded modules will get executed once. 
-    public void RunPlantModules(List<PlantModuleEnum> commands) 
+    //public void RunPlantModules(List<PlantModuleEnum> commands)
+    //{
+    //    foreach (var command in commands)
+    //    {
+    //        plantModules[command].Update();
+    //    }
+    //}
+
+    public void UpdateAllModules()
     {
-        foreach (var command in commands)
+        foreach (var module in plantModules.Values)
         {
-            plantModules[command].Run();
+            module.Update();
         }
     }
 
@@ -54,13 +63,17 @@ public abstract class PlantScript : MonoBehaviour
         if (!plantModules.ContainsKey(module))
         { // do we want multiple modules? rework if so.
             var moduleInstance = PlantModuleArr.GetModule(module, this);
-            if (dataString != null) {
+            if (dataString != null)
+            {
                 moduleInstance.AssignDataFromString(dataString);
-            } else {
+            }
+            else
+            {
                 dataString = moduleInstance.EncodeDataToString();
             }
             plantModules.Add(module, moduleInstance);
             plantData.plantModuleData.Add(module, dataString);
+            moduleInstance.OnModuleAdd();
         }
     }
 
@@ -68,6 +81,7 @@ public abstract class PlantScript : MonoBehaviour
     {
         if (plantModules.ContainsKey(module)) // do we want multiple modules? rework if so.
         {
+            plantModules[module].OnModuleRemove();
             plantModules.Remove(module); // user's responsibility to pause the module? or pause it here. 
             plantData.plantModuleData.Remove(module);
         }
@@ -82,8 +96,9 @@ public abstract class PlantScript : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
-    
-    public void InitializePlantData(Vector2 location) {
+
+    public void InitializePlantData(Vector2 location)
+    {
         plantData = new PlantData();
         plantData.location = location;
         plantData.currStageOfLife = 0;
@@ -117,7 +132,7 @@ public abstract class PlantScript : MonoBehaviour
 
     // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.
     public void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
-    {   
+    {
         // Set sprite
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
 
@@ -159,6 +174,11 @@ public abstract class PlantScript : MonoBehaviour
         // remove this plant from save
         PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Remove(plantData);
         // TODO: probably need to call module terminations. Be mindful that some modules are automatically terminated when the gameObject destructs.
+        foreach (var module in plantModules.Values)
+        {
+            // We don't need to actually remove them from the data, since the gameObject will be destroyed and the plantData removed from levelData anyway. But we do want to call the OnModuleRemove() functions in case that's important.
+            module.OnModuleRemove();
+        }
         // remove the gameObject from scene. Make sure to check for null in other objects! (after destruction -> null, but might still be in other lists atm)
         Destroy(gameObject);
     }
@@ -206,11 +226,11 @@ public abstract class PlantScript : MonoBehaviour
         Vector2[] newSpaceNeeded = (plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).Except(
             plantSO.relativeGridsOccupied[plantData.currStageOfLife - 1].vec2Array).ToArray();
         if (!GridScript.CheckOtherTilesAvailability(plantData.location, newSpaceNeeded)) // if the spaces are not available, pause the growth.
-        {         
+        {
             // TODO: what's a way to resume the growth later on?
             Debug.Log("Plant growth is paused. Need more space.");
             plantData.currStageOfLife -= 1; // revert
-            return; 
+            return;
         }
 
         // update stats and visuals
@@ -239,7 +259,7 @@ public abstract class PlantScript : MonoBehaviour
         else
         {
             // continues growing
-            GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]); 
+            GrowPlant(PlantStageUpdate, plantSO.stageTimeMax[plantData.currStageOfLife]);
         }
     }
 
@@ -271,14 +291,15 @@ public abstract class PlantScript : MonoBehaviour
     public bool PlacePlant(Vector2 location)
     {
         // Check grid and place
-        if(GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array)) {
+        if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
+        {
             pickedUp = false;
             // No longer plantInHand, put back
             PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData);
             PersistentData.GetLevelData(LevelManager.currentLevelID).plantInHand = null;
             plantData.location = location; // also update plantdata to this new loc
             // Resume the growth
-            if(plantData.currStageOfLife < plantSO.maxStage) GrowPlant(PlantStageUpdate, plantData.stageTimeLeft);
+            if (plantData.currStageOfLife < plantSO.maxStage) GrowPlant(PlantStageUpdate, plantData.stageTimeLeft);
             // Set the object back to the root of the scene
             transform.parent = null;
             // No longer in motion
@@ -321,5 +342,10 @@ public abstract class PlantScript : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerScript>().closePlants.Remove(this);
         }
+    }
+
+    public void Update()
+    {
+        UpdateAllModules();
     }
 }
