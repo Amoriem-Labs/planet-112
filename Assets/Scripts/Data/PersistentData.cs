@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// TODO: Make this a static class? MonoBehaviours cannot be static classes
+// Make this a static class? MonoBehaviours cannot be static classes
 // This is a global, essentially static class accessible by its name
 public class PersistentData : MonoBehaviour
 {

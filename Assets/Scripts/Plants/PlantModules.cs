@@ -24,10 +24,10 @@ public interface IPlantModule
 public static class PlantModuleArr
 {
     static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
-  {
+    {
       {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
       {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
-  };
+    };
 
     // returns a new instance of the targetted plantModule 
     public static IPlantModule GetModule(PlantModuleEnum module, PlantScript plantScript)
