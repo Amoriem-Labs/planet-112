@@ -1507,6 +1507,7 @@ GameObject:
   - component: {fileID: 798319915}
   - component: {fileID: 798319916}
   - component: {fileID: 798319917}
+  - component: {fileID: 798319918}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1556,6 +1557,18 @@ MonoBehaviour:
   plantPrefabsInit:
   - {fileID: 4709815205496673212, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
   - {fileID: 3408262346086830761, guid: b8ef05b7c9f99dc40889e5076f5c51b2, type: 3}
+--- !u!114 &798319918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798319914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bdbd7567bb5a3040bad14beefca2e61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &904687394
 PrefabInstance:
   m_ObjectHideFlags: 0

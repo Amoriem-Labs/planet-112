@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using MEC;
 
 // This is an abstract class: we can't create instances of it, but other (non-abstract) classes can inherit from this. In general, you can have specific variables to child classes (which inherit from this class).
 public abstract class PlantScript : MonoBehaviour
@@ -20,7 +21,7 @@ public abstract class PlantScript : MonoBehaviour
     /*[HideInInspector]*/
     public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD 
     // TODO: name this something more descriptive
-    IEnumerator g = null; // coroutine obj that controls plant growth.
+    CoroutineHandle g; // coroutine obj that controls plant growth.
 
     public int attackers = 0; // prob need to be dynamic from save data?
     public List<PestScript> pestScripts = new List<PestScript>(); // all the attackers attacking it
@@ -149,14 +150,16 @@ public abstract class PlantScript : MonoBehaviour
         plantData.currentHealth -= damage;
 
         // check if plant dies.
-        StartCoroutine(CheckPlantHealthInTheEndOfFrame());
+        CheckPlantHealth();
+
+        // StartCoroutine(CheckPlantHealthInTheEndOfFrame()); // Okay nvm this feels pointless
     } // PLEASE DON'T DELETE THIS. I do this to make sure that in the same frame, if you heal a <0 plant as it's attacked, it doesn't die.
-    IEnumerator CheckPlantHealthInTheEndOfFrame()
+    /*IEnumerator CheckPlantHealthInTheEndOfFrame()
     {
         yield return new WaitForEndOfFrame(); // hopefully this phrase makes sense.
 
         CheckPlantHealth();
-    }
+    }*/
     private void CheckPlantHealth() // only used here
     {
         // TODO: different behaviors / presentation based on different stages of health (by percentage)?
@@ -193,14 +196,13 @@ public abstract class PlantScript : MonoBehaviour
     private void GrowPlant(Action callback, float stageTime) // if want input parameters, do Action<type, type, ...>
     {
         plantData.stageTimeLeft = stageTime;
-        g = StartPlantGrowth(callback);
-        StartCoroutine(g);
+        g = Timing.RunCoroutine(StartPlantGrowth(callback).CancelWith(gameObject), "plant");
     }
 
     // Coroutine script that takes in a function and executes that function at the end of the count.
-    IEnumerator StartPlantGrowth(Action callback) // assume plant data's stage time left isn't 0 at start.
+    IEnumerator<float> StartPlantGrowth(Action callback) // assume plant data's stage time left isn't 0 at start.
     {
-        yield return new WaitForSeconds(TimeManager.timeUnit * TimeManager.gameTimeScale);
+        yield return Timing.WaitForSeconds(TimeManager.timeUnit * TimeManager.gameTimeScale);
 
         plantData.stageTimeLeft -= 1;
         if (plantData.stageTimeLeft <= 0)
@@ -209,9 +211,8 @@ public abstract class PlantScript : MonoBehaviour
         }
         else
         {
-            //Debug.Log("Current time left: " + plantData.stageTimeLeft);
-            g = StartPlantGrowth(callback);
-            StartCoroutine(g);
+            // Debug.Log("Current time left: " + plantData.stageTimeLeft);
+            g = Timing.RunCoroutine(StartPlantGrowth(callback).CancelWith(gameObject), "plant");
         }
         // can execute a call back every iteration if want, like current % plant growth etc for growth animation if want.
         // the action can return more info to the callback, as long as parameters match!
@@ -265,7 +266,7 @@ public abstract class PlantScript : MonoBehaviour
 
     public void StopPlantGrowth()
     {
-        if (g != null) StopCoroutine(g);
+        if (Timing.IsRunning(g)) Timing.KillCoroutines(g);
     }
 
     public void LiftPlant(Transform handTransform)
