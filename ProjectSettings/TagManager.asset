@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - pest
+  - plant
   layers:
   - Default
   - TransparentFX

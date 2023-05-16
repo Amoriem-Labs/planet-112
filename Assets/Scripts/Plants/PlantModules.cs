@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Reflection;
-using Unity.VisualScripting;
 
 public enum PlantModuleEnum // serialized names of each of the modules
 {
@@ -43,10 +41,11 @@ public static class PlantModuleArr
         return moduleConstructors[module].Invoke(plantScript);
     }
 
+    #region ModuleStructureHierarchy
     // Modules
     public abstract class StatefulPlantModule<ModuleData> : IPlantModule
     {
-        protected ModuleData moduleData;
+        public ModuleData moduleData;
         protected PlantScript plantScript;
         public virtual String EncodeDataToString()
         {
@@ -99,11 +98,13 @@ public static class PlantModuleArr
 
             if (moduleData.timeInCurrentCycleSoFar >= moduleData.timePerCycle)
             {
-                OnCycleComplete();
+                if (OnCycleCompleteEvent != null) OnCycleCompleteEvent?.Invoke(); // Trigger event
+                else OnCycleComplete(); // Trigger child's overwrite
                 moduleData.timeInCurrentCycleSoFar = 0f; // Resets the cycle timer.
             }
         }
 
+        public event Action OnCycleCompleteEvent = null; // event version for compositive modules
         public virtual void OnCycleComplete() { } // This is an empty method in the parent class, but can be overridden in child classes.
 
         public virtual void OnGrowthPause()
@@ -132,7 +133,7 @@ public static class PlantModuleArr
             this.plantScript = plantScript;
         }
 
-        protected DynamicColliderScript colliderScript;
+        public DynamicColliderScript colliderScript;
 
         public override void OnModuleAdd()
         {
@@ -162,10 +163,10 @@ public static class PlantModuleArr
         public TriggerModuleData triggerData;
         public TimerModuleData timerData;
     }
-    public class TriggerAndTimerModule : StatefulPlantModule<TriggerAndTimerModuleData>
+    public class TriggerAndTimerModule<T> : StatefulPlantModule<T> where T : TriggerAndTimerModuleData
     {
-        private TriggerModule<TriggerModuleData> triggerModule;
-        private TimerModule<TimerModuleData> timerModule;
+        protected TriggerModule<TriggerModuleData> triggerModule;
+        protected TimerModule<TimerModuleData> timerModule;
 
         public TriggerAndTimerModule(PlantScript plantScript)
         {
@@ -174,7 +175,10 @@ public static class PlantModuleArr
             // Instantiate the helper modules and assign their properties
             triggerModule = new TriggerModule<TriggerModuleData>(plantScript);
             timerModule = new TimerModule<TimerModuleData>(plantScript);
+            timerModule.OnCycleCompleteEvent += OnCycleComplete; // Subscribe to event
         }
+
+        protected virtual void OnCycleComplete() { }
 
         public override void OnModuleAdd()
         {
@@ -191,7 +195,7 @@ public static class PlantModuleArr
         // Add other override methods as needed, and delegate to the appropriate module
     }
 
-
+    #endregion
 
     //////////////////////////////////// ACTUAL MODULE IMPLEMENTATIONS BEGINS HERE ///////////////////////////////////////
     [System.Serializable]
@@ -236,35 +240,74 @@ public static class PlantModuleArr
 
 
     [System.Serializable]
-    public class HealingModuleData : TriggerModuleData
+    public class HealingModuleData : TriggerAndTimerModuleData
     {
-        public float healRate; // numSeconds for a healing cycle to happen
         public float healAmount; // flat amount of healing
         public float healPercentage; // percentage of max health healing
         public int healRangeRadius; // size (radius) of the circular detection range from the center of the plant
-        public float timeInCurrentCycleSoFar; // for time tracking and data storage
     }
-    public class HealingModule : TriggerModule<HealingModuleData>
+    public class HealingModule : TriggerAndTimerModule<HealingModuleData>
     {
         public HealingModule(PlantScript plantScript) : base(plantScript)
         {
             // load from default, presumably assume that this happens before retrieving from data.
             moduleData = new HealingModuleData
             {
-                healRate = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife],
                 healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife],
                 healPercentage = plantScript.plantSO.healPercentage[plantScript.plantData.currStageOfLife],
                 healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife],
-                timeInCurrentCycleSoFar = 0f
+                timerData = new TimerModuleData
+                {
+                    timePerCycle = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife], // healRate
+                    timeInCurrentCycleSoFar = 0f
+                },
+                triggerData = new TriggerModuleData()
             };
+            // Don't forget to grant each module the correct datas to reference
+            timerModule.moduleData = moduleData.timerData;
+            triggerModule.moduleData = moduleData.triggerData;
         }
 
         public override void OnModuleAdd()
         {
             base.OnModuleAdd();
-            colliderScript.gameObject.name = "HealingRange";
-            colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 1), new Vector2(), moduleData.healRangeRadius,
+            triggerModule.colliderScript.gameObject.name = "HealingRange";
+            triggerModule.colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 0), new Vector2(), moduleData.healRangeRadius,
                 OnTriggerEnter2D, OnTriggerExit2D);
+        }
+
+        List<PlantScript> plantsInRange = new List<PlantScript>();
+        protected override void OnCycleComplete()
+        {
+            Debug.Log("Healing time");
+            for (int i = 0; i < plantsInRange.Count; i++)
+            {
+                if (plantsInRange[i] == null) // potentially destroyed already
+                {
+                    plantsInRange.RemoveAt(i);
+                    i--;
+                }
+                else // heal the plant.
+                {
+                    Debug.Log("Plant " + plantsInRange[i].name + " is getting healed!");
+                }
+            }
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("plant"))
+            {
+                plantsInRange.Add(collider.gameObject.GetComponent<PlantScript>());
+            }
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("plant"))
+            {
+                plantsInRange.Remove(collider.gameObject.GetComponent<PlantScript>());
+            }
         }
     }
 

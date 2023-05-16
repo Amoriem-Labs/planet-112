@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4709815205496673212}
   m_Layer: 0
   m_Name: Bob
-  m_TagString: Untagged
+  m_TagString: plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,4 +156,7 @@ MonoBehaviour:
     stageTimeLeft: 0
     fruitProduceTimeLeft: 0
     currentHealth: 0
-    plantModules: 
+  attackers: 0
+  pestScripts: []
+  inMotion: 0
+  pickedUp: 0
