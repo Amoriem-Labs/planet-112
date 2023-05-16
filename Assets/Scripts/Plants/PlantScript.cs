@@ -243,6 +243,8 @@ public abstract class PlantScript : MonoBehaviour
 
         // current health refreshes? either leave this line or delete
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
+        // update modules' data accordingly
+        foreach (var module in plantModules.Values) module.OnPlantStageGrowth();
 
         // update new tiles that needed to be occupied in the grid
         GridScript.SetTileStates(plantData.location, TileState.OCCUPIED_STATE, newSpaceNeeded);
@@ -272,6 +274,8 @@ public abstract class PlantScript : MonoBehaviour
     public void LiftPlant(Transform handTransform)
     {
         pickedUp = true;
+        // pause modules accordingly
+        foreach (var module in plantModules.Values) module.OnPlantGrowthPause();
         // Free up the space
         GridScript.RemoveObjectFromGrid(plantData.location,
             plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
@@ -295,6 +299,8 @@ public abstract class PlantScript : MonoBehaviour
         if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
         {
             pickedUp = false;
+            // resume modules accordingly
+            foreach (var module in plantModules.Values) module.OnPlantGrowthResume();
             // No longer plantInHand, put back
             PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData);
             PersistentData.GetLevelData(LevelManager.currentLevelID).plantInHand = null;
@@ -347,6 +353,7 @@ public abstract class PlantScript : MonoBehaviour
 
     public void Update()
     {
-        UpdateAllModules();
+        // Modules shouldn't work when the plants is picked up? unless...
+        if (pickedUp == false) UpdateAllModules();
     }
 }

@@ -17,6 +17,14 @@ public enum PlantTargetPriority // the priority of beginning targeted by pests.
     five // highest currently
 }
 
+public enum FruitType // bunch of icuras
+{
+    seafoam,
+    sunset,
+    crystalline,
+    amethyst
+}
+
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 
 public class PlantStorage : MonoBehaviour // gonna switch to scriptable object in the future, or no need? Ask Jacob. 
 {

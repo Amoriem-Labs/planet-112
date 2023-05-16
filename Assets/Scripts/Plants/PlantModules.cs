@@ -8,6 +8,7 @@ public enum PlantModuleEnum // serialized names of each of the modules
 {
     Test,
     InstaKillPests,
+    FruitProduction,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -17,6 +18,9 @@ public interface IPlantModule
     void Update();
     void OnModuleAdd();
     void OnModuleRemove();
+    void OnPlantStageGrowth();
+    void OnPlantGrowthPause();
+    void OnPlantGrowthResume();
     void AssignDataFromString(String dataString);
     String EncodeDataToString();
 }
@@ -27,6 +31,7 @@ public static class PlantModuleArr
     {
       {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
       {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
+      {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
     };
 
     // returns a new instance of the targetted plantModule 
@@ -54,6 +59,9 @@ public static class PlantModuleArr
         public virtual void OnModuleAdd() { }
 
         public virtual void OnModuleRemove() { }
+        public virtual void OnPlantStageGrowth() { }
+        public virtual void OnPlantGrowthPause() { }
+        public virtual void OnPlantGrowthResume() { }
 
     }
 
@@ -93,6 +101,74 @@ public static class PlantModuleArr
             Debug.Log("OnModuleRemove was called for a TestModule");
         }
     }
+
+
+    [System.Serializable]
+    public class FruitProductionModuleData
+    {
+        public float productionRate; // numSeconds for a production cycle to happen
+        public int productionQuantity; // number of fruits per cycle of production
+        public FruitType fruitType; // icura type enum
+        public float timeInCurrentCycleSoFar; // for time tracking and data storage
+    }
+    public class FruitProductionModule : StatefulPlantModule<FruitProductionModuleData>
+    {
+        public FruitProductionModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new FruitProductionModuleData
+            {
+                productionRate = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife],
+                productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife],
+                fruitType = plantScript.plantSO.fruitType,
+                timeInCurrentCycleSoFar = 0f
+            };
+        }
+
+        float timeAnchor = 0f;
+        public override void OnModuleAdd()
+        {
+            timeAnchor = Time.time; // controlled by timeScale
+        }
+
+        // Going to use update over coroutine for 1) centralization 2) no reason for module pausing.
+        public override void Update()
+        {
+            float currTime = Time.time;
+            float timeElapsed = currTime - timeAnchor;
+            moduleData.timeInCurrentCycleSoFar += timeElapsed;
+            timeAnchor = currTime;
+
+            // Debug.Log("Prate: " + moduleData.productionRate + ", Pquant: " + moduleData.productionQuantity + ", Ptype: " + moduleData.fruitType);
+            if (moduleData.timeInCurrentCycleSoFar >= moduleData.productionRate)
+            {
+                // TODO: actual fruit production (visual + systemic)
+                Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
+
+                moduleData.timeInCurrentCycleSoFar = 0f; // Resets the cycle timer.
+            }
+            
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.productionRate = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
+            moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
+        }
+
+        public override void OnPlantGrowthPause()
+        {
+            moduleData.timeInCurrentCycleSoFar += Time.time - timeAnchor; // add the time so far
+        }
+
+        public override void OnPlantGrowthResume() // Suppose this line is called before "update" happens at resume.
+        {
+            timeAnchor = Time.time; // reset the anchor
+        }
+    }
+
 
     [System.Serializable]
     public class TriggerModuleData

@@ -24,11 +24,16 @@ public class Plant : ScriptableObject
 
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
-    public float[] productionTimes; // Time to produce one unit of whatever the plant makes
 
     // Modules can subscribe to these delegates to react to changes when called. 
     public delegate void OnPlantStageUpdateDelegate();
     public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
+
+    // Module data
+    // For FruitProductionModule:
+    public float[] productionRate; // Time to produce one unit of whatever the plant makes
+    public int[] productionQuantity;
+    public FruitType fruitType;
 }
 
 [System.Serializable]

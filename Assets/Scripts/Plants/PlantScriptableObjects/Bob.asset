@@ -30,7 +30,7 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  defaultModules: 00000000
+  defaultModules: 02000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array: []
@@ -52,4 +52,10 @@ MonoBehaviour:
     - {x: 0, y: 0.2}
     - {x: 0.2, y: 0.5}
   oxygenProductionLevels: 000000000a000000140000001e000000
-  productionTimes: []
+  productionRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  productionQuantity: 05000000020000000300000004000000
+  fruitType: 2
