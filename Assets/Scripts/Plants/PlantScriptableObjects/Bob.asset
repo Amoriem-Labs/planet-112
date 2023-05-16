@@ -30,7 +30,7 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  defaultModules: 02000000
+  defaultModules: 0200000003000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array: []
@@ -59,3 +59,19 @@ MonoBehaviour:
   - 10
   productionQuantity: 05000000020000000300000004000000
   fruitType: 2
+  healRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  healAmount:
+  - 10
+  - 20
+  - 30
+  - 40
+  healPercentage:
+  - 0.1
+  - 0.2
+  - 0.3
+  - 0.4
+  healRangeRadius: 01000000020000000300000004000000

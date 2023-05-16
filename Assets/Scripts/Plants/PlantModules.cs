@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Reflection;
+using Unity.VisualScripting;
 
 public enum PlantModuleEnum // serialized names of each of the modules
 {
     Test,
     InstaKillPests,
     FruitProduction,
+    Healing,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -32,6 +34,7 @@ public static class PlantModuleArr
       {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
       {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
       {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
+      {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
     };
 
     // returns a new instance of the targetted plantModule 
@@ -171,6 +174,55 @@ public static class PlantModuleArr
 
 
     [System.Serializable]
+    public class HealingModuleData
+    {
+        public float healRate; // numSeconds for a healing cycle to happen
+        public float healAmount; // flat amount of healing
+        public float healPercentage; // percentage of max health healing
+        public int healRangeRadius; // size (radius) of the circular detection range from the center of the plant
+        public float timeInCurrentCycleSoFar; // for time tracking and data storage
+    }
+    public class HealingModule : StatefulPlantModule<HealingModuleData>
+    {
+        public HealingModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new HealingModuleData
+            {
+                healRate = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife],
+                healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife],
+                healPercentage = plantScript.plantSO.healPercentage[plantScript.plantData.currStageOfLife],
+                healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife],
+                timeInCurrentCycleSoFar = 0f
+            };
+        }
+
+        DynamicColliderScript colliderScript;
+        public override void OnModuleAdd()
+        {
+            GameObject childObject = new GameObject();
+            childObject.transform.SetParent(plantScript.gameObject.transform);
+            childObject.transform.localPosition = Vector2.zero;
+            childObject.name = "healingRange";
+            colliderScript = childObject.AddComponent<DynamicColliderScript>();
+            colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 1), new Vector2(), moduleData.healRangeRadius,
+                OnTriggerEnter2D, OnTriggerExit2D);
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerEnter2D called for HealingModule. gameObject: " + collider.gameObject.name);
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerExit2D called for HealingModule. gameObject: " + collider.gameObject.name);
+        }
+    }
+
+
+    [System.Serializable]
     public class TriggerModuleData
     {
 
@@ -189,8 +241,8 @@ public static class PlantModuleArr
             childObject.transform.SetParent(plantScript.gameObject.transform);
             childObject.transform.localPosition = Vector2.zero;
             colliderScript = childObject.AddComponent<DynamicColliderScript>();
-            colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
-            colliderScript.onTriggerExit2D = OnTriggerExit2D;
+            colliderScript.SetCollider(typeof(BoxCollider2D), new Vector2(0, 1), new Vector2(1, 1), 0,
+                OnTriggerEnter2D, OnTriggerExit2D);
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)

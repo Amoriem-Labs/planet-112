@@ -34,6 +34,11 @@ public class Plant : ScriptableObject
     public float[] productionRate; // Time to produce one unit of whatever the plant makes
     public int[] productionQuantity;
     public FruitType fruitType;
+    // For HealingModule:
+    public float[] healRate;
+    public float[] healAmount;
+    public float[] healPercentage;
+    public int[] healRangeRadius;
 }
 
 [System.Serializable]
