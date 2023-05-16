@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 public enum PlantModuleEnum // serialized names of each of the modules
 {
     Test,
-    InstaKillPests,
+    // InstaKillPests,
     FruitProduction,
     Healing,
 }
@@ -32,7 +32,7 @@ public static class PlantModuleArr
     static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
     {
       {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
-      {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
+      // {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
       {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
       {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
     };
@@ -44,7 +44,6 @@ public static class PlantModuleArr
     }
 
     // Modules
-
     public abstract class StatefulPlantModule<ModuleData> : IPlantModule
     {
         protected ModuleData moduleData;
@@ -58,15 +57,218 @@ public static class PlantModuleArr
             moduleData = JsonUtility.FromJson<ModuleData>(dataString);
         }
         public virtual void Update() { }
-
         public virtual void OnModuleAdd() { }
-
         public virtual void OnModuleRemove() { }
         public virtual void OnPlantStageGrowth() { }
         public virtual void OnPlantGrowthPause() { }
         public virtual void OnPlantGrowthResume() { }
 
     }
+
+
+    /// <summary>
+    /// Main Inheritable Module #1: TimerModule
+    /// </summary>
+    [System.Serializable]
+    public class TimerModuleData
+    {
+        public float timePerCycle;
+        public float timeInCurrentCycleSoFar; // for time tracking and data storage
+    }
+    public class TimerModule<T> : StatefulPlantModule<T> where T : TimerModuleData
+    {
+        public TimerModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+        }
+
+        float timeAnchor = 0f;
+
+        public override void OnModuleAdd()
+        {
+            timeAnchor = Time.time; // controlled by timeScale
+        }
+
+        // Going to use update over coroutine for 1) centralization 2) no reason for module pausing.
+        public override void Update()
+        {
+            float currTime = Time.time;
+            float timeElapsed = currTime - timeAnchor;
+            moduleData.timeInCurrentCycleSoFar += timeElapsed;
+            timeAnchor = currTime;
+
+            if (moduleData.timeInCurrentCycleSoFar >= moduleData.timePerCycle)
+            {
+                OnCycleComplete();
+                moduleData.timeInCurrentCycleSoFar = 0f; // Resets the cycle timer.
+            }
+        }
+
+        public virtual void OnCycleComplete() { } // This is an empty method in the parent class, but can be overridden in child classes.
+
+        public virtual void OnGrowthPause()
+        {
+            moduleData.timeInCurrentCycleSoFar += Time.time - timeAnchor; // add the time so far
+        }
+
+        public virtual void OnGrowthResume() // Suppose this line is called before "update" happens at resume.
+        {
+            timeAnchor = Time.time; // reset the anchor
+        }
+    }
+
+    /// <summary>
+    /// Main Inheritable Module #2: TriggerModule
+    /// </summary>
+    [System.Serializable]
+    public class TriggerModuleData
+    {
+
+    }
+    public class TriggerModule<T> : StatefulPlantModule<T> where T : TriggerModuleData
+    {
+        public TriggerModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+        }
+
+        protected DynamicColliderScript colliderScript;
+
+        public override void OnModuleAdd()
+        {
+            GameObject childObject = new GameObject();
+            childObject.transform.SetParent(plantScript.gameObject.transform);
+            childObject.transform.localPosition = Vector2.zero;
+            colliderScript = childObject.AddComponent<DynamicColliderScript>();
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerEnter2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            Debug.Log("OnTriggerExit2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+        }
+    }
+
+    /// <summary>
+    /// Main Inheritable Module #3: TriggerAndTimerModule (created via composition of the previous 2)
+    /// </summary>
+    [System.Serializable]
+    public class TriggerAndTimerModuleData
+    {
+        public TriggerModuleData triggerData;
+        public TimerModuleData timerData;
+    }
+    public class TriggerAndTimerModule : StatefulPlantModule<TriggerAndTimerModuleData>
+    {
+        private TriggerModule<TriggerModuleData> triggerModule;
+        private TimerModule<TimerModuleData> timerModule;
+
+        public TriggerAndTimerModule(PlantScript plantScript)
+        {
+            this.plantScript = plantScript;
+
+            // Instantiate the helper modules and assign their properties
+            triggerModule = new TriggerModule<TriggerModuleData>(plantScript);
+            timerModule = new TimerModule<TimerModuleData>(plantScript);
+        }
+
+        public override void OnModuleAdd()
+        {
+            triggerModule.OnModuleAdd();
+            timerModule.OnModuleAdd();
+        }
+
+        public override void Update()
+        {
+            triggerModule.Update();
+            timerModule.Update();
+        }
+
+        // Add other override methods as needed, and delegate to the appropriate module
+    }
+
+
+
+    //////////////////////////////////// ACTUAL MODULE IMPLEMENTATIONS BEGINS HERE ///////////////////////////////////////
+    [System.Serializable]
+    public class FruitProductionModuleData : TimerModuleData
+    {
+        public int productionQuantity; 
+        public FruitType fruitType; 
+    }
+    public class FruitProductionModule : TimerModule<FruitProductionModuleData>
+    {
+        public FruitProductionModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new FruitProductionModuleData
+            {
+                timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife], // productionRate
+                productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife],
+                fruitType = plantScript.plantSO.fruitType,
+                timeInCurrentCycleSoFar = 0f
+            };
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            // ... other update code
+        }
+
+        public override void OnCycleComplete()
+        {
+            // TODO: actual fruit production (visual + systemic)
+            Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
+            moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
+        }
+    }
+
+
+    [System.Serializable]
+    public class HealingModuleData : TriggerModuleData
+    {
+        public float healRate; // numSeconds for a healing cycle to happen
+        public float healAmount; // flat amount of healing
+        public float healPercentage; // percentage of max health healing
+        public int healRangeRadius; // size (radius) of the circular detection range from the center of the plant
+        public float timeInCurrentCycleSoFar; // for time tracking and data storage
+    }
+    public class HealingModule : TriggerModule<HealingModuleData>
+    {
+        public HealingModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new HealingModuleData
+            {
+                healRate = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife],
+                healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife],
+                healPercentage = plantScript.plantSO.healPercentage[plantScript.plantData.currStageOfLife],
+                healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife],
+                timeInCurrentCycleSoFar = 0f
+            };
+        }
+
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+            colliderScript.gameObject.name = "HealingRange";
+            colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 1), new Vector2(), moduleData.healRangeRadius,
+                OnTriggerEnter2D, OnTriggerExit2D);
+        }
+    }
+
+
 
     [System.Serializable]
     public class TestModuleData
@@ -106,122 +308,7 @@ public static class PlantModuleArr
     }
 
 
-    [System.Serializable]
-    public class FruitProductionModuleData
-    {
-        public float productionRate; // numSeconds for a production cycle to happen
-        public int productionQuantity; // number of fruits per cycle of production
-        public FruitType fruitType; // icura type enum
-        public float timeInCurrentCycleSoFar; // for time tracking and data storage
-    }
-    public class FruitProductionModule : StatefulPlantModule<FruitProductionModuleData>
-    {
-        public FruitProductionModule(PlantScript plantScript)
-        {
-            this.plantScript = plantScript;
-            // load from default, presumably assume that this happens before retrieving from data.
-            moduleData = new FruitProductionModuleData
-            {
-                productionRate = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife],
-                productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife],
-                fruitType = plantScript.plantSO.fruitType,
-                timeInCurrentCycleSoFar = 0f
-            };
-        }
-
-        float timeAnchor = 0f;
-        public override void OnModuleAdd()
-        {
-            timeAnchor = Time.time; // controlled by timeScale
-        }
-
-        // Going to use update over coroutine for 1) centralization 2) no reason for module pausing.
-        public override void Update()
-        {
-            float currTime = Time.time;
-            float timeElapsed = currTime - timeAnchor;
-            moduleData.timeInCurrentCycleSoFar += timeElapsed;
-            timeAnchor = currTime;
-
-            // Debug.Log("Prate: " + moduleData.productionRate + ", Pquant: " + moduleData.productionQuantity + ", Ptype: " + moduleData.fruitType);
-            if (moduleData.timeInCurrentCycleSoFar >= moduleData.productionRate)
-            {
-                // TODO: actual fruit production (visual + systemic)
-                Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
-
-                moduleData.timeInCurrentCycleSoFar = 0f; // Resets the cycle timer.
-            }
-            
-        }
-
-        public override void OnPlantStageGrowth()
-        {
-            // by now, stage should be inc'ed alrdy
-            moduleData.productionRate = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
-            moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
-        }
-
-        public override void OnPlantGrowthPause()
-        {
-            moduleData.timeInCurrentCycleSoFar += Time.time - timeAnchor; // add the time so far
-        }
-
-        public override void OnPlantGrowthResume() // Suppose this line is called before "update" happens at resume.
-        {
-            timeAnchor = Time.time; // reset the anchor
-        }
-    }
-
-
-    [System.Serializable]
-    public class HealingModuleData
-    {
-        public float healRate; // numSeconds for a healing cycle to happen
-        public float healAmount; // flat amount of healing
-        public float healPercentage; // percentage of max health healing
-        public int healRangeRadius; // size (radius) of the circular detection range from the center of the plant
-        public float timeInCurrentCycleSoFar; // for time tracking and data storage
-    }
-    public class HealingModule : StatefulPlantModule<HealingModuleData>
-    {
-        public HealingModule(PlantScript plantScript)
-        {
-            this.plantScript = plantScript;
-            // load from default, presumably assume that this happens before retrieving from data.
-            moduleData = new HealingModuleData
-            {
-                healRate = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife],
-                healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife],
-                healPercentage = plantScript.plantSO.healPercentage[plantScript.plantData.currStageOfLife],
-                healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife],
-                timeInCurrentCycleSoFar = 0f
-            };
-        }
-
-        DynamicColliderScript colliderScript;
-        public override void OnModuleAdd()
-        {
-            GameObject childObject = new GameObject();
-            childObject.transform.SetParent(plantScript.gameObject.transform);
-            childObject.transform.localPosition = Vector2.zero;
-            childObject.name = "healingRange";
-            colliderScript = childObject.AddComponent<DynamicColliderScript>();
-            colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 1), new Vector2(), moduleData.healRangeRadius,
-                OnTriggerEnter2D, OnTriggerExit2D);
-        }
-
-        protected virtual void OnTriggerEnter2D(Collider2D collider)
-        {
-            Debug.Log("OnTriggerEnter2D called for HealingModule. gameObject: " + collider.gameObject.name);
-        }
-
-        protected virtual void OnTriggerExit2D(Collider2D collider)
-        {
-            Debug.Log("OnTriggerExit2D called for HealingModule. gameObject: " + collider.gameObject.name);
-        }
-    }
-
-
+    /*
     [System.Serializable]
     public class TriggerModuleData
     {
@@ -269,5 +356,5 @@ public static class PlantModuleArr
             }
 
         }
-    }
+    }*/
 }

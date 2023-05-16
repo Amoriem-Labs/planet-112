@@ -31,9 +31,9 @@ public class Plant : ScriptableObject
 
     // Module data
     // For FruitProductionModule:
-    public float[] productionRate; // Time to produce one unit of whatever the plant makes
-    public int[] productionQuantity;
-    public FruitType fruitType;
+    public float[] productionRate; // numSeconds for a production cycle to happen
+    public int[] productionQuantity; // number of fruits per cycle of production
+    public FruitType fruitType; // icura type enum
     // For HealingModule:
     public float[] healRate;
     public float[] healAmount;
