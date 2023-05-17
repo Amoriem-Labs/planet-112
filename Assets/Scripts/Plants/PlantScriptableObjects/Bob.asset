@@ -51,6 +51,16 @@ MonoBehaviour:
   - vec2Array:
     - {x: 0, y: 0.2}
     - {x: 0.2, y: 0.5}
+  hitboxSize:
+  - {x: 0.2, y: 0.2}
+  - {x: 0.3, y: 0.4}
+  - {x: 0.32, y: 0.7}
+  - {x: 0.32, y: 0.9}
+  hitboxOffset:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0.2}
+  - {x: 0, y: 0.35}
+  - {x: 0, y: 0.45}
   oxygenProductionLevels: 000000000a000000140000001e000000
   productionRate:
   - 1
@@ -66,12 +76,8 @@ MonoBehaviour:
   - 10
   healAmount:
   - 10
-  - 20
-  - 30
-  - 40
-  healPercentage:
-  - 0.1
   - 0.2
-  - 0.3
-  - 0.4
+  - 0.5
+  - 0.9
+  healMode: 00000000010000000200000003000000
   healRangeRadius: 01000000020000000300000004000000

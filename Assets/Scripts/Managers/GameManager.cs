@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.InitializePlantData(location);
 
+            plantScript.SetMainCollider();
             plantScript.SpawnInModules();
             plantScript.VisualizePlant();
         }
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.plantData = plantData;
 
+            plantScript.SetMainCollider();
             plantScript.SpawnInModules();
             plantScript.VisualizePlant();
         }

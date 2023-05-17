@@ -144,6 +144,34 @@ public abstract class PlantScript : MonoBehaviour
         }
     }
 
+    public void SetMainCollider()
+    {
+        gameObject.GetComponent<BoxCollider2D>().offset = plantSO.hitboxOffset[plantData.currStageOfLife];
+        gameObject.GetComponent<BoxCollider2D>().size = plantSO.hitboxSize[plantData.currStageOfLife];
+    }
+
+    public void GetHealed(float healAmt, HealMode healMode)
+    {
+        switch (healMode)
+        {
+            case HealMode.flat: // flat amount, same increment
+                plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt, plantSO.maxHealth[plantData.currStageOfLife]);
+                break;
+            case HealMode.max: // max hp % amt, same increment. Garen passive.
+                float maxHealth = plantSO.maxHealth[plantData.currStageOfLife];
+                plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * maxHealth, maxHealth);
+                break;
+            case HealMode.missing: // less hp, more healing; more hp, less healing. Sett passive.
+                float maxHP = plantSO.maxHealth[plantData.currStageOfLife];
+                float missingHealth = maxHP - plantData.currentHealth;
+                plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * missingHealth, maxHP);
+                break;
+            case HealMode.current: // more hp, more healing; less hp, less healing.
+                plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * plantData.currentHealth, plantSO.maxHealth[plantData.currStageOfLife]);
+                break;
+        }
+    }
+
     // called by the attacker upon attacking this plant. Also, notice how taking negative damage HEALS the plant!
     public void TakeDamage(int damage)
     {
@@ -240,6 +268,9 @@ public abstract class PlantScript : MonoBehaviour
 
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+
+        // update hitbox
+        SetMainCollider();
 
         // current health refreshes? either leave this line or delete
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];

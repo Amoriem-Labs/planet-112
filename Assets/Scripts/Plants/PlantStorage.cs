@@ -25,6 +25,14 @@ public enum FruitType // bunch of icuras
     amethyst
 }
 
+public enum HealMode
+{
+    flat, // flat amt
+    max, // max hp %
+    current, // curr hp %
+    missing, // curr missing hp %
+}
+
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 
 public class PlantStorage : MonoBehaviour // gonna switch to scriptable object in the future, or no need? Ask Jacob. 
 {

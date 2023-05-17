@@ -242,9 +242,9 @@ public static class PlantModuleArr
     [System.Serializable]
     public class HealingModuleData : TriggerAndTimerModuleData
     {
-        public float healAmount; // flat amount of healing
-        public float healPercentage; // percentage of max health healing
-        public int healRangeRadius; // size (radius) of the circular detection range from the center of the plant
+        public float healAmount;
+        public HealMode healMode;
+        public int healRangeRadius; 
     }
     public class HealingModule : TriggerAndTimerModule<HealingModuleData>
     {
@@ -254,7 +254,7 @@ public static class PlantModuleArr
             moduleData = new HealingModuleData
             {
                 healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife],
-                healPercentage = plantScript.plantSO.healPercentage[plantScript.plantData.currStageOfLife],
+                healMode = plantScript.plantSO.healMode[plantScript.plantData.currStageOfLife],
                 healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife],
                 timerData = new TimerModuleData
                 {
@@ -279,7 +279,6 @@ public static class PlantModuleArr
         List<PlantScript> plantsInRange = new List<PlantScript>();
         protected override void OnCycleComplete()
         {
-            Debug.Log("Healing time");
             for (int i = 0; i < plantsInRange.Count; i++)
             {
                 if (plantsInRange[i] == null) // potentially destroyed already
@@ -289,7 +288,7 @@ public static class PlantModuleArr
                 }
                 else // heal the plant.
                 {
-                    Debug.Log("Plant " + plantsInRange[i].name + " is getting healed!");
+                    plantsInRange[i].GetHealed(moduleData.healAmount, moduleData.healMode);
                 }
             }
         }
@@ -308,6 +307,15 @@ public static class PlantModuleArr
             {
                 plantsInRange.Remove(collider.gameObject.GetComponent<PlantScript>());
             }
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.healAmount = plantScript.plantSO.healAmount[plantScript.plantData.currStageOfLife];
+            moduleData.healMode = plantScript.plantSO.healMode[plantScript.plantData.currStageOfLife];
+            moduleData.healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife];
+            moduleData.timerData.timePerCycle = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife];
         }
     }
 

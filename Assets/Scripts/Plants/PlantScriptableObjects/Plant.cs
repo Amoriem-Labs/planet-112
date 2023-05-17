@@ -21,6 +21,8 @@ public class Plant : ScriptableObject
     public MultiDimensionalArray[] relativeGridsOccupied; // additional spaces this plant will occupy, scales with different stages in life
     // DUMB IDEA.. bad visual. //public MultiDimensionalArray[] relativeGridsOfPestInterest; // spots that the pest will stay to attack, scales as well. Notice need at least 1. 
     public MultiDimensionalArray[] targetRectParameters; // first x,y is offset of bottom center from bottom center, second x,y is width and height. Diff for diff stage.
+    public Vector2[] hitboxSize; // dimension of the 2D box physical collider of this plant
+    public Vector2[] hitboxOffset; // offset of the 2D box physical collider of this plant from bottom center
 
     // Produce:
     public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
@@ -35,10 +37,10 @@ public class Plant : ScriptableObject
     public int[] productionQuantity; // number of fruits per cycle of production
     public FruitType fruitType; // icura type enum
     // For HealingModule:
-    public float[] healRate;
-    public float[] healAmount;
-    public float[] healPercentage;
-    public int[] healRangeRadius;
+    public float[] healRate; // numSeconds for a healing cycle to happen
+    public float[] healAmount; // healing amt, either flat, max hp percentage, curr hp percentage, or curr missing hp %
+    public HealMode[] healMode; // one of the heal modes
+    public int[] healRangeRadius; // size (radius) of the circular detection range from the center of the plant
 }
 
 [System.Serializable]
