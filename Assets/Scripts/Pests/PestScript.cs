@@ -17,6 +17,11 @@ public class PestScript : MonoBehaviour
     // The scriptable oxject that contains fixed (non-dynamic) data about this pest.
     public Pest pestSO;
 
+    // Pest module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
+    protected Dictionary<PestModuleEnum, IPestModule> pestModules = new Dictionary<PestModuleEnum, IPestModule>();
+
+    PestData pestData; // contains all the dynamic data of a pest to be saved, a reference to PD 
+
     [SerializeField] float speed = 5f;
     public float attackRange = 2f;
 
@@ -56,13 +61,7 @@ public class PestScript : MonoBehaviour
         }
     }
 
-    public void OnDeath()
-    {
-        // TODO: properly destroy the whole pest
-        Debug.Log("Called OnDeath for PestScript: " + gameObject.name);
-        Destroy(gameObject);
-    }
-
+    #region StateMachine
     public void SetSearchingState()
     {
         currentState = State.STATE_SEARCHING;
@@ -504,7 +503,16 @@ public class PestScript : MonoBehaviour
     {
         transform.position = Vector2.MoveTowards(transform.position, retreatPoint, speed * Time.deltaTime);
     }
+    #endregion
 
+    public void OnDeath()
+    {
+        // TODO: properly destroy the whole pest
+        Debug.Log("Called OnDeath for PestScript: " + gameObject.name);
+        Destroy(gameObject);
+    }
+
+    #region MathyStuff
     Vector2 RotateVector(Vector2 v, float theta)
     {
         return new Vector2(
@@ -584,4 +592,5 @@ public class PestScript : MonoBehaviour
 
         return edgePoint;
     }
+    #endregion
 }
