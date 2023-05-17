@@ -5,10 +5,11 @@ using System;
 
 public enum PlantModuleEnum // serialized names of each of the modules
 {
-    Test,
+    // Test,
     // InstaKillPests,
     FruitProduction,
     Healing,
+    AoeDamage,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -29,10 +30,11 @@ public static class PlantModuleArr
 {
     static Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>> moduleConstructors = new Dictionary<PlantModuleEnum, Func<PlantScript, IPlantModule>>
     {
-      {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
+      // {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
       // {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
       {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
       {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
+      {PlantModuleEnum.AoeDamage, (plantScript) => new AoeDamageModule(plantScript)},
     };
 
     // returns a new instance of the targetted plantModule 
@@ -245,7 +247,7 @@ public static class PlantModuleArr
     {
         public float healAmount;
         public HealMode healMode;
-        public int healRangeRadius; 
+        public float healRangeRadius; 
     }
     public class HealingModule : TriggerAndTimerModule<HealingModuleData>
     {
@@ -321,7 +323,84 @@ public static class PlantModuleArr
     }
 
 
+    [System.Serializable]
+    public class AoeDamageModuleData : TriggerAndTimerModuleData
+    {
+        public float damageAmount;
+        public float damageRangeRadius;
+    }
+    public class AoeDamageModule : TriggerAndTimerModule<AoeDamageModuleData>
+    {
+        public AoeDamageModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new AoeDamageModuleData
+            {
+                damageAmount = plantScript.plantSO.aoeDamageAmount[plantScript.plantData.currStageOfLife],
+                damageRangeRadius = plantScript.plantSO.aoeDamageRangeRadius[plantScript.plantData.currStageOfLife],
+                timerData = new TimerModuleData
+                {
+                    timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife], // attackRate
+                    timeInCurrentCycleSoFar = 0f
+                },
+                triggerData = new TriggerModuleData()
+            };
+            // Don't forget to grant each module the correct datas to reference
+            timerModule.moduleData = moduleData.timerData;
+            triggerModule.moduleData = moduleData.triggerData;
+        }
 
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+            triggerModule.colliderScript.gameObject.name = "AoeDamageRange";
+            triggerModule.colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 0), new Vector2(), moduleData.damageRangeRadius,
+                OnTriggerEnter2D, OnTriggerExit2D);
+        }
+
+        List<PestScript> pestsInRange = new List<PestScript>();
+        protected override void OnCycleComplete()
+        {
+            for (int i = 0; i < pestsInRange.Count; i++)
+            {
+                if (pestsInRange[i] == null) // potentially destroyed already
+                {
+                    pestsInRange.RemoveAt(i);
+                    i--;
+                }
+                else // damage the pests. (or launch proj etc etc)
+                {
+                    Debug.Log("Attacking pest " + pestsInRange[i].name);
+                }
+            }
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("pest"))
+            {
+                pestsInRange.Add(collider.gameObject.GetComponent<PestScript>());
+            }
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("pest"))
+            {
+                pestsInRange.Remove(collider.gameObject.GetComponent<PestScript>());
+            }
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.damageAmount = plantScript.plantSO.aoeDamageAmount[plantScript.plantData.currStageOfLife];
+            moduleData.damageRangeRadius = plantScript.plantSO.aoeDamageRangeRadius[plantScript.plantData.currStageOfLife];
+            moduleData.timerData.timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife];
+        }
+    }
+
+    /*
     [System.Serializable]
     public class TestModuleData
     {
@@ -360,7 +439,6 @@ public static class PlantModuleArr
     }
 
 
-    /*
     [System.Serializable]
     public class TriggerModuleData
     {

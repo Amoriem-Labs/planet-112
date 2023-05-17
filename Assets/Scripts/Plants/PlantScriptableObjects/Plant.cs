@@ -40,7 +40,11 @@ public class Plant : ScriptableObject
     public float[] healRate; // numSeconds for a healing cycle to happen
     public float[] healAmount; // healing amt, either flat, max hp percentage, curr hp percentage, or curr missing hp %
     public HealMode[] healMode; // one of the heal modes
-    public int[] healRangeRadius; // size (radius) of the circular detection range from the center of the plant
+    public float[] healRangeRadius; // size (radius) of the circular detection range from the center of the plant
+    // For AoeDamageModule:
+    public float[] aoeAttackRate;
+    public float[] aoeDamageAmount;
+    public float[] aoeDamageRangeRadius;
 }
 
 [System.Serializable]

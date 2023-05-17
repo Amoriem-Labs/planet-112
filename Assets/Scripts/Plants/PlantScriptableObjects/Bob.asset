@@ -30,7 +30,7 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  defaultModules: 02000000
+  defaultModules: 0100000002000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array: []
@@ -80,4 +80,23 @@ MonoBehaviour:
   - 0.5
   - 0.9
   healMode: 00000000010000000200000003000000
-  healRangeRadius: 01000000020000000300000004000000
+  healRangeRadius:
+  - 1
+  - 2
+  - 3
+  - 4
+  aoeAttackRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  aoeDamageAmount:
+  - 5
+  - 20
+  - 50
+  - 100
+  aoeDamageRangeRadius:
+  - 2
+  - 3
+  - 4
+  - 5
