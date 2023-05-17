@@ -30,6 +30,15 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.LogError("RigidBody2D is null!");
         }
+
+        GameObject childObject = new GameObject();
+        childObject.transform.SetParent(gameObject.transform);
+        childObject.transform.localPosition = Vector2.zero;
+        childObject.layer = LayerMask.NameToLayer("Detectors");
+        DynamicColliderScript colliderScript = childObject.AddComponent<DynamicColliderScript>();
+        colliderScript.gameObject.name = "DetectionRange";
+        colliderScript.SetCollider(typeof(BoxCollider2D), new Vector2(0, 0), new Vector2(2, 0.9f), 0,
+            OnDetectorTriggerEnter2D, OnDetectorTriggerExit2D);
     }
 
     private void OnEnable()
@@ -123,5 +132,21 @@ public class PlayerScript : MonoBehaviour
 
         //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
 
+    }
+
+    // Player interaction.
+    private void OnDetectorTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "plant")
+        {
+            closePlants.Add(collision.gameObject.GetComponent<PlantScript>());
+        }
+    }
+    private void OnDetectorTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "plant")
+        {
+            closePlants.Remove(collision.gameObject.GetComponent<PlantScript>());
+        }
     }
 }

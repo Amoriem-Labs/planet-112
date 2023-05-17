@@ -366,22 +366,6 @@ public abstract class PlantScript : MonoBehaviour
         Debug.DrawLine(offsetBottomCenter, transform.position, Color.red, 0.5f, false);
     }
 
-    // Player interaction.
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            collision.gameObject.GetComponent<PlayerScript>().closePlants.Add(this);
-        }
-    }
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "Player")
-        {
-            collision.gameObject.GetComponent<PlayerScript>().closePlants.Remove(this);
-        }
-    }
-
     public void Update()
     {
         // Modules shouldn't work when the plants is picked up? unless...

@@ -140,6 +140,7 @@ public static class PlantModuleArr
             GameObject childObject = new GameObject();
             childObject.transform.SetParent(plantScript.gameObject.transform);
             childObject.transform.localPosition = Vector2.zero;
+            childObject.layer = LayerMask.NameToLayer("Detectors"); // no matter; trigger detectors won't trigger each other.
             colliderScript = childObject.AddComponent<DynamicColliderScript>();
         }
 
