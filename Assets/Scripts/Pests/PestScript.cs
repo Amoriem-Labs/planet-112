@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 using System.Linq;
+using System;
 
 public enum State
 {
@@ -59,6 +60,8 @@ public class PestScript : MonoBehaviour
                 DuringRetreat();
                 break;
         }
+
+        UpdateAllModules();
     }
 
     #region StateMachine
@@ -344,7 +347,7 @@ public class PestScript : MonoBehaviour
             }*/
             // Or just grab a point out of all the availble positions. The above one has a flaw, in the drawing notes.
             // because sometimes the point randomly chosen can be an unreacheable area in a passing range. 
-            var randCoord = availablePosOffsetsOfTarget[Random.Range(0, availablePosOffsetsOfTarget.Count)];
+            var randCoord = availablePosOffsetsOfTarget[UnityEngine.Random.Range(0, availablePosOffsetsOfTarget.Count)];
             GetComponent<PestMovement>().targetOffsetFromCenter = new Vector2(offset.x + randCoord.x, offset.y + randCoord.y);
             GetComponent<PestMovement>().coreOffsetCache = GetComponent<PestMovement>().targetOffsetFromCenter; // store the data
             //Debug.DrawLine(targetPlantScript.transform.position, targetPlantScript.transform.position + GetComponent<PestMovement>().coreOffsetCache, Color.magenta, 100, false);
@@ -354,12 +357,12 @@ public class PestScript : MonoBehaviour
             Vector3 castVector; // the direction vector
             if (GetComponent<PestMovement>().targetOffsetFromCenter.x >= offset.x) // right side
             {
-                castAngle = Random.Range(0, 90) * (Mathf.PI / 180);
+                castAngle = UnityEngine.Random.Range(0, 90) * (Mathf.PI / 180);
                 castVector = RotateVector(Vector3.right, castAngle);
             }
             else // left side
             {
-                castAngle = Random.Range(-90, 0) * (Mathf.PI / 180);
+                castAngle = UnityEngine.Random.Range(-90, 0) * (Mathf.PI / 180);
                 castVector = RotateVector(-Vector3.right, castAngle);
             }
             // Okay this is really weird. I used degree for rotate in Bezier but why is it radian here? I mean here it only works with radian
@@ -505,6 +508,86 @@ public class PestScript : MonoBehaviour
     }
     #endregion
 
+    public void InitializePestData(Vector2 location)
+    {
+        pestData = new PestData();
+        pestData.location = location;
+        pestData.currStageOfLife = 0;
+        pestData.pestName = (int)pestSO.pName;
+        pestData.currentHealth = pestSO.maxHealth[pestData.currStageOfLife];
+        pestData.pestModuleData = new Dictionary<PestModuleEnum, string>(); // size 0. Modules to be added in the child class
+        PersistentData.GetLevelData(LevelManager.currentLevelID).pestDatas.Add(pestData); // add this pest into save. 
+    }
+
+    private void Start()
+    {
+        InitializePestData(transform.position); // FOR NOW, no load from save YET unlike the ready plant.
+        SpawnInModules(); // FOR NOW.
+    }
+
+    public void UpdateAllModules()
+    {
+        foreach (var module in pestModules.Values)
+        {
+            module.Update();
+        }
+    }
+
+    public void AddPestModule(PestModuleEnum module, String dataString = null)
+    {
+        if (!pestModules.ContainsKey(module))
+        { // do we want multiple modules? rework if so.
+            var moduleInstance = PestModuleArr.GetModule(module, this);
+            if (dataString != null)
+            {
+                moduleInstance.AssignDataFromString(dataString);
+            }
+            else
+            {
+                dataString = moduleInstance.EncodeDataToString();
+            }
+            pestModules.Add(module, moduleInstance);
+            pestData.pestModuleData.Add(module, dataString);
+            moduleInstance.OnModuleAdd();
+        }
+    }
+
+    public void RemovePestModule(PestModuleEnum module)
+    {
+        if (pestModules.ContainsKey(module)) // do we want multiple modules? rework if so.
+        {
+            pestModules[module].OnModuleRemove();
+            pestModules.Remove(module); // user's responsibility to pause the module? or pause it here. 
+            pestData.pestModuleData.Remove(module);
+        }
+    }
+
+    public IPestModule GetPestModule(PestModuleEnum module)
+    {
+        return pestModules[module];
+    }
+
+    // If a pest is new, no modules. if it exists, then load em in!
+    public void SpawnInModules()
+    {
+        // no modules, fresh pest
+        if (pestData.pestModuleData.Count == 0)
+        {
+            // add in the default modules!
+            foreach (PestModuleEnum module in pestSO.defaultModules)
+            {
+                AddPestModule(module);
+            }
+        }
+        else // has modules, spawn in previous pest
+        {
+            foreach (PestModuleEnum module in pestData.pestModuleData.Keys)
+            {
+                AddPestModule(module, pestData.pestModuleData[module]);
+            }
+        }
+    }
+
     public void OnDeath()
     {
         // TODO: properly destroy the whole pest
@@ -523,8 +606,8 @@ public class PestScript : MonoBehaviour
 
     Vector2 PickRandomPointInCircle(Vector2 center, float radius)
     {
-        var r = radius * Mathf.Sqrt(Random.Range(0f, 1f));
-        var theta = Random.Range(0f, 1f) * 2 * Mathf.PI;
+        var r = radius * Mathf.Sqrt(UnityEngine.Random.Range(0f, 1f));
+        var theta = UnityEngine.Random.Range(0f, 1f) * 2 * Mathf.PI;
         var x = center.x + r * Mathf.Cos(theta);
         var y = center.y + r * Mathf.Sin(theta);
         return new Vector2(x, y);

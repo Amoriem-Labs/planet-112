@@ -35,11 +35,9 @@ public class PlantData
     public int currStageOfLife; // plant's current stage of life
     public int plantName; // the type of the plant, used to get the inherited, specific plant at run time.
     public float stageTimeLeft; // time left before the plant evolves
-    public float fruitProduceTimeLeft; // optional data.
     public float currentHealth; // remaining health of the plant
     //public List<int> plantModules; // OLD VERSION modules that this plant currently has
     public Dictionary<PlantModuleEnum, String> plantModuleData;
-    //public float fruitProductionRate; //subject to status-effect, otherwise fixed.
     // Status effects' durations?
 }
 
@@ -49,8 +47,10 @@ public class PestData
 {
     public Vector2 location; // x_index, y_index of this pest in the map 2D array
     // Recalculate current target plant
-    public int pestType; // the type of the pest, used to get the inherited, specific pest at run time.
+    public int currStageOfLife; // pest's current stage of life
+    public int pestName; // the type of the pest, used to get the inherited, specific pest at run time.
     public float currentHealth; // remaining health of the pest
+    public Dictionary<PestModuleEnum, String> pestModuleData;
     //public float attackDamage; //subject to status-effect, otherwise fixed.
     //public float attackRange; //subject to status-effect, otherwise fixed.
     // Status effects' durations?

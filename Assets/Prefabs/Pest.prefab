@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ec440ec0609e4fbab57b6739ec9ba13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pestSO: {fileID: 0}
+  pestSO: {fileID: 11400000, guid: 14b0751e98403004a8ac0af316f2aaa5, type: 2}
   speed: 5
   attackRange: 0.1
   attackRate: 2

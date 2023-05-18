@@ -1584,6 +1584,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boxDetector: {fileID: 6201913644617933390, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
   circleDetector: {fileID: 1151603408698572743, guid: 23a071354f47d994bbf8f3e30d6c4499, type: 3}
+  boxProjectile: {fileID: 7844817501060373444, guid: 8a988cd14e928c94ba0d91baa781c3a9, type: 3}
 --- !u!1001 &904687394
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using System;
 
 public enum PestModuleEnum // serialized names of each of the modules
 {
-    Test,
+    SingleTargetProjectileAttack,
 }
 
 // Pest module interfaces (can be customized to include new functions)
@@ -23,7 +23,7 @@ public static class PestModuleArr
 {
     static Dictionary<PestModuleEnum, Func<PestScript, IPestModule>> moduleConstructors = new Dictionary<PestModuleEnum, Func<PestScript, IPestModule>>
     {
-      {PestModuleEnum.Test, (pestScript) => new TestModule(pestScript)},
+      {PestModuleEnum.SingleTargetProjectileAttack, (pestScript) => new SingleTargetProjectileAttackModule(pestScript)},
     };
 
     // returns a new instance of the targetted pestModule 
@@ -52,18 +52,19 @@ public static class PestModuleArr
 
 
     /////////////////////////////////// ACTUAL MODULE IMPLEMENTATIONS BEGINS HERE ///////////////////////////////////////
-    public class TestModuleData
+    [System.Serializable]
+    public class SingleTargetProjectileAttackModuleData
     {
         public string name;
         public int age;
         public string job;
     }
-    public class TestModule : StatefulPestModule<TestModuleData>
+    public class SingleTargetProjectileAttackModule : StatefulPestModule<SingleTargetProjectileAttackModuleData>
     {
-        public TestModule(PestScript pestScript)
+        public SingleTargetProjectileAttackModule(PestScript pestScript)
         {
             this.pestScript = pestScript;
-            moduleData = new TestModuleData
+            moduleData = new SingleTargetProjectileAttackModuleData
             {
                 name = "default",
                 age = 0,
