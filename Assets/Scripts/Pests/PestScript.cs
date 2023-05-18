@@ -21,7 +21,7 @@ public class PestScript : MonoBehaviour
     // Pest module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     protected Dictionary<PestModuleEnum, IPestModule> pestModules = new Dictionary<PestModuleEnum, IPestModule>();
 
-    PestData pestData; // contains all the dynamic data of a pest to be saved, a reference to PD 
+    public PestData pestData; // contains all the dynamic data of a pest to be saved, a reference to PD 
 
     [SerializeField] float speed = 5f;
     public float attackRange = 2f;
@@ -560,6 +560,11 @@ public class PestScript : MonoBehaviour
             pestModules.Remove(module); // user's responsibility to pause the module? or pause it here. 
             pestData.pestModuleData.Remove(module);
         }
+    }
+
+    public void ResumePestModule(PestModuleEnum module)
+    {
+        pestModules[module].ResumeModule();
     }
 
     public IPestModule GetPestModule(PestModuleEnum module)

@@ -44,24 +44,26 @@ public class BezierPattern : PestMovement
             return;
         }
 
-        /* // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
-        float radius = 0.5f; // width of your "ray"
+        // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
         int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle");
         int plantLayer = 1 << LayerMask.NameToLayer("Plant");
         int combinedLayerMask = obstacleLayer | plantLayer;
         Vector2 rayDirection = GetComponent<PestScript>().targetPlantScript.transform.position - gameObject.transform.position;
         // RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, rayDirection, 1000, combinedLayerMask);
         // Cast a circle from the current position in the direction of the target, ignoring all layers except Obstacle and Plant
+        float radius = 0.5f; // width of your "ray"... makeShift. TODO: projectile size comm?
+        int attackRange = 100; // makeShift.. TODO: try to find a way to use SO data.
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
         Debug.Log(hit.collider.gameObject);
         if (hit.collider != null)
         {
             if (hit.collider.gameObject == GetComponent<PestScript>().targetPlantScript.gameObject)
             {
-                Debug.Log("Hit target plant!");
-                this.enabled = false;
+                Debug.Log("Found target plant!");
+                GetComponent<PestScript>().ResumePestModule(PestModuleEnum.SingleTargetProjectileAttack); // FOR NOW... testing
+                this.enabled = false; // FOR NOW... testing
             }
-        }*/
+        }
 
         if (t > 1 && pathDivisions.Count == 0 && keepPathing) // not during a movement pattern or sub pathing
         {
