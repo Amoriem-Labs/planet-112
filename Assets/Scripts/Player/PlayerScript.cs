@@ -71,12 +71,12 @@ public class PlayerScript : MonoBehaviour
 
         velocity.x = moveInput.x * speed;
 
-        if (moveInput.y > 0 && IsGrounded())
+        if (moveInput.y > 0 && IsGrounded()) // isGrounded makes sure you are on the ground
         {
             velocity.y = moveInput.y * jumpSpeed;
         }
 
-        rb.velocity = velocity;
+        rb.velocity = velocity; //??
     }
 
     private bool IsGrounded()
