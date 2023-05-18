@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+// WARNING: THIS SCRIPT IS USELESS AND OBSELETE. INSTEAD OF GENERATION AT RUN TIME, WE'VE SWITCHED TO PREFAB INSTANTIATION AT RUN TIME
+// SO ALL THE CODE BELOW ARE USELESS. BUT THIS IS A GOOD REMINDER OF HOW TO GENERATE SOMETHING ON RUN TIME.
 public class DynamicColliderScript : MonoBehaviour
 {
+    /*
     public Action<Collider2D> onTriggerEnter2D;
     public Action<Collider2D> onTriggerExit2D;
     Collider2D myCollider;
@@ -49,5 +53,5 @@ public class DynamicColliderScript : MonoBehaviour
                 onTriggerExit2D(collider);
             }
         }
-    }
+    }*/
 }

@@ -135,15 +135,15 @@ public static class PlantModuleArr
             this.plantScript = plantScript;
         }
 
-        public DynamicColliderScript colliderScript;
+        public TriggerResponse colliderScript;
 
         public override void OnModuleAdd()
         {
-            GameObject childObject = new GameObject();
+            /*GameObject childObject = new GameObject();
             childObject.transform.SetParent(plantScript.gameObject.transform);
             childObject.transform.localPosition = Vector2.zero;
             childObject.layer = LayerMask.NameToLayer("Detectors"); // no matter; trigger detectors won't trigger each other.
-            colliderScript = childObject.AddComponent<DynamicColliderScript>();
+            colliderScript = childObject.AddComponent<DynamicColliderScript>();*/
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)
@@ -274,9 +274,14 @@ public static class PlantModuleArr
         public override void OnModuleAdd()
         {
             base.OnModuleAdd();
+            triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector, 
+                Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+            triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
             triggerModule.colliderScript.gameObject.name = "HealingRange";
-            triggerModule.colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 0), new Vector2(), moduleData.healRangeRadius,
-                OnTriggerEnter2D, OnTriggerExit2D);
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.healRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
         }
 
         List<PlantScript> plantsInRange = new List<PlantScript>();
@@ -319,6 +324,9 @@ public static class PlantModuleArr
             moduleData.healMode = plantScript.plantSO.healMode[plantScript.plantData.currStageOfLife];
             moduleData.healRangeRadius = plantScript.plantSO.healRangeRadius[plantScript.plantData.currStageOfLife];
             moduleData.timerData.timePerCycle = plantScript.plantSO.healRate[plantScript.plantData.currStageOfLife];
+            // update the collider
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.healRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         }
     }
 
@@ -353,9 +361,14 @@ public static class PlantModuleArr
         public override void OnModuleAdd()
         {
             base.OnModuleAdd();
+            triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
+                Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+            triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
             triggerModule.colliderScript.gameObject.name = "AoeDamageRange";
-            triggerModule.colliderScript.SetCollider(typeof(CircleCollider2D), new Vector2(0, 0), new Vector2(), moduleData.damageRangeRadius,
-                OnTriggerEnter2D, OnTriggerExit2D);
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.damageRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
         }
 
         List<PestScript> pestsInRange = new List<PestScript>();
@@ -397,6 +410,9 @@ public static class PlantModuleArr
             moduleData.damageAmount = plantScript.plantSO.aoeDamageAmount[plantScript.plantData.currStageOfLife];
             moduleData.damageRangeRadius = plantScript.plantSO.aoeDamageRangeRadius[plantScript.plantData.currStageOfLife];
             moduleData.timerData.timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife];
+            // update the collider
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.damageRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
         }
     }
 

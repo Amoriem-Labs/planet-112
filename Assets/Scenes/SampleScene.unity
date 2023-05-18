@@ -1507,6 +1507,7 @@ GameObject:
   - component: {fileID: 798319915}
   - component: {fileID: 798319916}
   - component: {fileID: 798319917}
+  - component: {fileID: 798319919}
   - component: {fileID: 798319918}
   m_Layer: 0
   m_Name: GameManager
@@ -1569,6 +1570,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bdbd7567bb5a3040bad14beefca2e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &798319919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798319914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dea7c4d3c4b9fb4d80b57d7d2a763a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boxDetector: {fileID: 6201913644617933390, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
+  circleDetector: {fileID: 1151603408698572743, guid: 23a071354f47d994bbf8f3e30d6c4499, type: 3}
 --- !u!1001 &904687394
 PrefabInstance:
   m_ObjectHideFlags: 0

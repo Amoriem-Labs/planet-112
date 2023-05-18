@@ -8,6 +8,7 @@ public class PlayerScript : MonoBehaviour
 {
     public List<PlantScript> closePlants = new List<PlantScript>();
 
+    public TriggerResponse detectionRange;
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] GameObject plantObject;
@@ -31,14 +32,17 @@ public class PlayerScript : MonoBehaviour
             Debug.LogError("RigidBody2D is null!");
         }
 
-        GameObject childObject = new GameObject();
+        // Pre-existing or prefab instantiation is faster than run time script generation
+        /*GameObject childObject = new GameObject();
         childObject.transform.SetParent(gameObject.transform);
         childObject.transform.localPosition = Vector2.zero;
         childObject.layer = LayerMask.NameToLayer("Detectors");
         DynamicColliderScript colliderScript = childObject.AddComponent<DynamicColliderScript>();
         colliderScript.gameObject.name = "DetectionRange";
         colliderScript.SetCollider(typeof(BoxCollider2D), new Vector2(0, 0), new Vector2(2, 0.9f), 0,
-            OnDetectorTriggerEnter2D, OnDetectorTriggerExit2D);
+            OnDetectorTriggerEnter2D, OnDetectorTriggerExit2D);*/
+        detectionRange.onTriggerEnter2D = OnDetectorTriggerEnter2D;
+        detectionRange.onTriggerExit2D = OnDetectorTriggerExit2D;
     }
 
     private void OnEnable()

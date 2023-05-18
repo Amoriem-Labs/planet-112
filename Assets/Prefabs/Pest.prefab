@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 2430378976296134242}
   - component: {fileID: 7236383268425397960}
   - component: {fileID: 8585248060557819297}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Pest
   m_TagString: pest
   m_Icon: {fileID: 0}
