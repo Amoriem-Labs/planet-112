@@ -71,12 +71,19 @@ public class PlayerScript : MonoBehaviour
 
         velocity.x = moveInput.x * speed;
 
-        if (moveInput.y > 0 && IsGrounded()) // isGrounded makes sure you are on the ground
+        if (moveInput.y > 0 && IsGrounded()) // prevents you from double jumping
         {
             velocity.y = moveInput.y * jumpSpeed;
-        }
+            //rb.AddForce(new Vector2(0f, jumpSpeed), ForceMode2D.Impulse);
+        } 
+        // else if(!IsGrounded())
+        // {
+        //     velocity.y -= 0.2f;
+        // }
 
-        rb.velocity = velocity; //??
+        rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
+        Debug.Log("Velocity: " + rb.velocity);
+        Debug.Log("IsGrounded: " + IsGrounded());
     }
 
     private bool IsGrounded()
