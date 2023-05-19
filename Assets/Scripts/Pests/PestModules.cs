@@ -191,9 +191,10 @@ public static class PestModuleArr
         // Add other override methods as needed, and delegate to the appropriate module
     }
 
-
-    // Modeled from PestMovement. Read it for the commentaries
-
+    /// <summary>
+    /// Main Inheritable Module #4: Movement
+    /// </summary>
+    // Integrated from PestMovement. Read it for the commentaries
     [System.Serializable]
     public class MovementModuleData
     {
@@ -212,9 +213,9 @@ public static class PestModuleArr
     {
         public Transform targetPosition { get; set; }
 
-        public Vector3 targetOffsetFromCenter { get; set; }
+        public Vector3 targetOffsetFromCenter { get; set; } // stores the current offset from center of the spot pest is going to (used for decoy and actual)
 
-        public Vector3 coreOffsetCache { get; set; }
+        public Vector3 coreOffsetCache { get; set; } // stores the position off from center of the spot on plant the pest gonna attack
 
         protected Seeker seeker;
 
@@ -232,7 +233,7 @@ public static class PestModuleArr
 
         public bool resetPath { get; set; }
 
-        public bool decoyState { get; set; }
+        public bool decoyState { get; set; } // the pest is going to a secondary place first, then go to the plant. For diversity purposes.
 
         protected int consecUnreacheableCounter = 0;
 
@@ -275,7 +276,7 @@ public static class PestModuleArr
 
         private void OnPathComplete(Path p)
         {
-            // if (targetPosition != null) targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
+            if (targetPosition != null) targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
             if (!p.error)
             {
                 path = p;
@@ -317,8 +318,10 @@ public static class PestModuleArr
         // Getters and setters for parent to comm.
         
     }
+    #endregion
 
-    // Movement modules
+    /////////////////////////////////// ACTUAL MODULE IMPLEMENTATIONS BEGINS HERE ///////////////////////////////////////
+    // Integrated from BezierPattern. Read it for the commentaries
     public class BezierMovementModuleData : MovementModuleData
     {
 
@@ -377,27 +380,6 @@ public static class PestModuleArr
                 return;
             }
 
-            // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
-            /*int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle");
-            int plantLayer = 1 << LayerMask.NameToLayer("Plant");
-            int combinedLayerMask = obstacleLayer | plantLayer;
-            Vector2 rayDirection = pestScript.targetPlantScript.transform.position - pestScript.transform.position;
-            // RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, rayDirection, 1000, combinedLayerMask);
-            // Cast a circle from the current position in the direction of the target, ignoring all layers except Obstacle and Plant
-            float radius = 0.5f; // width of your "ray"... makeShift. TODO: projectile size comm?
-            int attackRange = 100; // makeShift.. TODO: try to find a way to use SO data.
-            RaycastHit2D hit = Physics2D.CircleCast(pestScript.transform.position, radius, rayDirection, attackRange, combinedLayerMask);
-            Debug.Log(hit.collider.gameObject);
-            if (hit.collider != null)
-            {
-                if (hit.collider.gameObject == pestScript.targetPlantScript.gameObject)
-                {
-                    Debug.Log("Found target plant!");
-                    pestScript.ResumePestModule(PestModuleEnum.SingleTargetProjectileAttack); // FOR NOW... testing
-                    this.enabled = false; // FOR NOW... testing
-                }
-            }*/
-
             if (t > 1 && pathDivisions.Count == 0 && keepPathing) // not during a movement pattern or sub pathing
             {
                 // Check in a loop if we are close enough to the current waypoint to switch to the next one.
@@ -441,7 +423,9 @@ public static class PestModuleArr
                             // Here we assume that the target is reached within attack range, so...
                             if (pestScript.TargetPlantInAttackRange()) // need to make sure this path is in range one
                             {
-                                if (!pestScript.targetPlantScript.inMotion) keepPathing = false; // naturally 
+                                decoyState = false; // Mandatory overwrite. Exit decoy state if found good angle.
+                                // targetOffsetFromCenter = coreOffsetCache; // Don't forget to find the target spot
+                                if (!pestScript.targetPlantScript.inMotion) keepPathing = false; // naturally into EndPathing(true) later.
                                 else EndPathing(false); // pest is still pathing / aka chasing the plant, but also attacking.
                             }
                             else if (targetPosition == null || consecUnreacheableCounter >= minAttemptUnreacheable) // new target time
@@ -590,9 +574,7 @@ public static class PestModuleArr
         }
     }
 
-    #endregion
 
-    /////////////////////////////////// ACTUAL MODULE IMPLEMENTATIONS BEGINS HERE ///////////////////////////////////////
     [System.Serializable]
     public class SingleTargetProjectileAttackModuleData : TimerModuleData
     {
@@ -617,6 +599,13 @@ public static class PestModuleArr
             };
         }
 
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+
+            pestScript.currAttackModule = PestModuleEnum.SingleTargetProjectileAttack;
+        }
+
         public override void PauseModule() // turn off attack
         {
             ResetTimer(); // resets attack cd
@@ -639,7 +628,37 @@ public static class PestModuleArr
         public override void OnCycleComplete()
         {
             // Launch projectile
-            Debug.Log("Projectile being generated... TODO");
+            if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
+            {
+                Debug.Log("Projectile being generated... TODO");
+                TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
+                    pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();
+                bullet.gameObject.name = "bullet";
+                var direction = (pestScript.targetPlantScript.transform.position + pestScript.currMovementModule.coreOffsetCache) - pestScript.transform.position;
+                bullet.SetProjectileStats(2, direction, OnBulletHit2D, OnBulletExit2D);
+            }
+        }
+
+        void OnBulletHit2D(Collider2D collider, TriggerProjectile bullet)
+        {
+            Debug.Log(collider.gameObject.name);
+            if (collider.gameObject != null)
+            {
+                if (pestScript.targetPlantScript != null && collider.gameObject == pestScript.targetPlantScript.gameObject)
+                {
+                    pestScript.targetPlantScript.TakeDamage(20);
+                    pestScript.DestroyForYou(bullet.gameObject);
+                }
+                else if (collider.gameObject.tag == "Obstacle" || collider.gameObject.tag == "Ground")
+                {
+                    pestScript.DestroyForYou(bullet.gameObject);
+                }
+            }
+        }
+
+        void OnBulletExit2D(Collider2D collider)
+        {
+
         }
     }
 

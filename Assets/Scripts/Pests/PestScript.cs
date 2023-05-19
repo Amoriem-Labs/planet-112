@@ -28,9 +28,6 @@ public class PestScript : MonoBehaviour
 
     public float attackRange = 2f;
 
-    [SerializeField] float attackRate = 2f;
-    [SerializeField] float attackDamage = 2f;
-
     // remove once big timer implemented
     float nextAttackTime;
 
@@ -330,7 +327,9 @@ public class PestScript : MonoBehaviour
             currentState = State.STATE_ATTACKING;
             targetPlantScript.attackers++;
             targetPlantScript.pestScripts.Add(this);
-            nextAttackTime = Time.time + attackRate;
+            // nextAttackTime = Time.time + attackRate;
+
+            ResumePestModule(currAttackModule);
         }
     }
 
@@ -351,6 +350,7 @@ public class PestScript : MonoBehaviour
         if (targetPlantScript == null)
         {
             currentState = State.STATE_SEARCHING;
+            PausePestModule(currAttackModule);
             return;
         }
 
@@ -358,7 +358,7 @@ public class PestScript : MonoBehaviour
         // Thought here:
         // As long as pest's AA off cd, it will attack the plant even if you hold it and run past it in range.
         // so this adds a bit of mecahnics yay
-        if (Time.time > nextAttackTime) // the attack is ready
+        /*if (Time.time > nextAttackTime) // the attack is ready
         {
             // reduce plant health if in attack range. Otherwise no.
             if (TargetPlantInAttackRange())
@@ -371,7 +371,7 @@ public class PestScript : MonoBehaviour
 
                 nextAttackTime = Time.time + attackRate; // reset aa timer
             }
-        }
+        }*/
 
         // TODO: figure out when should enter retreat state
         // set retreatPoint to corner of camera OR when we implement level bounds, to outside level bounds
@@ -382,7 +382,29 @@ public class PestScript : MonoBehaviour
     {
         if (targetPlantScript == null) return false; // destroyed during check
 
-        return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
+        // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
+        int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle");
+        int plantLayer = 1 << LayerMask.NameToLayer("Plant");
+        int combinedLayerMask = obstacleLayer | plantLayer;
+        Vector2 rayDirection = (targetPlantScript.transform.position + currMovementModule.coreOffsetCache) - transform.position;
+        // RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, rayDirection, 1000, combinedLayerMask);
+        // Cast a circle from the current position in the direction of the target, ignoring all layers except Obstacle and Plant
+        float radius = 0.5f; // width of your "ray"... makeShift. TODO: projectile size comm?
+        int attackRange = 100; // makeShift.. TODO: try to find a way to use SO data.
+        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
+        // Debug.Log(hit.collider.gameObject);
+        if (hit.collider != null)
+        {
+            if (hit.collider.gameObject == targetPlantScript.gameObject)
+            {
+                Debug.Log("Found target plant in sight!!!");
+                return true;
+            }
+        }
+
+        return false;
+
+        // return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
     }
 
     void DuringRetreat()
@@ -446,6 +468,11 @@ public class PestScript : MonoBehaviour
         }
     }
 
+    public void PausePestModule(PestModuleEnum module)
+    {
+        pestModules[module].PauseModule();
+    }
+
     public void ResumePestModule(PestModuleEnum module)
     {
         pestModules[module].ResumeModule();
@@ -475,6 +502,11 @@ public class PestScript : MonoBehaviour
                 AddPestModule(module, pestData.pestModuleData[module]);
             }
         }
+    }
+
+    public void DestroyForYou(GameObject gameObject)
+    {
+        Destroy(gameObject);
     }
 
     public void OnDeath()

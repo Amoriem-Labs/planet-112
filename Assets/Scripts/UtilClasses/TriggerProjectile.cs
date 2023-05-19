@@ -9,10 +9,10 @@ public class TriggerProjectile : MonoBehaviour
 {
     private float speed = 0f;
     private Vector2 direction;
-    private Action<Collider2D> onTriggerEnter2D;
+    private Action<Collider2D, TriggerProjectile> onTriggerEnter2D;
     private Action<Collider2D> onTriggerExit2D;
 
-    public void SetProjectileStats(float speed, Vector2 direction, Action<Collider2D> onTriggerEnter2D, Action<Collider2D> onTriggerExit2D)
+    public void SetProjectileStats(float speed, Vector2 direction, Action<Collider2D, TriggerProjectile> onTriggerEnter2D, Action<Collider2D> onTriggerExit2D)
     {
         this.speed = speed;
         this.direction = direction;
@@ -26,7 +26,7 @@ public class TriggerProjectile : MonoBehaviour
         {
             if (onTriggerEnter2D != null)
             {
-                onTriggerEnter2D(collider);
+                onTriggerEnter2D(collider, this);
             }
         }
     }
