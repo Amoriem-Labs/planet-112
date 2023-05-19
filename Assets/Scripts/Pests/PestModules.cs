@@ -227,7 +227,7 @@ public static class PestModuleArr
 
         protected int currentWaypoint;
 
-        protected bool reachedEndOfPath;
+        // protected bool reachedEndOfPath;
 
         public bool keepPathing { get; set; } // true to activate perma pathing, false to keep the path one-time
 
@@ -238,8 +238,6 @@ public static class PestModuleArr
         protected int consecUnreacheableCounter = 0;
 
         protected int minAttemptUnreacheable = 10; // basically how many times the pest will try before giving up
-
-        protected PestModuleEnum currMovementModule;
 
         public MovementModule(PestScript pestScript)
         {
@@ -256,7 +254,7 @@ public static class PestModuleArr
         public override void PauseModule() // TODO: might not be enough...
         {
             path = null;
-            // keepPathing = false; // hmmmMMMMMMMMMm
+            keepPathing = false; // hmmmMMMMMMMMMm
         }
 
         public override void ResumeModule()
@@ -264,7 +262,7 @@ public static class PestModuleArr
             currentWaypoint = 0;
             keepPathing = true; // if this is set to false, then pest won't move at start until it's true.
             resetPath = false;
-            reachedEndOfPath = false;
+            // reachedEndOfPath = false;
             UpdatePath();
         }
 
@@ -363,7 +361,6 @@ public static class PestModuleArr
 
         public override void ResumeModule()
         {
-            currMovementModule = PestModuleEnum.BezierMovement;
             pestScript.currMovementModule = this;
 
             pathDivisions = new Queue<Vector2>();
@@ -386,7 +383,7 @@ public static class PestModuleArr
                 // We do this in a loop because many waypoints might be close to each other and we may reach
                 // several of them in the same frame.
                 float distanceToWaypoint;
-                reachedEndOfPath = false;
+                // reachedEndOfPath = false;
                 // The distance to the next waypoint in the path
                 while (true)
                 {
@@ -404,11 +401,11 @@ public static class PestModuleArr
                         {
                             // Set a status variable to indicate that the agent has reached the end of the path.
                             // You can use this to trigger some special code if your game requires that.
-                            reachedEndOfPath = true;
+                            // reachedEndOfPath = true;
 
                             // are you trapped trying to reach the unreacheable?
                             if (targetPosition != null &&
-                                Vector2.Distance(path.vectorPath[currentWaypoint], (targetPosition.position + targetOffsetFromCenter))
+                                Vector2.Distance(path.vectorPath[currentWaypoint], targetPosition.position + targetOffsetFromCenter)
                                 > pestScript.attackRange)
                             {
                                 consecUnreacheableCounter++;
@@ -630,13 +627,17 @@ public static class PestModuleArr
             // Launch projectile
             if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
             {
-                Debug.Log("Projectile being generated... TODO");
+                Debug.Log("Projectile being generated...");
                 TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
                     pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();
                 bullet.gameObject.name = "bullet";
                 var direction = (pestScript.targetPlantScript.transform.position + pestScript.currMovementModule.coreOffsetCache) - pestScript.transform.position;
                 bullet.SetProjectileStats(2, direction, OnBulletHit2D, OnBulletExit2D);
             }
+            // else
+            // {
+            //    Debug.Log(pestScript.name + " Not in Range: " + pestScript.targetPlantScript.transform.position);
+            // }
         }
 
         void OnBulletHit2D(Collider2D collider, TriggerProjectile bullet)
@@ -646,7 +647,7 @@ public static class PestModuleArr
             {
                 if (pestScript.targetPlantScript != null && collider.gameObject == pestScript.targetPlantScript.gameObject)
                 {
-                    pestScript.targetPlantScript.TakeDamage(20);
+                    pestScript.targetPlantScript.TakeDamage(50);
                     pestScript.DestroyForYou(bullet.gameObject);
                 }
                 else if (collider.gameObject.tag == "Obstacle" || collider.gameObject.tag == "Ground")

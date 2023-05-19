@@ -26,7 +26,7 @@ public class PestScript : MonoBehaviour
 
     public PestData pestData; // contains all the dynamic data of a pest to be saved, a reference to PD 
 
-    public float attackRange = 2f;
+    public float attackRange = 2f; // 2f for meele-ish // can't sync... trying to create melee but finding ranged on the way effect
 
     // remove once big timer implemented
     float nextAttackTime;
@@ -191,12 +191,12 @@ public class PestScript : MonoBehaviour
             // 2. we can use blockuntilcalculated to get a path immediately instead of spreading it out over multiple
             // frames, so we can run a for loop with indiv. path dist and weight calculation in one frame. Upside: 
             // more new plant coverage, downside: much slower. Gonna go with approach 1 for now.
-            currentPlantCache = FindObjectsOfType<PlantScript>().ToList(); // replace with direct grabbing from plant storage later
+            currentPlantCache = FindObjectsOfType<PlantScript>().ToList(); // TODO: replace with direct grabbing from plant storage later!!!
 
             // Searches all paths. Since boolean is set to true, not just returning the shortest one.
             if (currentPlantCache.Count != 0)
             {
-                StopAllCoroutines(); // cancel all prev corou
+                StopAllCoroutines(); // cancel all prev corou. WARNING: does this cancel other modules too?
                 coroutineQueue.Clear();
                 queryCount = 0;
                 expectedQueryCount = 69; // set all the searching states back to default.
@@ -383,15 +383,17 @@ public class PestScript : MonoBehaviour
         if (targetPlantScript == null) return false; // destroyed during check
 
         // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
-        int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle");
+        int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle"); // move them out. BitSHift is expensive. TODO...
+        int groundLayer = 1 << LayerMask.NameToLayer("Ground");
         int plantLayer = 1 << LayerMask.NameToLayer("Plant");
-        int combinedLayerMask = obstacleLayer | plantLayer;
+        int combinedLayerMask = obstacleLayer | plantLayer | groundLayer;
         Vector2 rayDirection = (targetPlantScript.transform.position + currMovementModule.coreOffsetCache) - transform.position;
         // RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, rayDirection, 1000, combinedLayerMask);
         // Cast a circle from the current position in the direction of the target, ignoring all layers except Obstacle and Plant
-        float radius = 0.5f; // width of your "ray"... makeShift. TODO: projectile size comm?
-        int attackRange = 100; // makeShift.. TODO: try to find a way to use SO data.
-        RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
+        float radius = 0.2f; // width of your "ray"... makeShift. TODO: projectile size comm?
+        float attackRange = 100f; // makeShift.. TODO: try to find a way to use SO data.
+        // Single cast has problem: another plant blocking the ray from reaching the target plant. So has to track all
+        /*RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
         // Debug.Log(hit.collider.gameObject);
         if (hit.collider != null)
         {
@@ -399,6 +401,22 @@ public class PestScript : MonoBehaviour
             {
                 Debug.Log("Found target plant in sight!!!");
                 return true;
+            }
+        }*/
+        // So we need to check everything.
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.gameObject == targetPlantScript.gameObject)
+            {
+                Debug.Log("Found target plant in sight!!!");
+                return true;
+            }
+            // If the hit is an obstacle, then the target plant is not in sight. Objects are returned in order of contact.
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacle") ||
+                    hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                break;
             }
         }
 
