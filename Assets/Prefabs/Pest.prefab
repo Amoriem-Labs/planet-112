@@ -94,6 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8519673207704955755}
   - component: {fileID: 2430378976296134242}
+  - component: {fileID: 6937737129545854908}
   - component: {fileID: 7236383268425397960}
   - component: {fileID: 8585248060557819297}
   m_Layer: 11
@@ -132,6 +133,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pestSO: {fileID: 11400000, guid: 14b0751e98403004a8ac0af316f2aaa5, type: 2}
+  currAttackModule: 0
+  pestData:
+    location: {x: 0, y: 0}
+    currStageOfLife: 0
+    pestName: 0
+    currentHealth: 0
   speed: 5
   attackRange: 0.1
   attackRate: 2
@@ -142,6 +149,34 @@ MonoBehaviour:
   expectedQueryCount: 69
   queryStarted: 0
   queryFinished: 0
+--- !u!114 &6937737129545854908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613177303416706075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!58 &7236383268425397960
 CircleCollider2D:
   m_ObjectHideFlags: 0
