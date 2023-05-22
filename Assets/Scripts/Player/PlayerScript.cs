@@ -11,6 +11,8 @@ public class PlayerScript : MonoBehaviour
     public TriggerResponse detectionRange;
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
+    [SerializeField] float slidingVelocityMultiplier = 0.5f;
+    [SerializeField] float sideRay; //set to 0.52f
     [SerializeField] GameObject plantObject;
 
     Controls controls;
@@ -31,6 +33,8 @@ public class PlayerScript : MonoBehaviour
         {
             Debug.LogError("RigidBody2D is null!");
         }
+
+        // Debug.Log(null || null);
 
         // Pre-existing or prefab instantiation is faster than run time script generation
         /*GameObject childObject = new GameObject();
@@ -81,9 +85,21 @@ public class PlayerScript : MonoBehaviour
         //     velocity.y -= 0.2f;
         // }
 
+        // if (!IsGrounded()) // Apply gravity only if the player is not grounded
+        // {
+        //     velocity.y += Physics2D.gravity.y * Time.fixedDeltaTime;
+        // }
+
+        if (!IsGrounded() && IsTouchingWall()) // Apply sliding velocity if the player is not grounded and touching a wall
+        {
+            rb.velocity = new Vector2(rb.velocity.x * slidingVelocityMultiplier, rb.velocity.y);
+            // velocity.y -= Physics2D.gravity * Time.deltaTime;
+        }
+
         rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
-        Debug.Log("Velocity: " + rb.velocity);
-        Debug.Log("IsGrounded: " + IsGrounded());
+        // Debug.Log("Velocity: " + rb.velocity);
+        // Debug.Log("IsGrounded: " + IsGrounded());
+        Debug.Log("IsTouchingWall: " + IsTouchingWall());
     }
 
     private bool IsGrounded()
@@ -93,6 +109,33 @@ public class PlayerScript : MonoBehaviour
 
         return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
     }
+
+    private bool IsTouchingWall()
+    {
+        RaycastHit2D wallRightCheck = Physics2D.Raycast(transform.position, Vector2.right, sideRay, 8);
+        RaycastHit2D wallLeftCheck = Physics2D.Raycast(transform.position, Vector2.left, sideRay, 8);
+
+        Debug.Log("wallRightCheck: " + wallRightCheck.collider);
+        Debug.Log("wallLeftCheck: " + wallLeftCheck.collider);
+        Debug.Log("wallRightCheck.collider.gameObject.CompareTag(\"Obstacle\"): " + wallRightCheck.collider.gameObject.CompareTag("Obstacle")); // without this line and the one below it the player still gets stuck...
+        Debug.Log("wallLeftCheck.collider.gameObject.CompareTag(\"Obstacle\"): " + wallLeftCheck.collider.gameObject.CompareTag("Obstacle"));
+
+        return (wallRightCheck.collider != null || wallLeftCheck.collider != null) && (wallRightCheck.collider.gameObject.CompareTag("Obstacle") || wallLeftCheck.collider.gameObject.CompareTag("Obstacle"));
+    }
+
+    // private bool IsTouchingWall()
+    // {
+    //     RaycastHit2D wallRightCheck = Physics2D.Raycast(transform.position, Vector2.right, sideRay, 8);
+    //     RaycastHit2D wallLeftCheck = Physics2D.Raycast(transform.position, Vector2.left, sideRay, 8);
+
+    //     Debug.Log("wallRightCheck: " + wallRightCheck.collider);
+    //     Debug.Log("wallLeftCheck: " + wallLeftCheck.collider);
+    //     Debug.Log("wallRightCheck.collider?.gameObject.CompareTag(\"Obstacle\"): " + (wallRightCheck.collider?.gameObject.CompareTag("Obstacle") ?? false));
+    //     Debug.Log("wallLeftCheck.collider?.gameObject.CompareTag(\"Obstacle\"): " + (wallLeftCheck.collider?.gameObject.CompareTag("Obstacle") ?? false));
+
+    //     return (wallRightCheck.collider?.gameObject.CompareTag("Obstacle") ?? false) || (wallLeftCheck.collider?.gameObject.CompareTag("Obstacle") ?? false);
+    // }
+
 
     public PlantScript findClosestPlant()
     {

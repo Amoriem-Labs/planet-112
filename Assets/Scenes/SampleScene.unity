@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 296307584}
   m_Layer: 6
   m_Name: TestObstacle
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2144,6 +2144,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 418788641033362184, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 980ac7089d6ee43058ba432fe9358bc5, type: 2}
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -2187,6 +2191,14 @@ PrefabInstance:
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: sideRay
+      value: 0.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 4954843188881702300, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7465616354576467517, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_SortingOrder
