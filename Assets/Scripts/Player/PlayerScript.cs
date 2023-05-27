@@ -89,7 +89,7 @@ public class PlayerScript : MonoBehaviour
         // {
         //     velocity.y += Physics2D.gravity.y * Time.fixedDeltaTime;
         // }
-
+        Debug.Log("IsGrounded: " + IsGrounded());
         if (!IsGrounded() && IsTouchingWall()) // Apply sliding velocity if the player is not grounded and touching a wall
         {
             rb.velocity = new Vector2(rb.velocity.x * slidingVelocityMultiplier, rb.velocity.y);
@@ -99,7 +99,8 @@ public class PlayerScript : MonoBehaviour
         rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
         // Debug.Log("Velocity: " + rb.velocity);
         // Debug.Log("IsGrounded: " + IsGrounded());
-        Debug.Log("IsTouchingWall: " + IsTouchingWall());
+        // Debug.Log("IsTouchingWallenfvkjelkekljlkejblkefjlk");
+        // Debug.Log("IsTouchingWall: " + IsTouchingWall());
     }
 
     private bool IsGrounded()
@@ -117,6 +118,9 @@ public class PlayerScript : MonoBehaviour
 
         Debug.Log("wallRightCheck: " + wallRightCheck.collider);
         Debug.Log("wallLeftCheck: " + wallLeftCheck.collider);
+        Debug.Log("IsGrounded: " + IsGrounded());
+        Debug.Log("Does wallright exist: " + (wallRightCheck.collider != null));
+        Debug.Log("Does wallleft exist: " + (wallLeftCheck.collider != null));
         Debug.Log("wallRightCheck.collider.gameObject.CompareTag(\"Obstacle\"): " + wallRightCheck.collider.gameObject.CompareTag("Obstacle")); // without this line and the one below it the player still gets stuck...
         Debug.Log("wallLeftCheck.collider.gameObject.CompareTag(\"Obstacle\"): " + wallLeftCheck.collider.gameObject.CompareTag("Obstacle"));
 
