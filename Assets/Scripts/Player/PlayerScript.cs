@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -20,11 +21,15 @@ public class PlayerScript : MonoBehaviour
     SpriteRenderer spriteRenderer;
     [SerializeField] float groundedRay;
 
+    private bool inventoryIsLoaded;
+    GameObject background; 
+
     private void Awake()
     {
         controls = new Controls();
         playerInput = GetComponent<PlayerInput>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        inventoryIsLoaded = false;
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -50,6 +55,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Enable();
         controls.Main.Interact.started += OnInteract;
         controls.Main.NewPlant.started += GeneratePlant;
+        controls.Main.Inventory.started += OnInventory;
     }
 
     private void OnDisable()
@@ -57,26 +63,30 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Disable();
         controls.Main.Interact.started -= OnInteract;
         controls.Main.NewPlant.started -= GeneratePlant;
+        controls.Main.Inventory.started -= OnInventory;
     }
 
     private void FixedUpdate()
     {
         // Get character movement
-        Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
+        // If statement ensures that player cannot move while inventory screen is on
+        if (!inventoryIsLoaded){
+            Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
 
-        // Flip sprite according to movement
-        if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
+            // Flip sprite according to movement
+            if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
 
-        Vector2 velocity = rb.velocity;
+            Vector2 velocity = rb.velocity;
 
-        velocity.x = moveInput.x * speed;
+            velocity.x = moveInput.x * speed;
 
-        if (moveInput.y > 0 && IsGrounded())
-        {
-            velocity.y = moveInput.y * jumpSpeed;
+            if (moveInput.y > 0 && IsGrounded())
+            {
+                velocity.y = moveInput.y * jumpSpeed;
+            }
+
+            rb.velocity = velocity;
         }
-
-        rb.velocity = velocity;
     }
 
     private bool IsGrounded()
@@ -106,36 +116,53 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        //closestPlant.TakeDamage(50);
-        //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
-        if (plantInHand) // has a plant in hand
-        {
-            if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+        if (!inventoryIsLoaded){
+            //closestPlant.TakeDamage(50);
+            //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
+            if (plantInHand) // has a plant in hand
             {
-                plantInHand = null;
+                if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+                {
+                    plantInHand = null;
+                }
+                else
+                {
+                    Debug.Log("Can't place it here; not enough space.");
+                }
             }
-            else
+            else // no plant in hand
             {
-                Debug.Log("Can't place it here; not enough space.");
-            }
-        }
-        else // no plant in hand
-        {
-            PlantScript closestPlant = findClosestPlant();
-            if (closestPlant) // Could be null, gotta check
-            {
-                closestPlant.LiftPlant(transform);
-                plantInHand = closestPlant;
+                PlantScript closestPlant = findClosestPlant();
+                if (closestPlant) // Could be null, gotta check
+                {
+                    closestPlant.LiftPlant(transform);
+                    plantInHand = closestPlant;
+                }
             }
         }
     }
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
+        if (!inventoryIsLoaded){
+            GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
 
-        //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
+            //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
+        }
+    }
 
+    public void OnInventory(InputAction.CallbackContext context)
+    {
+        // if inventory is not open, load InventoryUI scene
+        if (!inventoryIsLoaded){
+            SceneManager.LoadScene("InventoryUI", LoadSceneMode.Additive);
+            inventoryIsLoaded = true;
+        }
+        // if inventory is open, unload InventoryUI scene
+        else {
+            SceneManager.UnloadScene("InventoryUI");
+            inventoryIsLoaded = false;
+        }
     }
 
     // Player interaction.
@@ -146,11 +173,23 @@ public class PlayerScript : MonoBehaviour
             closePlants.Add(collision.gameObject.GetComponent<PlantScript>());
         }
     }
+
     private void OnDetectorTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "plant")
         {
             closePlants.Remove(collision.gameObject.GetComponent<PlantScript>());
+        }
+    }
+
+    // TODO: need to ask Nick how to make a detectionRange smaller for collecting items rather than finding closestPlant
+    private void OnTriggerEnter2D(Collider2D collision){
+        // If player collides with collectible, the collect method is called for that collectible.
+        if (collision.gameObject.tag == "collectible"){
+            ICollectible collectible = collision.GetComponent<ICollectible>();
+            if (collectible != null){
+                collectible.Collect();
+            }
         }
     }
 }
