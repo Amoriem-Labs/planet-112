@@ -160,7 +160,7 @@ public class PlayerScript : MonoBehaviour
         }
         // if inventory is open, unload InventoryUI scene
         else {
-            SceneManager.UnloadScene("InventoryUI");
+            SceneManager.UnloadSceneAsync("InventoryUI");
             inventoryIsLoaded = false;
         }
     }
