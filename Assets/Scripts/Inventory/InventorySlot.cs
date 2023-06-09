@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour
+public class InventorySlot : MonoBehaviour, IDropHandler
 {
     public Image icon;
     public TextMeshProUGUI stackSizeText;
@@ -44,5 +45,12 @@ public class InventorySlot : MonoBehaviour
 
     public void UndisplayHoverText(){
         hoverPanel.SetActive(false);
+    }
+
+    // Drops an item into a new inventory slot upon dragging
+    public void OnDrop(PointerEventData eventData){
+        GameObject dropped = eventData.pointerDrag;
+        DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
+        draggableItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
     }
 }
