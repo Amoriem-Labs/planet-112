@@ -5,52 +5,53 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IDropHandler
+public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public Image icon;
-    public TextMeshProUGUI stackSizeText;
     public GameObject hoverPanel;
-    public TextMeshProUGUI hoverText;
-    
+    private Transform slotTransform;
+
     void Awake(){
-        icon.enabled = false;
-        stackSizeText.enabled = false;
-        hoverPanel.SetActive(false);
+        slotTransform = transform.GetChild(0);
     }
 
     public void ClearSlot(){
-        icon.enabled = false;
-        stackSizeText.enabled = false;
-        hoverPanel.SetActive(false);
-    }
-
-    public void DrawSlot(InventoryItem item){
-        if (item == null){
-            ClearSlot();
+        if (slotTransform.childCount > 0){
+            Transform itemTransform = slotTransform.GetChild(0);
+            Destroy(itemTransform.gameObject);
         }
 
-        icon.sprite = item.itemData.icon;
-        stackSizeText.text = item.stackSize.ToString();
-        hoverText.text = item.itemData.hoverText.ToString();
-
-        icon.enabled = true;
-        stackSizeText.enabled = true;
-    }
-
-    public void DisplayHoverText(){
-        if (icon.enabled){
-            hoverPanel.SetActive(true);
+        if (transform.childCount > 1){
+            hoverPanel.SetActive(false);
         }
     }
 
-    public void UndisplayHoverText(){
-        hoverPanel.SetActive(false);
+    public void DrawSlot(GameObject inventoryItemPrefab){
+        Instantiate(inventoryItemPrefab, slotTransform);
     }
 
-    // Drops an item into a new inventory slot upon dragging
+    // Drops an item into a current inventory slot upon dragging. If the current slot already
+    //   has an item, then swap the two items.
     public void OnDrop(PointerEventData eventData){
         GameObject dropped = eventData.pointerDrag;
-        DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
-        draggableItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
+        InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
+        if (slotTransform.childCount > 0){
+            InventoryItem oldInventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
+            oldInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
+            oldInventoryItem.parentAfterDrag = droppedInventoryItem.parentAfterDrag;
+        }
+        droppedInventoryItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
+    }
+
+    // Displays hover text upon pointer entering slot
+    public void OnPointerEnter(PointerEventData eventData){
+        if (slotTransform.childCount > 0){
+            hoverPanel.SetActive(true);
+            hoverPanel.GetComponentInChildren<TextMeshProUGUI>().text = slotTransform.GetComponentInChildren<InventoryItem>().hoverText;
+        }
+    }
+
+    // Hides hover text upon pointer exiting slot
+    public void OnPointerExit(PointerEventData eventData){
+        hoverPanel.SetActive(false);
     }
 }

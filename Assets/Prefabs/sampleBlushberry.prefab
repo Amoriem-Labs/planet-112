@@ -8,10 +8,11 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 917211971986225219}
+  - component: {fileID: 8970337265983984297}
   - component: {fileID: 917211971986225216}
   - component: {fileID: 917211971986225217}
   - component: {fileID: 917211971986225218}
+  - component: {fileID: 6864992450963421323}
   m_Layer: 0
   m_Name: sampleBlushberry
   m_TagString: collectible
@@ -19,21 +20,26 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &917211971986225219
-Transform:
+--- !u!224 &8970337265983984297
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 917211971986225222}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.02, y: 0.29, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.04184128, y: 0.04229646, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 7.02, y: 0.29}
+  m_SizeDelta: {x: 11.9, y: 10.2}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &917211971986225216
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -98,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd66b255c71445d4da8db0d10ab51a2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fruitData: {fileID: 11400000, guid: e5b96792205b9b947906dc1c3954b957, type: 2}
+  fruitInventoryPrefab: {fileID: 3386227779947726772, guid: a6b0eda9699f28e4f8080281719b7fc6, type: 3}
 --- !u!61 &917211971986225218
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -125,3 +131,11 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 11.9, y: 10.2}
   m_EdgeRadius: 0
+--- !u!222 &6864992450963421323
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917211971986225222}
+  m_CullTransparentMesh: 1

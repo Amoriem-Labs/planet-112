@@ -5,13 +5,13 @@ using System;
 
 public class Fruit : MonoBehaviour, ICollectible
 {
-    public delegate void HandleFruitCollected(ItemData itemData);
+    public delegate void HandleFruitCollected(GameObject fruitInventoryPrefab);
     public static event HandleFruitCollected OnFruitCollected;
-    public ItemData fruitData;
+    public GameObject fruitInventoryPrefab;
 
     public void Collect(){
         Destroy(gameObject);
-        OnFruitCollected?.Invoke(fruitData);
+        OnFruitCollected?.Invoke(fruitInventoryPrefab);
         // TODO: play audio when collectible is collected
     }
 }
