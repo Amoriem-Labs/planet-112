@@ -12,16 +12,9 @@ public class InventoryManager : MonoBehaviour
     void Awake(){
         ResetInventory();
         draggingItem = false;
-    }
-
-    private void OnEnable(){
         Fruit.OnFruitCollected += UpdateInventory;
         Weapon.OnWeaponCollected += UpdateInventory;
-    }
-
-    private void OnDisable(){
-        Fruit.OnFruitCollected -= UpdateInventory;
-        Weapon.OnWeaponCollected -= UpdateInventory;
+        transform.parent.gameObject.SetActive(false);
     }
 
     void ResetInventory(){

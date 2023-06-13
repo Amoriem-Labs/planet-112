@@ -21,8 +21,9 @@ public class PlayerScript : MonoBehaviour
     SpriteRenderer spriteRenderer;
     [SerializeField] float groundedRay;
 
-    private bool inventoryIsLoaded;
+    public bool inventoryIsLoaded;
     GameObject background; 
+    public GameObject inventoryCanvas;
 
     private void Awake()
     {
@@ -155,12 +156,12 @@ public class PlayerScript : MonoBehaviour
     {
         // if inventory is not open, load InventoryUI scene
         if (!inventoryIsLoaded){
-            SceneManager.LoadScene("InventoryUI", LoadSceneMode.Additive);
+            inventoryCanvas.SetActive(true);
             inventoryIsLoaded = true;
         }
         // if inventory is open, unload InventoryUI scene
         else {
-            SceneManager.UnloadSceneAsync("InventoryUI");
+            inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
         }
     }
