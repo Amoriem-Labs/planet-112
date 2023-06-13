@@ -8,7 +8,8 @@ using UnityEngine.EventSystems;
 public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject hoverPanel;
-    private Transform slotTransform;
+    public Transform slotTransform;
+    public int inventorySlotIndex;
 
     void Awake(){
         slotTransform = transform.GetChild(0);
@@ -26,7 +27,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     }
 
     public void DrawSlot(GameObject inventoryItemPrefab){
-        Instantiate(inventoryItemPrefab, slotTransform);
+        GameObject newInventoryItem = Instantiate(inventoryItemPrefab, slotTransform);
+        newInventoryItem.GetComponent<InventoryItem>().AddToStack();
     }
 
     // Drops an item into a current inventory slot upon dragging. If the current slot already
@@ -34,12 +36,18 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     public void OnDrop(PointerEventData eventData){
         GameObject dropped = eventData.pointerDrag;
         InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
+        
         if (slotTransform.childCount > 0){
             InventoryItem oldInventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
             oldInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
             oldInventoryItem.parentAfterDrag = droppedInventoryItem.parentAfterDrag;
         }
         droppedInventoryItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
+        droppedInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
+
+        InventoryManager inventoryManager = transform.GetComponentInParent<InventoryManager>();
+        HotbarManagerScript hotbarManager = inventoryManager.hotbar.GetComponent<HotbarManagerScript>();
+        hotbarManager.UpdateHotbar();
     }
 
     // Displays hover text upon pointer entering slot

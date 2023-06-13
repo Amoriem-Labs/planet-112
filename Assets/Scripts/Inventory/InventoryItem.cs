@@ -12,6 +12,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 {
     public string displayName;
     public Image image;
+    public Sprite sprite;
     public bool stackable;
     public int stackSize;
     public TextMeshProUGUI stackSizeText;
@@ -20,25 +21,22 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public Transform rootInventorySlot;
     private bool draggingItem;
+    private bool thisBeingDragged;
+    public bool isHotbarItem;
 
     void Awake(){
         rootInventorySlot = transform.parent.parent;
         draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
         hoverPanel.SetActive(false);
-        if (stackable){
-            stackSize++;
-            stackSizeText.text = stackSize.ToString();
-        }
-        else {
-            stackSize = 1;
-            stackSizeText.text = "";
-        }
     }
 
     public void AddToStack(){
         if (stackable){
             stackSize++;
             stackSizeText.text = stackSize.ToString();
+        } else {
+            stackSize = 1;
+            stackSizeText.text = "";
         }
     }
 
@@ -59,6 +57,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetAsLastSibling();
         image.raycastTarget = false;
         draggingItem = true;
+        thisBeingDragged = true;
     }
 
     public void OnDrag(PointerEventData eventData){
@@ -71,16 +70,18 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.SetParent(parentAfterDrag);
         image.raycastTarget = true;
         draggingItem = false;
+        thisBeingDragged = false;
+        rootInventorySlot = transform.parent.parent;
     }
 
     public void OnPointerEnter(PointerEventData eventData){
-        if (draggingItem){
+        if (draggingItem && !thisBeingDragged){
             image.raycastTarget = false;
         }
     }
 
     public void OnPointerExit(PointerEventData eventData){
-        if (draggingItem){
+        if (draggingItem && !thisBeingDragged){
             image.raycastTarget = true;
         }
     }
