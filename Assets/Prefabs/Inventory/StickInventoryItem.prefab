@@ -236,3 +236,4 @@ MonoBehaviour:
   parentAfterDrag: {fileID: 0}
   rootInventorySlot: {fileID: 0}
   isHotbarItem: 0
+  linkedItemPrefab: {fileID: 7186225590548099585, guid: f7b3ccd8a9f270e44aa6bb6d9034c138, type: 3}

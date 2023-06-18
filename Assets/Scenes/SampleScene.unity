@@ -680,7 +680,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 441963043}
-  y_offset: -1.76
 --- !u!1001 &153443694
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5134,6 +5133,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: hotbarPanel
+      value: 
+      objectReference: {fileID: 1678808355}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: inventoryPanel
       value: 

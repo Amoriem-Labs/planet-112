@@ -62,6 +62,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Hotbar"",
+                    ""type"": ""Button"",
+                    ""id"": ""67e363b3-09d1-4bfc-bf7d-bbdf4e455806"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +216,105 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Inventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3404ca7e-8bcd-4594-83db-cd39ee7a88d8"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9f3c4f5e-4656-4307-835b-4378bd135c2e"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ede3eb40-369b-40f4-9f21-315e1b4be845"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8b661333-0b20-4288-a9f8-0e04d8c3958e"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8d1e4827-6dd4-4f34-8478-a19aa703c563"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dbe4f336-aa1f-430b-9c22-c7daea832e58"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e6f06efe-fe8e-43d4-b975-245c188166bb"",
+                    ""path"": ""<Keyboard>/7"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3c688907-0cb5-44bd-9ce3-ad7f06fcc42f"",
+                    ""path"": ""<Keyboard>/8"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""adea9256-4943-42f0-bebb-36708bd18383"",
+                    ""path"": ""<Keyboard>/9"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Hotbar"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -225,6 +333,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Main_Interact = m_Main.FindAction("Interact", throwIfNotFound: true);
         m_Main_NewPlant = m_Main.FindAction("NewPlant", throwIfNotFound: true);
         m_Main_Inventory = m_Main.FindAction("Inventory", throwIfNotFound: true);
+        m_Main_Hotbar = m_Main.FindAction("Hotbar", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -288,6 +397,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_Interact;
     private readonly InputAction m_Main_NewPlant;
     private readonly InputAction m_Main_Inventory;
+    private readonly InputAction m_Main_Hotbar;
     public struct MainActions
     {
         private @Controls m_Wrapper;
@@ -296,6 +406,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Main_Interact;
         public InputAction @NewPlant => m_Wrapper.m_Main_NewPlant;
         public InputAction @Inventory => m_Wrapper.m_Main_Inventory;
+        public InputAction @Hotbar => m_Wrapper.m_Main_Hotbar;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -317,6 +428,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Inventory.started -= m_Wrapper.m_MainActionsCallbackInterface.OnInventory;
                 @Inventory.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnInventory;
                 @Inventory.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnInventory;
+                @Hotbar.started -= m_Wrapper.m_MainActionsCallbackInterface.OnHotbar;
+                @Hotbar.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnHotbar;
+                @Hotbar.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnHotbar;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -333,6 +447,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Inventory.started += instance.OnInventory;
                 @Inventory.performed += instance.OnInventory;
                 @Inventory.canceled += instance.OnInventory;
+                @Hotbar.started += instance.OnHotbar;
+                @Hotbar.performed += instance.OnHotbar;
+                @Hotbar.canceled += instance.OnHotbar;
             }
         }
     }
@@ -352,5 +469,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnNewPlant(InputAction.CallbackContext context);
         void OnInventory(InputAction.CallbackContext context);
+        void OnHotbar(InputAction.CallbackContext context);
     }
 }

@@ -14,4 +14,8 @@ public class Fruit : MonoBehaviour, ICollectible
         OnFruitCollected?.Invoke(fruitInventoryPrefab);
         // TODO: play audio when collectible is collected
     }
+
+    public void Use(){
+        print("using fruit");
+    }
 }

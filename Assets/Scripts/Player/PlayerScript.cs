@@ -24,6 +24,7 @@ public class PlayerScript : MonoBehaviour
     public bool inventoryIsLoaded;
     GameObject background; 
     public GameObject inventoryCanvas;
+    public GameObject hotbarPanel;
 
     private void Awake()
     {
@@ -57,6 +58,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started += OnInteract;
         controls.Main.NewPlant.started += GeneratePlant;
         controls.Main.Inventory.started += OnInventory;
+        controls.Main.Hotbar.started += OnHotbar;
     }
 
     private void OnDisable()
@@ -65,6 +67,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started -= OnInteract;
         controls.Main.NewPlant.started -= GeneratePlant;
         controls.Main.Inventory.started -= OnInventory;
+        controls.Main.Hotbar.started -= OnHotbar;
     }
 
     private void FixedUpdate()
@@ -163,6 +166,21 @@ public class PlayerScript : MonoBehaviour
         else {
             inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
+        }
+    }
+
+    // Calls the Use() method for the item in hotbar slot whose key was pressed.
+    public void OnHotbar(InputAction.CallbackContext context){
+        string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
+        string pressedKey = context.control.displayName;
+        int index = Array.IndexOf(hotbarKeys, pressedKey);
+        if (index != -1){
+            HotbarManagerScript hotbarManager = hotbarPanel.GetComponent<HotbarManagerScript>();
+            Transform linkedSlotTransform = hotbarManager.linkedSlotTransforms[index]; // need index-1 for zero-based indexing
+            if (linkedSlotTransform.childCount > 0){
+                InventoryItem linkedInventoryItem = linkedSlotTransform.GetComponentInChildren<InventoryItem>();
+                linkedInventoryItem.Use();
+            }
         }
     }
 

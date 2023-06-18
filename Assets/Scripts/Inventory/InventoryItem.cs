@@ -23,6 +23,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private bool draggingItem;
     private bool thisBeingDragged;
     public bool isHotbarItem;
+    public GameObject linkedItemPrefab;
 
     void Awake(){
         rootInventorySlot = transform.parent.parent;
@@ -84,5 +85,10 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (draggingItem && !thisBeingDragged){
             image.raycastTarget = true;
         }
+    }
+
+    public void Use(){
+        ICollectible item = linkedItemPrefab.GetComponent<ICollectible>();
+        item.Use();
     }
 }

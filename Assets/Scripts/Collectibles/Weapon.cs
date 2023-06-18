@@ -14,4 +14,8 @@ public class Weapon : MonoBehaviour, ICollectible
         OnWeaponCollected?.Invoke(weaponInventoryPrefab);
         // TODO: play audio when collectible is collected
     }
+
+    public void Use(){
+        print("using stick");
+    }
 }
