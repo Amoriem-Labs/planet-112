@@ -90,7 +90,7 @@ public class PlayerScript : MonoBehaviour
         //     velocity.y += Physics2D.gravity.y * Time.fixedDeltaTime;
         // }
         Debug.Log("IsGrounded: " + IsGrounded());
-        if (!IsGrounded() && IsTouchingWall()) // Apply sliding velocity if the player is not grounded and touching a wall
+        if (!IsGrounded()) //&& IsTouchingWall()) // Apply sliding velocity if the player is not grounded and touching a wall
         {
             rb.velocity = new Vector2(rb.velocity.x * slidingVelocityMultiplier, rb.velocity.y);
             // velocity.y -= Physics2D.gravity * Time.deltaTime;
