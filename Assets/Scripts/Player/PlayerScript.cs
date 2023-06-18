@@ -25,6 +25,7 @@ public class PlayerScript : MonoBehaviour
     GameObject background; 
     public GameObject inventoryCanvas;
     public GameObject hotbarPanel;
+    public AudioManager audio;
 
     private void Awake()
     {
@@ -32,6 +33,7 @@ public class PlayerScript : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         inventoryIsLoaded = false;
+        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -58,7 +60,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started += OnInteract;
         controls.Main.NewPlant.started += GeneratePlant;
         controls.Main.Inventory.started += OnInventory;
-        controls.Main.Hotbar.started += OnHotbar;
+        controls.Main.Hotbar.started += OnHotbarPress;
     }
 
     private void OnDisable()
@@ -67,7 +69,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started -= OnInteract;
         controls.Main.NewPlant.started -= GeneratePlant;
         controls.Main.Inventory.started -= OnInventory;
-        controls.Main.Hotbar.started -= OnHotbar;
+        controls.Main.Hotbar.started -= OnHotbarPress;
     }
 
     private void FixedUpdate()
@@ -150,7 +152,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (!inventoryIsLoaded){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
-
+            audio.plantSFX.Play();
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
         }
     }
@@ -170,7 +172,7 @@ public class PlayerScript : MonoBehaviour
     }
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
-    public void OnHotbar(InputAction.CallbackContext context){
+    public void OnHotbarPress(InputAction.CallbackContext context){
         string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
         string pressedKey = context.control.displayName;
         int index = Array.IndexOf(hotbarKeys, pressedKey);

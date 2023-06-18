@@ -8,8 +8,14 @@ public class Weapon : MonoBehaviour, ICollectible
     public delegate void HandleWeaponCollected(GameObject weaponInventoryPrefab);
     public static event HandleWeaponCollected OnWeaponCollected;
     public GameObject weaponInventoryPrefab;
+    public AudioManager audio;
+
+    void Awake(){
+        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
 
     public void Collect(){
+        audio.collectGenericSFX.Play();
         Destroy(gameObject);
         OnWeaponCollected?.Invoke(weaponInventoryPrefab);
         // TODO: play audio when collectible is collected
