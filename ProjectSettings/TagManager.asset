@@ -12,6 +12,9 @@ TagManager:
   - inventoryPanel
   - Audio
   - fruitManager
+  - infoBar
+  - infoImage
+  - hotbar
   layers:
   - Default
   - TransparentFX

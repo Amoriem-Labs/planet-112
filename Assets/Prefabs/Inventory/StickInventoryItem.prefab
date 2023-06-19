@@ -231,8 +231,7 @@ MonoBehaviour:
   stackable: 0
   stackSize: 0
   stackSizeText: {fileID: 7704480700832827650}
-  hoverPanel: {fileID: 4698141511511114124, guid: ef0281bab0f1d384e8efc6f65a738671, type: 3}
-  hoverText: Stick
+  infoText: Stick<br>Common<br>Melee
   parentAfterDrag: {fileID: 0}
   rootInventorySlot: {fileID: 0}
   isHotbarItem: 0

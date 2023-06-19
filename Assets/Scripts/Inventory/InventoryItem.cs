@@ -16,19 +16,21 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool stackable;
     public int stackSize;
     public TextMeshProUGUI stackSizeText;
-    public GameObject hoverPanel;
-    public string hoverText;
+    public string infoText;
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public Transform rootInventorySlot;
     private bool draggingItem;
     private bool thisBeingDragged;
     public bool isHotbarItem;
     public GameObject linkedItemPrefab;
+    public HotbarManagerScript hotbar;
+    public InfoBarScript infoBar;
 
     void Awake(){
         rootInventorySlot = transform.parent.parent;
         draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
-        hoverPanel.SetActive(false);
+        hotbar = GameObject.FindGameObjectWithTag("hotbar").GetComponent<HotbarManagerScript>();
+        infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
     }
 
     public void AddToStack(){
@@ -85,6 +87,27 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (draggingItem && !thisBeingDragged){
             image.raycastTarget = true;
         }
+    }
+
+    public void Delete(){
+        infoBar.UndisplayInfo();
+        hotbar.UpdateHotbar();
+        if (linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
+            if (fruitScript.fruitType.Equals("seafoam")){
+                hotbar.fruitManager.nSeafoam -= stackSize;
+            }
+            if (fruitScript.fruitType.Equals("sunset")){
+                hotbar.fruitManager.nSunset -= stackSize;
+            }
+            if (fruitScript.fruitType.Equals("amethyst")){
+                hotbar.fruitManager.nAmethyst -= stackSize;
+            }
+            if (fruitScript.fruitType.Equals("crystalline")){
+                hotbar.fruitManager.nCrystalline -= stackSize;
+            }
+        }
+        hotbar.UpdateFruitText();
+        Destroy(gameObject);
     }
 
     public void Use(){

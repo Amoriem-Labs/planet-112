@@ -7,22 +7,20 @@ using UnityEngine.EventSystems;
 
 public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public GameObject hoverPanel;
     public Transform slotTransform;
     public int inventorySlotIndex;
+    public InfoBarScript infoBar;
 
     void Awake(){
         slotTransform = transform.GetChild(0);
+        infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
     }
 
     public void ClearSlot(){
         if (slotTransform.childCount > 0){
             Transform itemTransform = slotTransform.GetChild(0);
             Destroy(itemTransform.gameObject);
-        }
-
-        if (transform.childCount > 1){
-            hoverPanel.SetActive(false);
+            infoBar.UndisplayInfo();
         }
     }
 
@@ -50,16 +48,15 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
         hotbarManager.UpdateHotbar();
     }
 
-    // Displays hover text upon pointer entering slot
+    // Displays info text upon pointer entering slot
     public void OnPointerEnter(PointerEventData eventData){
         if (slotTransform.childCount > 0){
-            hoverPanel.SetActive(true);
-            hoverPanel.GetComponentInChildren<TextMeshProUGUI>().text = slotTransform.GetComponentInChildren<InventoryItem>().hoverText;
+            infoBar.DisplayInfo(transform.GetComponentInChildren<InventoryItem>());
         }
     }
 
-    // Hides hover text upon pointer exiting slot
+    // Undisplay info text upon pointer exiting slot
     public void OnPointerExit(PointerEventData eventData){
-        hoverPanel.SetActive(false);
+        infoBar.UndisplayInfo();
     }
 }
