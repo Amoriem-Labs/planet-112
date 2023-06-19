@@ -10,6 +10,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject hotbar;
     public FruitManager fruitManager;
 
+    // Initializing inventory.
     void Awake(){
         ResetInventory();
         fruitManager = GameObject.FindGameObjectWithTag("fruitManager").GetComponent<FruitManager>();
@@ -19,6 +20,8 @@ public class InventoryManager : MonoBehaviour
         transform.parent.gameObject.SetActive(false);
     }
 
+    #region Initializes inventory
+    // Deletes all items in inventory and instantiates the slot prefabs.
     void ResetInventory(){
         foreach (Transform inventorySlotTransform in transform){
             Destroy(inventorySlotTransform.gameObject);
@@ -39,13 +42,16 @@ public class InventoryManager : MonoBehaviour
         newSlotComponent.ClearSlot();
         inventorySlots.Add(newSlotComponent);
     }
+    #endregion
 
     // Searches if item already exists in inventory, and if so, add to that item's stackSize.
     //   If item doesn't exist, then add item to first empty InventorySlot.
+    //   This method is triggered whenever player picks up a new item.
     void UpdateInventory(GameObject inventoryItemPrefab){
         hotbar.GetComponent<HotbarManagerScript>().LinkSlotTransforms();
         HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
 
+        // Searches if item already exists in inventory, and add to that item's stacksize if so.
         for (int i = 0; i < inventorySlots.Count; i++){
             InventorySlot inventorySlot = inventorySlots[i];
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
@@ -63,6 +69,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        // If item doesn't exist in inventory, then add that item to the first empty InventorySlot.
         for (int i = 0; i < inventorySlots.Count; i++){
             InventorySlot inventorySlot = inventorySlots[i];
             Transform slotTransform = inventorySlot.transform.GetChild(0); 

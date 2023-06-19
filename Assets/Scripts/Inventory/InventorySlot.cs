@@ -11,11 +11,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     public int inventorySlotIndex;
     public InfoBarScript infoBar;
 
+    // Initializing variables
     void Awake(){
         slotTransform = transform.GetChild(0);
         infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
     }
 
+    // Deletes item in slot.
     public void ClearSlot(){
         if (slotTransform.childCount > 0){
             Transform itemTransform = slotTransform.GetChild(0);
@@ -24,6 +26,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
         }
     }
 
+    // Creates new item in slot.
     public void DrawSlot(GameObject inventoryItemPrefab){
         GameObject newInventoryItem = Instantiate(inventoryItemPrefab, slotTransform);
         newInventoryItem.GetComponent<InventoryItem>().AddToStack();

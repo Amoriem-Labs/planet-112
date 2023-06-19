@@ -14,12 +14,14 @@ public class Weapon : MonoBehaviour, ICollectible
         audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
+    // Is triggered whenever player picks up stick off ground.
     public void Collect(){
         audio.collectGenericSFX.Play();
         Destroy(gameObject);
         OnWeaponCollected?.Invoke(weaponInventoryPrefab);
     }
 
+    // Is triggered whenever player uses stick to attack.
     public void Use(){
         print("using stick");
     }

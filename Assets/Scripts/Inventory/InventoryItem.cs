@@ -26,6 +26,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public HotbarManagerScript hotbar;
     public InfoBarScript infoBar;
 
+    // Initializing inventory item properties.
     void Awake(){
         rootInventorySlot = transform.parent.parent;
         draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
@@ -33,6 +34,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
     }
 
+    #region Adding and Removing from Stack.
     public void AddToStack(){
         if (stackable){
             stackSize++;
@@ -53,7 +55,9 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             stackSizeText.text = "";
         }
     }
+    #endregion
 
+    #region Dragging and Dropping Items
     public void OnBeginDrag(PointerEventData eventData){
         parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);
@@ -88,7 +92,9 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             image.raycastTarget = true;
         }
     }
+    #endregion
 
+    // Deletes the inventory item. Is triggered when inventory item is dragged to trash icon.
     public void Delete(){
         infoBar.UndisplayInfo();
         hotbar.UpdateHotbar();
@@ -110,6 +116,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Destroy(gameObject);
     }
 
+    // Use inventory item. Is triggered when inventory item is in a hotbar slot and player presses a hotbar key.
     public void Use(){
         ICollectible item = linkedItemPrefab.GetComponent<ICollectible>();
         item.Use();

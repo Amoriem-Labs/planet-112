@@ -157,6 +157,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // Opens/closes inventory when player presses I
     public void OnInventory(InputAction.CallbackContext context)
     {
         // if inventory is not open, load InventoryUI scene

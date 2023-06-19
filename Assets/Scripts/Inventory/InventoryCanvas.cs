@@ -7,6 +7,7 @@ public class InventoryCanvas : MonoBehaviour
     public GameObject player;
     public float y_offset;
 
+    // This script is to update the position of InventoryCanvas to match player position every time inventory is loaded.
     void Update()
     {
         if (player.GetComponent<PlayerScript>().inventoryIsLoaded){

@@ -21,7 +21,8 @@ public class Fruit : MonoBehaviour, ICollectible
         OnFruitCollected?.Invoke(fruitInventoryPrefab);
     }
 
+    // Is triggered whenever player uses fruit in hotbar.
     public void Use(){
-        print("using fruit");
+        //print("using fruit");
     }
 }
