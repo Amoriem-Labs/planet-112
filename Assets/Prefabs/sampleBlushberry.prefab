@@ -105,6 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruitInventoryPrefab: {fileID: 3386227779947726772, guid: a6b0eda9699f28e4f8080281719b7fc6, type: 3}
+  audio: {fileID: 0}
+  fruitType: seafoam
 --- !u!61 &917211971986225218
 BoxCollider2D:
   m_ObjectHideFlags: 0

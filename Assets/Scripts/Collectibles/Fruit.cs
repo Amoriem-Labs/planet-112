@@ -9,6 +9,7 @@ public class Fruit : MonoBehaviour, ICollectible
     public static event HandleFruitCollected OnFruitCollected;
     public GameObject fruitInventoryPrefab;
     public AudioManager audio;
+    public string fruitType;
 
     void Awake(){
         audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
@@ -18,7 +19,6 @@ public class Fruit : MonoBehaviour, ICollectible
         audio.collectFruitSFX.Play();
         Destroy(gameObject);
         OnFruitCollected?.Invoke(fruitInventoryPrefab);
-        // TODO: play audio when collectible is collected
     }
 
     public void Use(){

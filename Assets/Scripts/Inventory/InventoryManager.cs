@@ -8,9 +8,11 @@ public class InventoryManager : MonoBehaviour
     public List<InventorySlot> inventorySlots = new List<InventorySlot>(27);
     public bool draggingItem;
     public GameObject hotbar;
+    public FruitManager fruitManager;
 
     void Awake(){
         ResetInventory();
+        fruitManager = GameObject.FindGameObjectWithTag("fruitManager").GetComponent<FruitManager>();
         draggingItem = false;
         Fruit.OnFruitCollected += UpdateInventory;
         Weapon.OnWeaponCollected += UpdateInventory;
@@ -43,14 +45,19 @@ public class InventoryManager : MonoBehaviour
     void UpdateInventory(GameObject inventoryItemPrefab){
         hotbar.GetComponent<HotbarManagerScript>().LinkSlotTransforms();
         HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
+
         for (int i = 0; i < inventorySlots.Count; i++){
             InventorySlot inventorySlot = inventorySlots[i];
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
             if (slotTransform.childCount > 0){
                 InventoryItem inventoryItem = inventorySlot.transform.GetComponentInChildren<InventoryItem>();
-                hotbarManager.UpdateHotbar();
                 if (inventoryItem.displayName == inventoryItemPrefab.GetComponent<InventoryItem>().displayName){
                     inventoryItem.AddToStack();
+                    hotbarManager.UpdateHotbar();
+                    if (inventoryItem.linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
+                        fruitManager.AddToFruitStack(fruitScript.fruitType);
+                        hotbarManager.UpdateFruitText();
+                    }
                     return;
                 }
             }
@@ -62,6 +69,10 @@ public class InventoryManager : MonoBehaviour
             if (slotTransform.childCount == 0){
                 inventorySlot.DrawSlot(inventoryItemPrefab);
                 hotbarManager.UpdateHotbar();
+                if (inventoryItemPrefab.GetComponent<InventoryItem>().linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
+                        fruitManager.AddToFruitStack(fruitScript.fruitType);
+                        hotbarManager.UpdateFruitText();
+                }
                 return;
             }
         }

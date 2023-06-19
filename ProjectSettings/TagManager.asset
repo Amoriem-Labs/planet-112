@@ -11,6 +11,7 @@ TagManager:
   - collectible
   - inventoryPanel
   - Audio
+  - fruitManager
   layers:
   - Default
   - TransparentFX

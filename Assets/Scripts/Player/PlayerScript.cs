@@ -171,6 +171,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // This functions exists for the exit button in inventory UI
+    public void CloseInventory(){
+        inventoryCanvas.SetActive(false);
+        inventoryIsLoaded = false;
+    }
+
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
         string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};

@@ -18,7 +18,6 @@ public class Weapon : MonoBehaviour, ICollectible
         audio.collectGenericSFX.Play();
         Destroy(gameObject);
         OnWeaponCollected?.Invoke(weaponInventoryPrefab);
-        // TODO: play audio when collectible is collected
     }
 
     public void Use(){

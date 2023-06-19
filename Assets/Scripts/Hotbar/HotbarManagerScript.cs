@@ -11,9 +11,16 @@ public class HotbarManagerScript : MonoBehaviour
     public GameObject hotbarItemPrefab;
     public Transform[] linkedSlotTransforms;
     public GameObject inventoryPanel;
+    public TextMeshProUGUI nSeafoam;
+    public TextMeshProUGUI nSunset;
+    public TextMeshProUGUI nAmethyst;
+    public TextMeshProUGUI nCrystalline; 
+    public FruitManager fruitManager;
 
     void Start(){
         hotbarItems = new HotbarItem[numHotbarSlots];
+        fruitManager = GameObject.FindGameObjectWithTag("fruitManager").GetComponent<FruitManager>();
+        UpdateFruitText();
     }
 
     public void LinkSlotTransforms(){
@@ -40,7 +47,13 @@ public class HotbarManagerScript : MonoBehaviour
                 newHotbarComponent.stackSizeText = linkedInventoryItem.stackSizeText;
                 newHotbarComponent.sprite = linkedInventoryItem.sprite;
 
-                newHotbarComponent.GetComponentInChildren<TextMeshProUGUI>().text = newHotbarComponent.stackSize.ToString();
+                TextMeshProUGUI newStackSizeText = newHotbarComponent.GetComponentInChildren<TextMeshProUGUI>();
+                if (linkedInventoryItem.stackable){
+                    newStackSizeText.text = newHotbarComponent.stackSize.ToString();
+                } else {
+                    newStackSizeText.text = "";
+                }
+                
                 newHotbarItem.GetComponent<Image>().sprite = newHotbarComponent.sprite;
 
                 hotbarItems[i] = newHotbarComponent;
@@ -55,5 +68,12 @@ public class HotbarManagerScript : MonoBehaviour
                 Destroy(transform.GetChild(i).GetChild(0).gameObject);
             }
         }
+    }
+
+    public void UpdateFruitText(){
+        nSeafoam.text = fruitManager.nSeafoam.ToString();
+        nSunset.text = fruitManager.nSunset.ToString();
+        nAmethyst.text = fruitManager.nAmethyst.ToString();
+        nCrystalline.text = fruitManager.nCrystalline.ToString();
     }
 }
