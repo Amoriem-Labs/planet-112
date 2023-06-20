@@ -21,10 +21,15 @@ public class PlayerScript : MonoBehaviour
     SpriteRenderer spriteRenderer;
     [SerializeField] float groundedRay;
 
+    GameObject background;
+
     public bool inventoryIsLoaded;
-    GameObject background; 
     public GameObject inventoryCanvas;
     public GameObject hotbarPanel;
+
+    public bool settingsAreLoaded;
+    public GameObject settingsCanvas;
+
     public AudioManager audio;
 
     private void Awake()
@@ -33,6 +38,15 @@ public class PlayerScript : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         inventoryIsLoaded = false;
+        settingsAreLoaded = false;
+
+        // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
+        //    or not when Game is played.
+        inventoryCanvas.SetActive(true);
+        inventoryCanvas.SetActive(false);
+        settingsCanvas.SetActive(true);
+        settingsCanvas.SetActive(false);
+
         audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
         rb = GetComponent<Rigidbody2D>();
@@ -60,6 +74,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started += OnInteract;
         controls.Main.NewPlant.started += GeneratePlant;
         controls.Main.Inventory.started += OnInventory;
+        controls.Main.Settings.started += OnSettings;
         controls.Main.Hotbar.started += OnHotbarPress;
     }
 
@@ -69,7 +84,16 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Interact.started -= OnInteract;
         controls.Main.NewPlant.started -= GeneratePlant;
         controls.Main.Inventory.started -= OnInventory;
+        controls.Main.Settings.started -= OnSettings;
         controls.Main.Hotbar.started -= OnHotbarPress;
+    }
+
+    void Update(){
+        if (settingsAreLoaded){
+            Time.timeScale = 0;
+        } else {
+            Time.timeScale = 1;
+        }
     }
 
     private void FixedUpdate()
@@ -78,13 +102,14 @@ public class PlayerScript : MonoBehaviour
         // If statement ensures that player cannot move while inventory screen is on
         if (!inventoryIsLoaded){
             Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
+            Vector2 velocity = rb.velocity;
 
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
 
-            Vector2 velocity = rb.velocity;
-
-            velocity.x = moveInput.x * speed;
+            if (moveInput.x != 0){
+                velocity.x = moveInput.x * speed;
+            }
 
             if (moveInput.y > 0 && IsGrounded())
             {
@@ -122,7 +147,7 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        if (!inventoryIsLoaded){
+        if (!(inventoryIsLoaded || settingsAreLoaded)){
             //closestPlant.TakeDamage(50);
             //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
             if (plantInHand) // has a plant in hand
@@ -150,7 +175,7 @@ public class PlayerScript : MonoBehaviour
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        if (!inventoryIsLoaded){
+        if (!(inventoryIsLoaded || settingsAreLoaded)){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
             audio.plantSFX.Play();
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
@@ -160,12 +185,11 @@ public class PlayerScript : MonoBehaviour
     // Opens/closes inventory when player presses I
     public void OnInventory(InputAction.CallbackContext context)
     {
-        // if inventory is not open, load InventoryUI scene
-        if (!inventoryIsLoaded){
+        print(!inventoryIsLoaded && !settingsAreLoaded);
+        if (!inventoryIsLoaded && !settingsAreLoaded){
             inventoryCanvas.SetActive(true);
             inventoryIsLoaded = true;
         }
-        // if inventory is open, unload InventoryUI scene
         else {
             inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
@@ -174,21 +198,38 @@ public class PlayerScript : MonoBehaviour
 
     // This functions exists for the exit button in inventory UI
     public void CloseInventory(){
-        inventoryCanvas.SetActive(false);
-        inventoryIsLoaded = false;
+        if (!settingsAreLoaded){
+            inventoryCanvas.SetActive(false);
+            inventoryIsLoaded = false;
+        }
+    }
+
+    // Opens/closes settings when player presses Escape
+    public void OnSettings(InputAction.CallbackContext context){
+        if (!settingsAreLoaded){
+                settingsCanvas.SetActive(true);
+                settingsCanvas.GetComponent<Settings>().setPosition();
+                settingsAreLoaded = true;
+            }
+        else {
+            settingsCanvas.SetActive(false);
+            settingsAreLoaded = false;
+        }
     }
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
-        string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
-        string pressedKey = context.control.displayName;
-        int index = Array.IndexOf(hotbarKeys, pressedKey);
-        if (index != -1){
-            HotbarManagerScript hotbarManager = hotbarPanel.GetComponent<HotbarManagerScript>();
-            Transform linkedSlotTransform = hotbarManager.linkedSlotTransforms[index]; // need index-1 for zero-based indexing
-            if (linkedSlotTransform.childCount > 0){
-                InventoryItem linkedInventoryItem = linkedSlotTransform.GetComponentInChildren<InventoryItem>();
-                linkedInventoryItem.Use();
+        if (!(inventoryIsLoaded || settingsAreLoaded)){
+            string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
+            string pressedKey = context.control.displayName;
+            int index = Array.IndexOf(hotbarKeys, pressedKey);
+            if (index != -1){
+                HotbarManagerScript hotbarManager = hotbarPanel.GetComponent<HotbarManagerScript>();
+                Transform linkedSlotTransform = hotbarManager.linkedSlotTransforms[index]; // need index-1 for zero-based indexing
+                if (linkedSlotTransform.childCount > 0){
+                    InventoryItem linkedInventoryItem = linkedSlotTransform.GetComponentInChildren<InventoryItem>();
+                    linkedInventoryItem.Use();
+                }
             }
         }
     }
@@ -210,7 +251,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // TODO: need to ask Nick how to make a detectionRange smaller for collecting items rather than finding closestPlant
     private void OnTriggerEnter2D(Collider2D collision){
         // If player collides with collectible, the collect method is called for that collectible.
         if (collision.gameObject.tag == "collectible"){

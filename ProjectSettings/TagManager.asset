@@ -55,6 +55,6 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: test
+  - name: Settings
     uniqueID: 2590438247
     locked: 0

@@ -10,6 +10,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     public Transform slotTransform;
     public int inventorySlotIndex;
     public InfoBarScript infoBar;
+    public bool settingsAreLoaded;
 
     // Initializing variables
     void Awake(){
@@ -53,13 +54,17 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
 
     // Displays info text upon pointer entering slot
     public void OnPointerEnter(PointerEventData eventData){
-        if (slotTransform.childCount > 0){
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (slotTransform.childCount > 0 && !settingsAreLoaded){
             infoBar.DisplayInfo(transform.GetComponentInChildren<InventoryItem>());
         }
     }
 
     // Undisplay info text upon pointer exiting slot
     public void OnPointerExit(PointerEventData eventData){
-        infoBar.UndisplayInfo();
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (!settingsAreLoaded){
+            infoBar.UndisplayInfo();
+        }
     }
 }

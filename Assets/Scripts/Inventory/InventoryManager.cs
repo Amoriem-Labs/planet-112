@@ -17,7 +17,6 @@ public class InventoryManager : MonoBehaviour
         draggingItem = false;
         Fruit.OnFruitCollected += UpdateInventory;
         Weapon.OnWeaponCollected += UpdateInventory;
-        transform.parent.gameObject.SetActive(false);
     }
 
     #region Initializes inventory

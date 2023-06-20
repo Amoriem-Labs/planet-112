@@ -25,6 +25,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public GameObject linkedItemPrefab;
     public HotbarManagerScript hotbar;
     public InfoBarScript infoBar;
+    public bool settingsAreLoaded;
 
     // Initializing inventory item properties.
     void Awake(){
@@ -59,36 +60,48 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     #region Dragging and Dropping Items
     public void OnBeginDrag(PointerEventData eventData){
-        parentAfterDrag = transform.parent;
-        transform.SetParent(transform.root);
-        transform.SetAsLastSibling();
-        image.raycastTarget = false;
-        draggingItem = true;
-        thisBeingDragged = true;
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        print(settingsAreLoaded);
+        if (!settingsAreLoaded){
+            parentAfterDrag = transform.parent;
+            transform.SetParent(transform.root);
+            transform.SetAsLastSibling();
+            image.raycastTarget = false;
+            draggingItem = true;
+            thisBeingDragged = true;
+        }
     }
 
     public void OnDrag(PointerEventData eventData){
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector2 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        transform.position = worldPosition;
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (!settingsAreLoaded){
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+            transform.position = worldPosition;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData){
-        transform.SetParent(parentAfterDrag);
-        image.raycastTarget = true;
-        draggingItem = false;
-        thisBeingDragged = false;
-        rootInventorySlot = transform.parent.parent;
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (!settingsAreLoaded){
+            transform.SetParent(parentAfterDrag);
+            image.raycastTarget = true;
+            draggingItem = false;
+            thisBeingDragged = false;
+            rootInventorySlot = transform.parent.parent;
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData){
-        if (draggingItem && !thisBeingDragged){
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (draggingItem && !thisBeingDragged && !settingsAreLoaded){
             image.raycastTarget = false;
         }
     }
 
     public void OnPointerExit(PointerEventData eventData){
-        if (draggingItem && !thisBeingDragged){
+        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
+        if (draggingItem && !thisBeingDragged && !settingsAreLoaded){
             image.raycastTarget = true;
         }
     }
