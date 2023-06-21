@@ -58,11 +58,14 @@ public class TimeManager : MonoBehaviour
         // max float value and pray to god (worst idea). 
 
         // To ONLY pause this timer: Timing.PauseCoroutines(timerHandle);
+
+        AudioListener.pause = true;
     }
 
     public static void ResumeGame()
     {
         Time.timeScale = 1;
+        AudioListener.pause = false;
 
         // To resume this timer if ONLY paused: Timing.ResumeCoroutines(timerHandle)
     }

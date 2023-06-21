@@ -25,7 +25,6 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public GameObject linkedItemPrefab;
     public HotbarManagerScript hotbar;
     public InfoBarScript infoBar;
-    public bool settingsAreLoaded;
 
     // Initializing inventory item properties.
     void Awake(){
@@ -60,9 +59,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     #region Dragging and Dropping Items
     public void OnBeginDrag(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        print(settingsAreLoaded);
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
             transform.SetAsLastSibling();
@@ -73,8 +70,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnDrag(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
             Vector2 mousePosition = Mouse.current.position.ReadValue();
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             transform.position = worldPosition;
@@ -82,8 +78,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnEndDrag(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
             transform.SetParent(parentAfterDrag);
             image.raycastTarget = true;
             draggingItem = false;
@@ -93,15 +88,13 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnPointerEnter(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (draggingItem && !thisBeingDragged && !settingsAreLoaded){
+        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused()){
             image.raycastTarget = false;
         }
     }
 
     public void OnPointerExit(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (draggingItem && !thisBeingDragged && !settingsAreLoaded){
+        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused()){
             image.raycastTarget = true;
         }
     }

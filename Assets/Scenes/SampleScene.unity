@@ -2960,6 +2960,7 @@ GameObject:
   m_Component:
   - component: {fileID: 333394616}
   - component: {fileID: 333394615}
+  - component: {fileID: 333394620}
   - component: {fileID: 333394614}
   - component: {fileID: 333394613}
   - component: {fileID: 333394618}
@@ -3176,13 +3177,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88ac17a5cc0f70e46a07c52ed43a7c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plainsSoundtrack: {fileID: 333394620}
   plantSFX: {fileID: 333394614}
   growingSFX: {fileID: 333394613}
   collectGenericSFX: {fileID: 333394618}
   collectFruitSFX: {fileID: 333394617}
   takeDamageSFX: {fileID: 333394619}
+  soundtracks: []
   SFXs: []
-  musics: []
 --- !u!4 &333394616
 Transform:
   m_ObjectHideFlags: 0
@@ -3405,6 +3407,102 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!82 &333394620
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333394612}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 0e297509773ffe343bc5ed74eadeeff1, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -4283,7 +4381,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 27
+  m_RootOrder: 26
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4931,54 +5029,6 @@ MonoBehaviour:
   curveExtrusionFactor: 0.5
   uniformalBezDegree: 90
   slowdownDetectionRange: 3
---- !u!1 &534827365
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 534827367}
-  - component: {fileID: 534827366}
-  m_Layer: 0
-  m_Name: FruitManager
-  m_TagString: fruitManager
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &534827366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534827365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c7f77f89d8025a4fa8775683585631f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nSeafoam: 0
-  nSunset: 0
-  nAmethyst: 0
-  nCrystalline: 0
---- !u!4 &534827367
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 534827365}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 26
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &546486094
 GameObject:
   m_ObjectHideFlags: 0
@@ -6661,9 +6711,10 @@ GameObject:
   - component: {fileID: 798319917}
   - component: {fileID: 798319919}
   - component: {fileID: 798319918}
+  - component: {fileID: 798319920}
   m_Layer: 0
   m_Name: GameManager
-  m_TagString: Untagged
+  m_TagString: GameManager
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6722,6 +6773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bdbd7567bb5a3040bad14beefca2e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioListener: {fileID: 0}
 --- !u!114 &798319919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6737,6 +6789,22 @@ MonoBehaviour:
   boxDetector: {fileID: 6201913644617933390, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
   circleDetector: {fileID: 1151603408698572743, guid: 23a071354f47d994bbf8f3e30d6c4499, type: 3}
   boxProjectile: {fileID: 7844817501060373444, guid: 8a988cd14e928c94ba0d91baa781c3a9, type: 3}
+--- !u!114 &798319920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 798319914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c7f77f89d8025a4fa8775683585631f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nSeafoam: 0
+  nSunset: 0
+  nAmethyst: 0
+  nCrystalline: 0
 --- !u!1 &804032097
 GameObject:
   m_ObjectHideFlags: 0

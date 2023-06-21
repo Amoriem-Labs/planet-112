@@ -88,14 +88,6 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Hotbar.started -= OnHotbarPress;
     }
 
-    void Update(){
-        if (settingsAreLoaded){
-            Time.timeScale = 0;
-        } else {
-            Time.timeScale = 1;
-        }
-    }
-
     private void FixedUpdate()
     {
         // Get character movement
@@ -147,7 +139,7 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        if (!(inventoryIsLoaded || settingsAreLoaded)){
+        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
             //closestPlant.TakeDamage(50);
             //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
             if (plantInHand) // has a plant in hand
@@ -175,7 +167,7 @@ public class PlayerScript : MonoBehaviour
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        if (!(inventoryIsLoaded || settingsAreLoaded)){
+        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
             audio.plantSFX.Play();
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
@@ -185,20 +177,21 @@ public class PlayerScript : MonoBehaviour
     // Opens/closes inventory when player presses I
     public void OnInventory(InputAction.CallbackContext context)
     {
-        print(!inventoryIsLoaded && !settingsAreLoaded);
-        if (!inventoryIsLoaded && !settingsAreLoaded){
-            inventoryCanvas.SetActive(true);
-            inventoryIsLoaded = true;
-        }
-        else {
-            inventoryCanvas.SetActive(false);
-            inventoryIsLoaded = false;
+        if (!TimeManager.IsGamePaused()){
+            if (!inventoryIsLoaded){
+                inventoryCanvas.SetActive(true);
+                inventoryIsLoaded = true;
+            }
+            else {
+                inventoryCanvas.SetActive(false);
+                inventoryIsLoaded = false;
+            }
         }
     }
 
     // This functions exists for the exit button in inventory UI
     public void CloseInventory(){
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
             inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
         }
@@ -206,20 +199,20 @@ public class PlayerScript : MonoBehaviour
 
     // Opens/closes settings when player presses Escape
     public void OnSettings(InputAction.CallbackContext context){
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
                 settingsCanvas.SetActive(true);
                 settingsCanvas.GetComponent<Settings>().setPosition();
-                settingsAreLoaded = true;
+                TimeManager.PauseGame();
             }
         else {
             settingsCanvas.SetActive(false);
-            settingsAreLoaded = false;
+            TimeManager.ResumeGame();
         }
     }
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
-        if (!(inventoryIsLoaded || settingsAreLoaded)){
+        if (!(inventoryIsLoaded || !TimeManager.IsGamePaused())){
             string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
             string pressedKey = context.control.displayName;
             int index = Array.IndexOf(hotbarKeys, pressedKey);

@@ -11,10 +11,10 @@ TagManager:
   - collectible
   - inventoryPanel
   - Audio
-  - fruitManager
   - infoBar
   - infoImage
   - hotbar
+  - GameManager
   layers:
   - Default
   - TransparentFX

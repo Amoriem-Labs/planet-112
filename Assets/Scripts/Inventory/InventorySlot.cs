@@ -10,7 +10,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     public Transform slotTransform;
     public int inventorySlotIndex;
     public InfoBarScript infoBar;
-    public bool settingsAreLoaded;
 
     // Initializing variables
     void Awake(){
@@ -36,34 +35,34 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
     // Drops an item into a current inventory slot upon dragging. If the current slot already
     //   has an item, then swap the two items.
     public void OnDrop(PointerEventData eventData){
-        GameObject dropped = eventData.pointerDrag;
-        InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
-        
-        if (slotTransform.childCount > 0){
-            InventoryItem oldInventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
-            oldInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
-            oldInventoryItem.parentAfterDrag = droppedInventoryItem.parentAfterDrag;
-        }
-        droppedInventoryItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
-        droppedInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
+        if (!TimeManager.IsGamePaused()){
+            GameObject dropped = eventData.pointerDrag;
+            InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
+            
+            if (slotTransform.childCount > 0){
+                InventoryItem oldInventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
+                oldInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
+                oldInventoryItem.parentAfterDrag = droppedInventoryItem.parentAfterDrag;
+            }
+            droppedInventoryItem.parentAfterDrag = transform.GetChild(0).transform; // sets the parent of the dragged item to Slot transform
+            droppedInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
 
-        InventoryManager inventoryManager = transform.GetComponentInParent<InventoryManager>();
-        HotbarManagerScript hotbarManager = inventoryManager.hotbar.GetComponent<HotbarManagerScript>();
-        hotbarManager.UpdateHotbar();
+            InventoryManager inventoryManager = transform.GetComponentInParent<InventoryManager>();
+            HotbarManagerScript hotbarManager = inventoryManager.hotbar.GetComponent<HotbarManagerScript>();
+            hotbarManager.UpdateHotbar();
+        }
     }
 
     // Displays info text upon pointer entering slot
     public void OnPointerEnter(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (slotTransform.childCount > 0 && !settingsAreLoaded){
+        if (slotTransform.childCount > 0 && !TimeManager.IsGamePaused()){
             infoBar.DisplayInfo(transform.GetComponentInChildren<InventoryItem>());
         }
     }
 
     // Undisplay info text upon pointer exiting slot
     public void OnPointerExit(PointerEventData eventData){
-        settingsAreLoaded = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>().settingsAreLoaded;
-        if (!settingsAreLoaded){
+        if (!TimeManager.IsGamePaused()){
             infoBar.UndisplayInfo();
         }
     }

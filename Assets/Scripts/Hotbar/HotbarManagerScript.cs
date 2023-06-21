@@ -20,7 +20,7 @@ public class HotbarManagerScript : MonoBehaviour
     #region Initializing hotbar
     void Start(){
         hotbarItems = new HotbarItem[numHotbarSlots];
-        fruitManager = GameObject.FindGameObjectWithTag("fruitManager").GetComponent<FruitManager>();
+        fruitManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<FruitManager>();
         UpdateFruitText();
     }
 
