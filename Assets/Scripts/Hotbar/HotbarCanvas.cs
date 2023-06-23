@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class HotbarCanvas : MonoBehaviour
 {
-    public GameObject player;
+    public Camera cam;
 
-    // This script is to update hotbar position so that it moves along with the player in the game.
+    // This script is to update hotbar position so that it moves along with the camera in the game.
     void Update()
     {
         var pos = transform.position;
-        pos.x = player.transform.position.x;
+        pos.x = cam.transform.position.x;
         transform.position = pos;
     }
 }

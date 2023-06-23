@@ -212,7 +212,7 @@ public class PlayerScript : MonoBehaviour
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
-        if (!(inventoryIsLoaded || !TimeManager.IsGamePaused())){
+        if (!inventoryIsLoaded || !TimeManager.IsGamePaused()){
             string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
             string pressedKey = context.control.displayName;
             int index = Array.IndexOf(hotbarKeys, pressedKey);
