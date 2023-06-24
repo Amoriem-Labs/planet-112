@@ -75,22 +75,11 @@ public class PlayerScript : MonoBehaviour
     
         velocity.x = moveInput.x * speed;
 
-        if (moveInput.y > 0 && IsGrounded()) // prevents you from double jumping
+        if (moveInput.y > 0 && velocity.y == 0) // prevents you from double jumping
         {
             velocity.y = moveInput.y * jumpSpeed;
         } 
         rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
-    }
-
-    private bool IsGrounded()
-    {
-        int groundMask = LayerMask.GetMask("Ground");
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, groundMask);
-        //8 is binary -- to look at just layer 3, we need binary 1000
-        int obstacleMask = LayerMask.GetMask("Obstacle");
-        RaycastHit2D obstacleCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, obstacleMask);
-
-        return groundCheck.collider != null || obstacleCheck.collider != null;
     }
 
     public PlantScript findClosestPlant()
