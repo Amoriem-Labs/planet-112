@@ -73,39 +73,24 @@ public class PlayerScript : MonoBehaviour
 
         Vector2 velocity = rb.velocity;
     
-        // Check if the body's current velocity will result in a collision
-        if(IsGoingToCollideWithWall()){
-            rb.velocity = new Vector2(0, rb.velocity.y);
-        } else {
-            velocity.x = moveInput.x * speed;
+        velocity.x = moveInput.x * speed;
 
-            if (moveInput.y > 0 && IsGrounded()) // prevents you from double jumping
-            {
-                velocity.y = moveInput.y * jumpSpeed;
-            } 
-            rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
-        }
+        if (moveInput.y > 0 && IsGrounded()) // prevents you from double jumping
+        {
+            velocity.y = moveInput.y * jumpSpeed;
+        } 
+        rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8);
-        //8 is binary -- to look at just layer 3, we need binary 1000 
-
-        return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
-    }
-
-    private bool IsGoingToCollideWithWall()
-    {
+        int groundMask = LayerMask.GetMask("Ground");
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, groundMask);
+        //8 is binary -- to look at just layer 3, we need binary 1000
         int obstacleMask = LayerMask.GetMask("Obstacle");
-        RaycastHit2D wallDirectlyRightCheck = Physics2D.Raycast(transform.position, Vector2.right, sideRay, obstacleMask);
-        RaycastHit2D wallUpRightCheck = Physics2D.Raycast(transform.position, new Vector2(1, 1), diagonalRay, obstacleMask);
-        RaycastHit2D wallDownRightCheck = Physics2D.Raycast(transform.position, new Vector2(1, -1), diagonalRay, obstacleMask);
-        RaycastHit2D wallDirectlyLeftCheck = Physics2D.Raycast(transform.position, Vector2.left, sideRay, obstacleMask);
-        RaycastHit2D wallUpLeftCheck = Physics2D.Raycast(transform.position, new Vector2(-1, 1), diagonalRay, obstacleMask);
-        RaycastHit2D wallDownLeftCheck = Physics2D.Raycast(transform.position, new Vector2(-1, -1), diagonalRay, obstacleMask);
+        RaycastHit2D obstacleCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, obstacleMask);
 
-        return (((wallDirectlyRightCheck.collider != null || wallUpRightCheck.collider != null || wallDownRightCheck.collider != null) && (spriteRenderer.flipX == true)) || ((wallDirectlyLeftCheck.collider != null || wallUpLeftCheck.collider != null || wallDownLeftCheck.collider != null) && (spriteRenderer.flipX == false)));// && (wallRightCheck.collider.gameObject.CompareTag("Obstacle") || wallLeftCheck.collider.gameObject.CompareTag("Obstacle"));
+        return groundCheck.collider != null || obstacleCheck.collider != null;
     }
 
     public PlantScript findClosestPlant()
