@@ -201,11 +201,13 @@ MonoBehaviour:
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 8128100994068399178}
-  infoText: Grape<br>City<br>Sunset
+  infoText: Grape<br><color=#FF0000>City</color><br><color=#FF8500>Sunset</color>
   parentAfterDrag: {fileID: 0}
   rootInventorySlot: {fileID: 0}
   isHotbarItem: 0
   linkedItemPrefab: {fileID: 841007726834113149, guid: 8aafbee83f2670e43993178e212813f0, type: 3}
+  hotbar: {fileID: 0}
+  infoBar: {fileID: 0}
 --- !u!114 &2328723913647631273
 MonoBehaviour:
   m_ObjectHideFlags: 0
