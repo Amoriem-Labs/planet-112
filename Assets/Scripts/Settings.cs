@@ -9,9 +9,10 @@ public class Settings : MonoBehaviour
     public GameObject cam;
     public GameObject hotbarCanvas;
     public GameObject inventoryCanvas;
-    private Vector3 settingsStartingScale; 
+    private Vector3 settingsStartingScale;
     private Vector3 hotbarStartingScale;
     private Vector3 inventoryStartingScale;
+    public GameObject promptSavePanel;
     private float[] uiScalings = new float[]{0.8f, 0.9f, 1.0f, 1.1f, 1.2f};
 
     void Start(){
@@ -52,6 +53,15 @@ public class Settings : MonoBehaviour
 
     public void saveGame(){
         // write code to save game (work with Nick on this)
+    }
+
+    public void quitGame(){
+        // prompt user to save or not before quitting
+        promptSavePanel.SetActive(true);
+    }
+
+    public void exitPromptSavePanel(){
+        promptSavePanel.SetActive(false);
     }
 
     public void exitSettings(){
