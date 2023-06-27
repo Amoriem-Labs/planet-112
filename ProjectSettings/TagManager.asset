@@ -10,12 +10,9 @@ TagManager:
   - Obstacle
   - background
   - collectible
-  - inventoryPanel
   - Audio
   - infoBar
-  - infoImage
   - hotbar
-  - GameManager
   layers:
   - Default
   - TransparentFX

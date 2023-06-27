@@ -13,7 +13,6 @@ public class InventoryManager : MonoBehaviour
     // Initializing inventory.
     void Awake(){
         ResetInventory();
-        fruitManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<FruitManager>();
         draggingItem = false;
         Fruit.OnFruitCollected += UpdateInventory;
         Weapon.OnWeaponCollected += UpdateInventory;

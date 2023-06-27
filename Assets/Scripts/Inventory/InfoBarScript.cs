@@ -13,7 +13,6 @@ public class InfoBarScript : MonoBehaviour
 
     // Initializing InfoBar
     void Awake(){
-        image = GameObject.FindGameObjectWithTag("infoImage").GetComponent<Image>();
         infoText = GetComponentInChildren<TextMeshProUGUI>();
         infoText.text = "";
         image.sprite = null;
