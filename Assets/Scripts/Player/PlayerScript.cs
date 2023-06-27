@@ -102,17 +102,17 @@ public class PlayerScript : MonoBehaviour
 
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
+                
+            velocity.x = moveInput.x * speed;
 
-        Vector2 velocity = rb.velocity;
-    
-        velocity.x = moveInput.x * speed;
-
-        if (moveInput.y > 0 && velocity.y == 0) // prevents you from double jumping
-        {
-            velocity.y = moveInput.y * jumpSpeed;
-        } 
-        rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
+            if (moveInput.y > 0 && velocity.y == 0) // prevents you from double jumping
+            {
+                velocity.y = moveInput.y * jumpSpeed;
+            } 
+            rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
+        }
     }
+    
 
     public PlantScript findClosestPlant()
     {
