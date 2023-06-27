@@ -21,13 +21,12 @@ public class PestScript : MonoBehaviour
     // Pest module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     protected Dictionary<PestModuleEnum, IPestModule> pestModules = new Dictionary<PestModuleEnum, IPestModule>();
 
+    public PestModuleArr.IMovementModule currMovementModule;
+    public PestModuleEnum currAttackModule;
+
     public PestData pestData; // contains all the dynamic data of a pest to be saved, a reference to PD 
 
-    [SerializeField] float speed = 5f;
-    public float attackRange = 2f;
-
-    [SerializeField] float attackRate = 2f;
-    [SerializeField] float attackDamage = 2f;
+    public float attackRange = 2f; // 2f for meele-ish // can't sync... trying to create melee but finding ranged on the way effect
 
     // remove once big timer implemented
     float nextAttackTime;
@@ -172,62 +171,9 @@ public class PestScript : MonoBehaviour
             }
 
             coroutineQueue.Enqueue(Perform36PtQueryPerPlant(points, center, pointOffsets, path, i, dim.y));
-
-            /*
-            // somehow the call below alters points, so I have to use another array (offsets) to track OG data
-            MultiTargetPath possPaths = GetComponent<Seeker>().StartMultiTargetPath(transform.position, points, true);
-            possPaths.BlockUntilCalculated(); // no callback, but a bit slower, but 36 shouldn't be that much tbh...
-            //Debug.Log("possPaths have " + possPaths.vectorPaths.Length);
-            List<Vector2> availablePosOffsets = new List<Vector2>();
-            for(int j = 0; j < 36; j++)
-            {
-                var pathToPossPoint = possPaths.vectorPaths[j];
-                if (Vector2.Distance(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j]) <= attackRange)
-                {
-                    // this point is reacheable
-                    availablePosOffsets.Add(pointOffsets[j]);
-                    //Debug.DrawLine(center, center + pointOffsets[j], Color.gray, 100, false);
-                    //Debug.DrawLine(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j], Color.gray, 100, false);
-                }
-            }
-            if (availablePosOffsets.Count == 0) continue; // plant is unreacheable and thus ignored
-
-            // we could use a shortest path from one of the reacheable point as the distance, but it's not needed
-            // because the point picking process is randomized anyway. So let's just uniformaly count from center.
-            float distanceToPlant = 0; // to plant's center
-            for(int j = 0; j < path.Count-1; j++)
-            {
-                distanceToPlant += Vector2.Distance(path[j], path[j+1]);
-            }
-            float plantPriority = (float)currentPlantCache[i].plantSO.pestAttackPriority;
-
-            // TODO: the function below is subject to modification. Might need a better math model. 
-            // current thought: less distance = more weight; more priority = more weight. Most weight plant is the target
-            float totalWeight = (1000 / distanceToPlant) + plantPriority;
-
-            if (totalWeight > maxWeight && currentPlantCache[i].attackers < currentPlantCache[i].plantSO.maxAttackers)
-            {
-                maxWeight = totalWeight;
-                targetPlantScript = currentPlantCache[i];
-                // fix the two lines below to make line 1 equal to line 2
-                availablePosOffsetsOfTarget = availablePosOffsets.Select(o => o + Vector2.up * dim.y / 2).ToList(); // convert from center to center bottom.
-                //for(int j=0; j<availablePosOffsets.Count; j++) Debug.DrawLine(center - Vector3.up * dim.y / 2, (center - Vector3.up * dim.y / 2) + ((center + (Vector3)pointOffsets[j]) - (center - Vector3.up * dim.y / 2)), Color.gray, 100, false);
-            } */
         }
 
         if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue()); // start the first one
-
-        /*
-        if(targetPlantScript == null) // query found nothing suitable, redo
-        {
-            queryFinished = false;
-            queryStarted = false;
-        }
-        else
-        {
-            queryFinished = true;
-        }*/
-
     }
 
     List<PlantScript> currentPlantCache;
@@ -245,12 +191,12 @@ public class PestScript : MonoBehaviour
             // 2. we can use blockuntilcalculated to get a path immediately instead of spreading it out over multiple
             // frames, so we can run a for loop with indiv. path dist and weight calculation in one frame. Upside: 
             // more new plant coverage, downside: much slower. Gonna go with approach 1 for now.
-            currentPlantCache = FindObjectsOfType<PlantScript>().ToList(); // replace with direct grabbing from plant storage later
+            currentPlantCache = FindObjectsOfType<PlantScript>().ToList(); // TODO: replace with direct grabbing from plant storage later!!!
 
             // Searches all paths. Since boolean is set to true, not just returning the shortest one.
             if (currentPlantCache.Count != 0)
             {
-                StopAllCoroutines(); // cancel all prev corou
+                StopAllCoroutines(); // cancel all prev corou. WARNING: does this cancel other modules too?
                 coroutineQueue.Clear();
                 queryCount = 0;
                 expectedQueryCount = 69; // set all the searching states back to default.
@@ -279,83 +225,22 @@ public class PestScript : MonoBehaviour
             }
         }
 
-        /* Method 2
-        float maxWeight = 0;
-        foreach (PlantScript plant in GameObject.FindObjectsOfType<PlantScript>())
-        {
-            //Path p = GetComponent<Seeker>().StartPath(transform.position, plant.transform.position);
-            //p.BlockUntilCalculated();
-            //float distanceToPlant = p.GetTotalLength();
-            //float directDistance = Vector3.Distance(transform.position, plant.transform.position);
-            //Debug.Log("Total length of the path is " + distanceToPlant + " and direct distance is " + directDistance);
-            float distanceToPlant = Vector3.Distance(transform.position, plant.transform.position); // might need to use seeker's path generated total distance
-            float plantPriority = (float)plant.plantSO.pestAttackPriority;
-
-            // TODO: the function below is subject to modification. Might need a better math model. 
-            // current thought: less distance = more weight; more priority = more weight. Most weight plant is the target
-            float totalWeight = (1000 / distanceToPlant) + plantPriority;
-
-            if (totalWeight > maxWeight && plant.attackers < plant.plantSO.maxAttackers)
-            {
-                maxWeight = totalWeight;
-                targetPlantScript = plant;
-            }
-        } */
-
         if (queryFinished && targetPlantScript != null)
         {
             // TODO: find a location from that plant to target/attack'
             var offset = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[0];
             var dim = targetPlantScript.plantSO.targetRectParameters[targetPlantScript.plantData.currStageOfLife].vec2Array[1];
-            //var corners = targetPlantScript.GetPlantTargetBoundary();
-            //Vector2 bottomLeft = corners[0], topRight = corners[1];
-
-            //Compute the discrete cumulative density function(CDF) of your list-- or in simple terms the array of
-            //cumulative sums of the weights. Then generate a random number in the range between 0 and the sum of
-            //all weights(might be 1 in your case), do a binary search to find this random number in your discrete
-            //CDF array and get the value corresponding to this entry-- this is your weighted random number.
-            // no need for Binary Search, only 4 elements. Right now the Pr of each side is determined by relative length, not inspector-defined
-            /*float perimeter = 2 * dim.x + 2 * dim.y;
-            float vertWeight = dim.y / perimeter, horiWeight = dim.x / perimeter;
-            float totalWeight = vertWeight * 2 + horiWeight * 2;
-            float[] cdfArray = { horiWeight, vertWeight + horiWeight, horiWeight + vertWeight + horiWeight, totalWeight }; // [top, right, bottom, left]
-            float randVal = Random.Range(0, totalWeight);
-            int i = 0;
-            for (; i < cdfArray.Length; i++)
-            {
-                if (randVal <= cdfArray[i]) break;
-            }
-            // side is based on i
-            switch(i)
-            {
-                case 0: //top
-                    GetComponent<PestMovement>().targetOffsetFromCenter =
-                        new Vector2(offset.x + Random.Range(-dim.x / 2, dim.x / 2), offset.y + dim.y);
-                    break;
-                case 1: //right
-                    GetComponent<PestMovement>().targetOffsetFromCenter =
-                        new Vector2(offset.x + dim.x / 2, offset.y + Random.Range(0, dim.y));
-                    break;
-                case 2: //bottom
-                    GetComponent<PestMovement>().targetOffsetFromCenter =
-                        new Vector2(offset.x + Random.Range(-dim.x / 2, dim.x / 2), offset.y);
-                    break;
-                case 3: //left
-                    GetComponent<PestMovement>().targetOffsetFromCenter =
-                        new Vector2(offset.x - dim.x / 2, offset.y + Random.Range(0, dim.y));
-                    break;
-            }*/
             // Or just grab a point out of all the availble positions. The above one has a flaw, in the drawing notes.
             // because sometimes the point randomly chosen can be an unreacheable area in a passing range. 
             var randCoord = availablePosOffsetsOfTarget[UnityEngine.Random.Range(0, availablePosOffsetsOfTarget.Count)];
-            GetComponent<PestMovement>().targetOffsetFromCenter = new Vector2(offset.x + randCoord.x, offset.y + randCoord.y);
-            GetComponent<PestMovement>().coreOffsetCache = GetComponent<PestMovement>().targetOffsetFromCenter; // store the data
+            currMovementModule.targetOffsetFromCenter = new Vector2(offset.x + randCoord.x, offset.y + randCoord.y);
+            currMovementModule.coreOffsetCache = currMovementModule.targetOffsetFromCenter; // store the data
             //Debug.DrawLine(targetPlantScript.transform.position, targetPlantScript.transform.position + GetComponent<PestMovement>().coreOffsetCache, Color.magenta, 100, false);
 
             // treat this like a point RELATIVE to the offset, recalculate if in motion. different from main offset
             float castAngle; // in radian
             Vector3 castVector; // the direction vector
-            if (GetComponent<PestMovement>().targetOffsetFromCenter.x >= offset.x) // right side
+            if (currMovementModule.targetOffsetFromCenter.x >= offset.x) // right side
             {
                 castAngle = UnityEngine.Random.Range(0, 90) * (Mathf.PI / 180);
                 castVector = RotateVector(Vector3.right, castAngle);
@@ -373,22 +258,19 @@ public class PestScript : MonoBehaviour
             float baseDetectionRange = 1; // TODO: make this generalizable over the longest side of the "?" instead of hard-coded
             float radius = dim.x / 2; // make this size generalizable over what...
             int maxDetectionRange = (int)(baseDetectionRange + attackRange);
-            var info = Physics2D.CircleCast(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter,
+            var info = Physics2D.CircleCast(targetPlantScript.transform.position + currMovementModule.targetOffsetFromCenter,
                 radius,
                 castVector,
                 maxDetectionRange,
-                (1 << LayerMask.NameToLayer("NonGroundObstacle")) // need to do this, because ground is also an obstacle, and we don't want that. Plus might be more in future.
+                (1 << LayerMask.NameToLayer("Obstacle")) // need to do this, because ground is also an obstacle, and we don't want that. Plus might be more in future.
                                                                   // tip for above, can do (1<<i) | (1<<j) | ...; for multiple layers. 
                 );
-            //Debug.Log("Was there a collision: " + (info.collider != null));
-            //Debug.Log("Name of the collider is: " + info.collider.gameObject.name);
-            //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().targetOffsetFromCenter, info.point, Color.magenta, 100, false);
 
             Vector2 decoyTarget;
             if (info.collider == null) // no collision on its way
             {
                 decoyTarget = PickRandomPointInCircle(targetPlantScript.transform.position +
-                    GetComponent<PestMovement>().targetOffsetFromCenter + castVector * maxDetectionRange, // no need to normalize dir. Already 1. 
+                    currMovementModule.targetOffsetFromCenter + castVector * maxDetectionRange, // no need to normalize dir. Already 1. 
                     radius);
             }
             else // hit something, info parameters came to life
@@ -398,17 +280,13 @@ public class PestScript : MonoBehaviour
             //Debug.DrawLine(targetPlantScript.transform.position + GetComponent<PestMovement>().coreOffsetCache, decoyTarget, Color.magenta, 100, false);
             // Finally, do something with decoyTarget!
             var decoyTargetOffsetFromCenter = (Vector3)decoyTarget - targetPlantScript.transform.position;
-            GetComponent<PestMovement>().decoyState = true;
-            GetComponent<PestMovement>().targetOffsetFromCenter = decoyTargetOffsetFromCenter; // can do this, for example. Use boolean "beentodecoyyet"
-
-            /*var dir = targetPlantScript.transform.position - transform.position;
-            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            currentState = State.STATE_MOVING;*/
+            currMovementModule.decoyState = true;
+            currMovementModule.targetOffsetFromCenter = decoyTargetOffsetFromCenter; // can do this, for example. Use boolean "beentodecoyyet"
 
             // initiates movement script
-            GetComponent<PestMovement>().targetPosition = targetPlantScript.transform;
-            GetComponent<PestMovement>().enabled = true;
+            currMovementModule.targetPosition = targetPlantScript.transform;
+            // GetComponent<PestMovement>().enabled = true;
+            ((IPestModule)currMovementModule).ResumeModule();
             currentState = State.STATE_MOVING;
 
             queryStarted = false;
@@ -427,10 +305,11 @@ public class PestScript : MonoBehaviour
         if (targetPlantScript == null || targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
         {
             // handle a weird case where the pest is in state moving and movement script disabled, when the target is destroyed/missing.
-            if (GetComponent<PestMovement>().enabled != false)
+            // if (GetComponent<PestMovement>().enabled != false)
+            if (currMovementModule.keepPathing == true) // ????????? hmmmmmmmMMMMMMMMM
             {
-                GetComponent<PestMovement>().resetPath = true;
-                GetComponent<PestMovement>().StopPathing(); // initiates pathing ending 
+                currMovementModule.resetPath = true;
+                currMovementModule.keepPathing = false; // initiates pathing ending 
             }
             else
             {
@@ -448,7 +327,9 @@ public class PestScript : MonoBehaviour
             currentState = State.STATE_ATTACKING;
             targetPlantScript.attackers++;
             targetPlantScript.pestScripts.Add(this);
-            nextAttackTime = Time.time + attackRate;
+            // nextAttackTime = Time.time + attackRate;
+
+            ResumePestModule(currAttackModule);
         }
     }
 
@@ -458,7 +339,8 @@ public class PestScript : MonoBehaviour
         //Debug.Log("CHASE AFTER PLANT ACTIVATED");
         if (currentState == State.STATE_ATTACKING)
         {
-            GetComponent<PestMovement>().enabled = true;
+            // GetComponent<PestMovement>().enabled = true;
+            ((IPestModule)currMovementModule).ResumeModule();
         }
     }
 
@@ -468,6 +350,7 @@ public class PestScript : MonoBehaviour
         if (targetPlantScript == null)
         {
             currentState = State.STATE_SEARCHING;
+            PausePestModule(currAttackModule);
             return;
         }
 
@@ -475,7 +358,7 @@ public class PestScript : MonoBehaviour
         // Thought here:
         // As long as pest's AA off cd, it will attack the plant even if you hold it and run past it in range.
         // so this adds a bit of mecahnics yay
-        if (Time.time > nextAttackTime) // the attack is ready
+        /*if (Time.time > nextAttackTime) // the attack is ready
         {
             // reduce plant health if in attack range. Otherwise no.
             if (TargetPlantInAttackRange())
@@ -488,7 +371,7 @@ public class PestScript : MonoBehaviour
 
                 nextAttackTime = Time.time + attackRate; // reset aa timer
             }
-        }
+        }*/
 
         // TODO: figure out when should enter retreat state
         // set retreatPoint to corner of camera OR when we implement level bounds, to outside level bounds
@@ -499,12 +382,53 @@ public class PestScript : MonoBehaviour
     {
         if (targetPlantScript == null) return false; // destroyed during check
 
-        return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
+        // Some pretty smart "line of sight" attempt. TODO: IT WOULD WORK! TRY LATER AFTER FINISHING PROJ
+        int obstacleLayer = 1 << LayerMask.NameToLayer("Obstacle"); // move them out. BitSHift is expensive. TODO...
+        int groundLayer = 1 << LayerMask.NameToLayer("Ground");
+        int plantLayer = 1 << LayerMask.NameToLayer("Plant");
+        int combinedLayerMask = obstacleLayer | plantLayer | groundLayer;
+        Vector2 rayDirection = (targetPlantScript.transform.position + currMovementModule.coreOffsetCache) - transform.position;
+        // RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, rayDirection, 1000, combinedLayerMask);
+        // Cast a circle from the current position in the direction of the target, ignoring all layers except Obstacle and Plant
+        float radius = 0.2f; // width of your "ray"... makeShift. TODO: projectile size comm?
+        float attackRange = 100f; // makeShift.. TODO: try to find a way to use SO data.
+        // Single cast has problem: another plant blocking the ray from reaching the target plant. So has to track all
+        /*RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
+        // Debug.Log(hit.collider.gameObject);
+        if (hit.collider != null)
+        {
+            if (hit.collider.gameObject == targetPlantScript.gameObject)
+            {
+                Debug.Log("Found target plant in sight!!!");
+                return true;
+            }
+        }*/
+        // So we need to check everything.
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider.gameObject == targetPlantScript.gameObject)
+            {
+                Debug.Log("Found target plant in sight!!!");
+                return true;
+            }
+            // If the hit is an obstacle, then the target plant is not in sight. Objects are returned in order of contact.
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Obstacle") ||
+                    hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                break;
+            }
+        }
+
+        return false;
+
+        // return Vector3.Distance(transform.position, targetPlantScript.transform.position) <= attackRange;
     }
 
     void DuringRetreat()
     {
-        transform.position = Vector2.MoveTowards(transform.position, retreatPoint, speed * Time.deltaTime);
+        var retreatSpeed = 5;
+        transform.position = Vector2.MoveTowards(transform.position, retreatPoint, retreatSpeed * Time.deltaTime);
     }
     #endregion
 
@@ -562,6 +486,11 @@ public class PestScript : MonoBehaviour
         }
     }
 
+    public void PausePestModule(PestModuleEnum module)
+    {
+        pestModules[module].PauseModule();
+    }
+
     public void ResumePestModule(PestModuleEnum module)
     {
         pestModules[module].ResumeModule();
@@ -591,6 +520,11 @@ public class PestScript : MonoBehaviour
                 AddPestModule(module, pestData.pestModuleData[module]);
             }
         }
+    }
+
+    public void DestroyForYou(GameObject gameObject)
+    {
+        Destroy(gameObject);
     }
 
     public void OnDeath()

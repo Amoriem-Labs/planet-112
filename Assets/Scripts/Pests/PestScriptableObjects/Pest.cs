@@ -22,9 +22,16 @@ public class Pest : ScriptableObject
     public OnPestStageUpdateDelegate pestStageUpdateDelegate;
 
     // Module data
+    // Movements
+    // For BezierMovement
+    public float[] bezierMoveSpeed;
+
+    // Attacks
     // For SingleTargetProjectileAttackModule
     public float[] singleTargetProjectileAttackRate;
     public float[] singleTargetProjectileDamageAmount;
     public float[] singleTargetProjectileSpeed; // going to assume projectile collider and sprite is fixed. Put the update via diff proj. prefabs if needed
     public float[] singleTargetProjectileAttackRangeRadius;
+
+
 }

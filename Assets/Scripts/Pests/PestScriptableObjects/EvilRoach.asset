@@ -16,9 +16,11 @@ MonoBehaviour:
   spriteArray: []
   maxHealth:
   - 100
-  defaultModules: 00000000
+  defaultModules: 0000000001000000
   hitboxSize: []
   hitboxOffset: []
+  bezierMoveSpeed:
+  - 2
   singleTargetProjectileAttackRate:
   - 1
   singleTargetProjectileDamageAmount:

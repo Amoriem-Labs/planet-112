@@ -17,6 +17,9 @@ public abstract class PlantScript : MonoBehaviour
     // this needs to be here, because each instance has its own sprite renderer
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
 
+    // this is the audio manager
+    private AudioManager audio;
+
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/
     public PlantData plantData; // contains all the dynamic data of a plant to be saved, a reference to PD 
@@ -96,6 +99,7 @@ public abstract class PlantScript : MonoBehaviour
     public virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     public void InitializePlantData(Vector2 location)
@@ -176,6 +180,7 @@ public abstract class PlantScript : MonoBehaviour
     public void TakeDamage(int damage)
     {
         plantData.currentHealth -= damage;
+        audio.takeDamageSFX.Play();
 
         // check if plant dies.
         CheckPlantHealth();
@@ -284,6 +289,8 @@ public abstract class PlantScript : MonoBehaviour
             plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).ToArray();
         if (freedUpSpaceFromPrev.Length > 0) GridScript.SetTileStates(plantData.location, TileState.AVAILABLE_STATE, freedUpSpaceFromPrev);
 
+        // plays sound for when plant grows
+        audio.growingSFX.Play();
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {

@@ -8,8 +8,8 @@ using UnityEngine;
 public class SaveData
 {
     public List<LevelData> levelDatas; // a list of all the unlocked levels in a run
-    public PlayerData playerData; // explained in defintion
-    public GameStateData gameStateData; // explained in defintion
+    public PlayerData playerData; // explained in definition
+    public GameStateData gameStateData; // explained in definition
     public EventsData eventsData; //explained in definition
 }
 

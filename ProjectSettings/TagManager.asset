@@ -8,6 +8,14 @@ TagManager:
   - pest
   - plant
   - Obstacle
+  - background
+  - collectible
+  - inventoryPanel
+  - Audio
+  - infoBar
+  - infoImage
+  - hotbar
+  - GameManager
   layers:
   - Default
   - TransparentFX
@@ -16,7 +24,7 @@ TagManager:
   - Water
   - UI
   - Obstacle
-  - 
+  - Projectile
   - Detectors
   - Player
   - Plant
@@ -47,4 +55,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Settings
+    uniqueID: 2590438247
     locked: 0
