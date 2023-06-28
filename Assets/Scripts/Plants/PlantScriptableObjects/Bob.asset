@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe278a8699cded4595e4f6fed5f2022, type: 3}
+  m_Name: Bob
+  m_EditorClassIdentifier: 
+  pName: 0
+  maxStage: 3
+  maxAttackers: 3
+  pestAttackPriority: 3
+  spriteArray:
+  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  stageTimeMax:
+  - 10
+  - 20
+  - 30
+  maxHealth:
+  - 100
+  - 300
+  - 500
+  - 1000
+  defaultModules: 0100000002000000
+  relativeGridsOccupied:
+  - vec2Array: []
+  - vec2Array: []
+  - vec2Array:
+    - {x: 0, y: 1}
+  - vec2Array:
+    - {x: 0, y: 1}
+  targetRectParameters:
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.1, y: 0.1}
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.2, y: 0.2}
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.2, y: 0.35}
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.2, y: 0.5}
+  hitboxSize:
+  - {x: 0.2, y: 0.2}
+  - {x: 0.3, y: 0.4}
+  - {x: 0.32, y: 0.7}
+  - {x: 0.32, y: 0.9}
+  hitboxOffset:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0.2}
+  - {x: 0, y: 0.35}
+  - {x: 0, y: 0.45}
+  oxygenProductionLevels: 000000000a000000140000001e000000
+  productionRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  productionQuantity: 05000000020000000300000004000000
+  fruitType: 2
+  healRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  healAmount:
+  - 10
+  - 0.2
+  - 0.5
+  - 0.9
+  healMode: 00000000010000000200000003000000
+  healRangeRadius:
+  - 1
+  - 2
+  - 3
+  - 4
+  aoeAttackRate:
+  - 1
+  - 2
+  - 5
+  - 10
+  aoeDamageAmount:
+  - 5
+  - 20
+  - 50
+  - 100
+  aoeDamageRangeRadius:
+  - 2
+  - 3
+  - 4
+  - 5

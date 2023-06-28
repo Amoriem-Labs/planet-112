@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - pest
+  - plant
+  - background
+  - collectible
+  - inventoryPanel
+  - Audio
+  - infoBar
+  - infoImage
+  - hotbar
+  - GameManager
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - Obstacle
+  - Projectile
+  - Detectors
+  - Player
+  - Plant
+  - Pest
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 1495191105
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Settings
+    uniqueID: 2590438247
+    locked: 0
