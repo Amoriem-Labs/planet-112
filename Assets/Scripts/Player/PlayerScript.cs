@@ -21,7 +21,7 @@ public class PlayerScript : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
-    [SerializeField] float groundedRay;
+    [SerializeField] float headRay;
 
     GameObject background;
 
@@ -105,12 +105,20 @@ public class PlayerScript : MonoBehaviour
                 
             velocity.x = moveInput.x * speed;
 
-            if (moveInput.y > 0 && velocity.y == 0) // prevents you from double jumping
+            if (moveInput.y > 0 && velocity.y == 0 && !isHeadTouchingWall()) // first condition prevents you from double jumping and second condition prevents you from sticking to underside of obstacle if spamming jump key
             {
                 velocity.y = moveInput.y * jumpSpeed;
             } 
             rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
         }
+    }
+
+    private bool isHeadTouchingWall(){
+        LayerMask obstacleLayerMask = LayerMask.GetMask("Obstacle");
+        RaycastHit2D headCheck = Physics2D.Raycast(transform.position, Vector2.up, headRay, obstacleLayerMask);
+        //8 is binary -- to look at just layer 3, we need binary 1000 
+
+        return headCheck.collider != null;
     }
     
 

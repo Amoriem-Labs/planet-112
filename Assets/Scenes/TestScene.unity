@@ -11890,6 +11890,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: headRay
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: hotbarPanel
       value: 
       objectReference: {fileID: 1678808355}

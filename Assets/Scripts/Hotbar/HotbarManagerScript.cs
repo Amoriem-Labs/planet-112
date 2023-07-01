@@ -73,7 +73,9 @@ public class HotbarManagerScript : MonoBehaviour
         for (int i = 0; i < numHotbarSlots; i++){
             hotbarItems[i] = null;
             if (transform.GetChild(i).childCount > 0){
-                Destroy(transform.GetChild(i).GetChild(0).gameObject);
+                for (int j = 0; j < transform.GetChild(i).childCount; j++){
+                    Destroy(transform.GetChild(i).GetChild(j).gameObject);
+                }
             }
         }
     }
