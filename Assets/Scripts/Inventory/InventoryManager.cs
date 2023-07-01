@@ -87,6 +87,9 @@ public class InventoryManager : MonoBehaviour
                     if (inventoryItemData.itemName.Equals(itemPrefab.GetComponent<InventoryItem>().displayName)){
                         // Once we find the prefab that matches the inventory item, instantiate the prefab in the correct slot
                         inventorySlot.DrawSlot(itemPrefab);
+                        InventoryItem inventoryItem = inventorySlot.slotTransform.GetComponentInChildren<InventoryItem>();
+                        inventoryItem.stackSize = inventoryItemData.count;
+                        inventoryItem.stackSizeText.text = inventoryItem.stackSize.ToString();
                     }
                 }
             }

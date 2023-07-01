@@ -40,12 +40,24 @@ public class PersistentData : MonoBehaviour
 
         //Here is where I insert my code to link backend to frontend.
         // need to implement levelData, GameStateData, and eventData to frontend.
+
+        // Initialize player position from player position in currSaveData
         var pos = player.transform.position;
         pos.x = currSaveData.playerData.location.x;
         pos.y = currSaveData.playerData.location.y;
         player.transform.position = pos;
 
+        // Load in inventory from inventory in currSaveData
         inventory.LoadInventory(currSaveData.playerData);
+
+        // Initialize settings from settings in currSaveData
+        // TODO: also edit the sliders and checkboxes on settings panel too;
+        settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
+        audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
+        audioManager.OnMusicVolumeChanged(audioManager.volumeBGM);
+        audioManager.volumeSFX = currSaveData.gameStateData.settingsData.volumeSFX;
+        audioManager.OnSFXVolumeChanged(audioManager.volumeSFX);
+        settings.uiScale = currSaveData.gameStateData.settingsData.uiScale;
     }
 
     public static void WriteToSave(int saveIndex)
