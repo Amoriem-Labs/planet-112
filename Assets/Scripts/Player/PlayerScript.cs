@@ -32,7 +32,7 @@ public class PlayerScript : MonoBehaviour
     public bool settingsAreLoaded;
     public GameObject settingsCanvas;
 
-    public AudioManager audio;
+    public AudioManager audioManager;
 
     private void Awake()
     {
@@ -49,7 +49,7 @@ public class PlayerScript : MonoBehaviour
         settingsCanvas.SetActive(true);
         settingsCanvas.SetActive(false);
 
-        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -163,7 +163,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
-            audio.plantSFX.Play();
+            audioManager.plantSFX.Play();
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
         }
     }

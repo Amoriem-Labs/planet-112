@@ -9,7 +9,7 @@ public class HotbarManagerScript : MonoBehaviour
     public int numHotbarSlots;
     public HotbarItem[] hotbarItems;
     public GameObject hotbarItemPrefab;
-    public Transform[] linkedSlotTransforms; // This variable is how the hotbar manager knows which inventory slots to look at that correspond with the hotbar
+    public List<Transform> linkedSlotTransforms; // This variable is how the hotbar manager knows which inventory slots to look at that correspond with the hotbar
     public GameObject inventoryPanel;
     public TextMeshProUGUI nSeafoam;
     public TextMeshProUGUI nSunset;
@@ -18,16 +18,20 @@ public class HotbarManagerScript : MonoBehaviour
     public FruitManager fruitManager;
 
     #region Initializing hotbar
-    void Start(){
+    void Awake(){
         hotbarItems = new HotbarItem[numHotbarSlots];
+    }
+
+    void Start(){
+        LinkSlotTransforms();
         UpdateFruitText();
     }
 
     public void LinkSlotTransforms(){
-        linkedSlotTransforms = new Transform[numHotbarSlots];
+        linkedSlotTransforms = new List<Transform>(numHotbarSlots);
         for (int i = 0; i < numHotbarSlots; i++){
             InventoryManager inventoryManager = inventoryPanel.GetComponent<InventoryManager>();
-            linkedSlotTransforms[i] = inventoryPanel.transform.GetChild(i + (inventoryManager.inventorySlots.Count - numHotbarSlots)).GetChild(0);
+            linkedSlotTransforms.Add(inventoryPanel.transform.GetChild(i + (inventoryManager.inventorySlots.Count - numHotbarSlots)).GetChild(0));
         }
     }
     #endregion

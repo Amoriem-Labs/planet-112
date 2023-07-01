@@ -62,15 +62,21 @@ public class PestData
 [Serializable]
 public class PlayerData
 {
+    public Vector2 location; // x_index, y_index of the player in the map 2D array
     public List<InventoryItemData> inventoryItemDatas; // a list of all the items that the player has in the inventory
+    public int nSeafoam; // number of seafoam icura player has in inventory
+    public int nSunset; // number of sunset icura player has in inventory
+    public int nAmethyst; // number of amethyst icura player has in inventory
+    public int nCrystalline; // number of crystalline icura player has in inventory
 }
 
 // Contains the dynamic data of any item that can exist in an inventory. 
 [Serializable]
 public class InventoryItemData
 {
-    public int itemType; // the type of the item, used to get the inherited, specific item at run time.
+    public string itemName; // name of the item
     public int count; // the amount of this item that the player has
+    // public int inventorySlotIndex; // the location of this item in the inventory, may actually not need this variable since the list already has index in it
 }
 #endregion
 
@@ -90,8 +96,10 @@ public class GameStateData
 // Contains the settings data that the player configurated
 public class SettingsData
 {
+    public bool fullScreen; // bool for whether the game is fullscreen or not
     public float volumeBGM; // slider volume of the background music
-    public bool mutedBGM; // is the background music muted?
+    public float volumeSFX; // slider volume of the SFX
+    public float uiScale; // dropdown scale for size of UI
 }
 #endregion
 

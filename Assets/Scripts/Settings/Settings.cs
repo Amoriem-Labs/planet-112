@@ -12,8 +12,11 @@ public class Settings : MonoBehaviour
     private Vector3 settingsStartingScale;
     private Vector3 hotbarStartingScale;
     private Vector3 inventoryStartingScale;
-    public GameObject promptSavePanel;
+    public GameObject quitPanel;
+    public GameObject savePanel;
     private float[] uiScalings = new float[]{0.8f, 0.9f, 1.0f, 1.1f, 1.2f};
+    public PersistentData persistentData;
+    public float uiScale;
 
     void Start(){
         Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
@@ -51,17 +54,42 @@ public class Settings : MonoBehaviour
         inventoryCanvas.transform.localScale = Vector3.Scale(inventoryStartingScale, new Vector3(uiScalings[val], uiScalings[val], 1.0f));
     }
 
-    public void saveGame(){
-        // write code to save game (work with Nick on this)
+    public void goToSaveScreen(){
+        exitQuitScreen();
+        savePanel.SetActive(true);
     }
 
-    public void quitGame(){
+    public void exitSaveScreen(){
+        savePanel.SetActive(false);
+    }
+
+    // TODO: very hard code-y, fix later
+    public void saveGame_1(){
+        exitSaveScreen();
+        persistentData.CreateNewSave(1);
+        
+    }
+
+    public void saveGame_2(){
+        exitSaveScreen();
+        persistentData.CreateNewSave(2);
+
+    }
+
+    public void saveGame_3(){
+        exitSaveScreen();
+        persistentData.CreateNewSave(3);
+
+    }
+
+    public void goToQuitScreen(){
         // prompt user to save or not before quitting
-        promptSavePanel.SetActive(true);
+        exitSaveScreen();
+        quitPanel.SetActive(true);
     }
 
-    public void exitPromptSavePanel(){
-        promptSavePanel.SetActive(false);
+    public void exitQuitScreen(){
+        quitPanel.SetActive(false);
     }
 
     public void exitSettings(){

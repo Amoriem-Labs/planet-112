@@ -115,7 +115,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 0.33, y: 0.58}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -155,18 +155,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.030920804, y: 0.006090075}
+  m_Offset: {x: 0, y: 0.006090075}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.22717276, y: 0.44719476}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.64, y: 0.64}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.33, y: 0.58}
+    newSize: {x: 0.33, y: 0.58}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5161871, y: 0.90656966}
+  m_Size: {x: 0.35, y: 0.6}
   m_EdgeRadius: 0
 --- !u!114 &4721409493239636386
 MonoBehaviour:
@@ -184,8 +184,16 @@ MonoBehaviour:
   detectionRange: {fileID: 7792482495207512216}
   speed: 4
   jumpSpeed: 5
+  sideRay: 0
+  diagonalRay: 0
   plantObject: {fileID: 5392039749182135098, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
   groundedRay: 0.5
+  inventoryIsLoaded: 0
+  inventoryCanvas: {fileID: 0}
+  hotbarPanel: {fileID: 0}
+  settingsAreLoaded: 0
+  settingsCanvas: {fileID: 0}
+  audioManager: {fileID: 0}
 --- !u!114 &6951981859433477780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,7 +237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6201913644617933384, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
       propertyPath: m_Size.y
-      value: 0.9
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 6201913644617933385, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
       propertyPath: m_RootOrder

@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private void Awake()
+    public PersistentData persistentData;
+
+    private void Start()
     {
-        PersistentData.CreateNewSave(0); // Now it should work ;D
-        PersistentData.LoadSave(0);
+        // need to replace when we have a title screen
+        //persistentData.CreateNewSave(0); // Now it should work ;D // uncomment this later
+        persistentData.LoadSave(1); // I will need to change this back to LoadSave(0).. it is only LoadSave(1) right now for testing purposes
     }
 
     #region PlantFunctions

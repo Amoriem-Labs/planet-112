@@ -7,13 +7,19 @@ using UnityEngine;
 // This is a global, essentially static class accessible by its name
 public class PersistentData : MonoBehaviour
 {
+    public GameObject player;
+    public InventoryManager inventory;
+    public AudioManager audioManager;
+    public Settings settings;
+    public FruitManager fruitManager;
+
     // currSaveData and currLevelDatas are private vars accessible through getters
     static SaveData currSaveData;
     // Level id is not necessarily the same as list index in currSaveData.levelDatas, so we store references to each LevelData in a dictionary. If you need level data, get it from currLevelDatas, not from currSaveData.levelDatas - note that any changes to currLevelDatas entries will be reflected in currSaveData because the dictionary contains references, not copies, BUT if you want to add a new LevelData object to the list, you MUST use AddLevelData.
     static Dictionary<int, LevelData> currLevelDatas;
 
     // Save index 0 is always auto save; Save >= 1 (up to max) is manual save. 
-    public static void LoadSave(int saveIndex)
+    public void LoadSave(int saveIndex)
     {
         // Delete current in-game dynamic data and replace it with save file data
         currSaveData = null;
@@ -31,6 +37,15 @@ public class PersistentData : MonoBehaviour
         {
             Debug.LogError("ERROR: failed to load save " + saveIndex + ".");
         }
+
+        //Here is where I insert my code to link backend to frontend.
+        // need to implement levelData, GameStateData, and eventData to frontend.
+        var pos = player.transform.position;
+        pos.x = currSaveData.playerData.location.x;
+        pos.y = currSaveData.playerData.location.y;
+        player.transform.position = pos;
+
+        inventory.LoadInventory(currSaveData.playerData);
     }
 
     public static void WriteToSave(int saveIndex)
@@ -67,7 +82,7 @@ public class PersistentData : MonoBehaviour
     }
 
     // This function is subject to change and finalization as dynamic variables increase!
-    public static void CreateNewSave(int saveIndex) // things we ignore are automatically obvious default values.
+    public void CreateNewSave(int saveIndex) // things we ignore are automatically obvious default values.
     {
         SaveData newSave = new SaveData();
 
@@ -79,11 +94,39 @@ public class PersistentData : MonoBehaviour
 
         // deal with player data
         PlayerData initPlayerData = new PlayerData();
+
+        initPlayerData.location.x = player.transform.position.x;
+        initPlayerData.location.y = player.transform.position.y;
+        initPlayerData.inventoryItemDatas = new List<InventoryItemData>(inventory.numInventorySlots);
+        for (int i = 0; i < inventory.numInventorySlots; i++){
+            InventoryItemData inventoryItemData = new InventoryItemData();
+            Transform slotTransform = inventory.inventorySlots[i].slotTransform;
+            if (slotTransform.childCount == 0){
+                inventoryItemData.itemName = "empty";
+                inventoryItemData.count = 0;
+            } else {
+                InventoryItem inventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
+                inventoryItemData.itemName = inventoryItem.displayName;
+                inventoryItemData.count = inventoryItem.stackSize;
+            }
+            initPlayerData.inventoryItemDatas.Add(inventoryItemData);
+        }
+        initPlayerData.nSeafoam = fruitManager.nSeafoam;
+        initPlayerData.nSunset = fruitManager.nSunset;
+        initPlayerData.nAmethyst = fruitManager.nAmethyst;
+        initPlayerData.nCrystalline = fruitManager.nCrystalline;
+
         newSave.playerData = initPlayerData;
 
         // deal with gamestate data
         GameStateData initGameStateData = new GameStateData();
         SettingsData initSettingsData = new SettingsData();
+
+        initSettingsData.fullScreen = settings.fullScreen;
+        initSettingsData.volumeBGM = audioManager.volumeBGM;
+        initSettingsData.volumeSFX = audioManager.volumeSFX;
+        initSettingsData.uiScale = settings.uiScale;
+        
         initGameStateData.settingsData = initSettingsData;
         newSave.gameStateData = initGameStateData;
 
@@ -93,5 +136,6 @@ public class PersistentData : MonoBehaviour
 
         // write the current save data to the saveIndex save
         DataManager.writeFile(ref newSave, saveIndex);
+        DataManager.writeSettingsChangeToFile(initSettingsData);
     }
 }

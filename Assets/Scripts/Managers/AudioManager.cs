@@ -15,6 +15,9 @@ public class AudioManager : MonoBehaviour
     public AudioSource[] soundtracks;
     public AudioSource[] SFXs;
 
+    public float volumeBGM;
+    public float volumeSFX;
+
     void Start(){
         soundtracks = new AudioSource[]{plainsSoundtrack};
         SFXs = new AudioSource[]{plantSFX, growingSFX, collectGenericSFX, collectFruitSFX, takeDamageSFX};
@@ -25,6 +28,7 @@ public class AudioManager : MonoBehaviour
         foreach (AudioSource music in soundtracks){
             music.volume = newValue;
         }
+        volumeBGM = newValue;
     }
 
     // Changes SFX volumes. Is triggered by SFX slider in settings.
@@ -32,5 +36,6 @@ public class AudioManager : MonoBehaviour
         foreach (AudioSource sfx in SFXs){
             sfx.volume = newValue;
         }
+        volumeSFX = newValue;
     }
 }

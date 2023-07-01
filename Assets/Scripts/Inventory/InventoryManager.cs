@@ -5,48 +5,37 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public GameObject slotPrefab;
-    public List<InventorySlot> inventorySlots = new List<InventorySlot>(27);
+    public int numInventorySlots = 27;
+    public List<InventorySlot> inventorySlots;
     public bool draggingItem;
     public GameObject hotbar;
     public FruitManager fruitManager;
+    public List<GameObject> possibleItemPrefabs; // Reference the possible prefabs that can be items in the inspector
 
     // Initializing inventory.
     void Awake(){
-        ResetInventory();
+        inventorySlots = new List<InventorySlot>(numInventorySlots);
+        for (int i = 0; i < inventorySlots.Capacity; i++){
+            inventorySlots.Add(transform.GetChild(i).GetComponent<InventorySlot>());
+        }
         draggingItem = false;
         Fruit.OnFruitCollected += UpdateInventory;
         Weapon.OnWeaponCollected += UpdateInventory;
     }
 
-    #region Initializes inventory
-    // Deletes all items in inventory and instantiates the slot prefabs.
+    // Deletes all items in inventory. Currently un-used.
     void ResetInventory(){
         foreach (Transform inventorySlotTransform in transform){
-            Destroy(inventorySlotTransform.gameObject);
-        }
-        inventorySlots = new List<InventorySlot>(27);
-
-        for (int i = 0; i < inventorySlots.Capacity; i++){
-            CreateInventorySlot(i);
+            if (inventorySlotTransform.GetChild(0).childCount > 0){
+                Destroy(inventorySlotTransform.GetChild(0).GetChild(0));
+            }
         }
     }
-
-    void CreateInventorySlot(int inventorySlotIndex){
-        GameObject newSlot = Instantiate(slotPrefab);
-        newSlot.transform.SetParent(transform, false);
-
-        InventorySlot newSlotComponent = newSlot.GetComponent<InventorySlot>();
-        newSlotComponent.inventorySlotIndex = inventorySlotIndex;
-        newSlotComponent.ClearSlot();
-        inventorySlots.Add(newSlotComponent);
-    }
-    #endregion
 
     // Searches if item already exists in inventory, and if so, add to that item's stackSize.
     //   If item doesn't exist, then add item to first empty InventorySlot.
     //   This method is triggered whenever player picks up a new item.
     void UpdateInventory(GameObject inventoryItemPrefab){
-        hotbar.GetComponent<HotbarManagerScript>().LinkSlotTransforms();
         HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
 
         // Searches if item already exists in inventory, and add to that item's stacksize if so.
@@ -81,5 +70,32 @@ public class InventoryManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    // This method is called whenever loading in a save file. Populates inventory with items from the save file.
+    public void LoadInventory(PlayerData playerData){
+        HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
+
+        // Populates inventory item by item from inventoryItemDatas
+        for (int i = 0; i < playerData.inventoryItemDatas.Count; i++){
+            InventorySlot inventorySlot = inventorySlots[i];
+            Transform slotTransform = inventorySlot.transform.GetChild(0); 
+            InventoryItemData inventoryItemData = playerData.inventoryItemDatas[i];
+            if (!inventoryItemData.itemName.Equals("empty")){
+                // if there is an actual inventory item at that index, then search for what prefab could match that item
+                foreach (GameObject itemPrefab in possibleItemPrefabs){
+                    if (inventoryItemData.itemName.Equals(itemPrefab.GetComponent<InventoryItem>().displayName)){
+                        // Once we find the prefab that matches the inventory item, instantiate the prefab in the correct slot
+                        inventorySlot.DrawSlot(itemPrefab);
+                    }
+                }
+            }
+        }
+        fruitManager.nSeafoam = playerData.nSeafoam;
+        fruitManager.nSunset = playerData.nSunset;
+        fruitManager.nAmethyst = playerData.nAmethyst;
+        fruitManager.nCrystalline = playerData.nCrystalline;
+        hotbarManager.UpdateHotbar();
+        hotbarManager.UpdateFruitText();
     }
 }

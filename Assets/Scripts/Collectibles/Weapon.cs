@@ -8,15 +8,15 @@ public class Weapon : MonoBehaviour, ICollectible
     public delegate void HandleWeaponCollected(GameObject weaponInventoryPrefab);
     public static event HandleWeaponCollected OnWeaponCollected;
     public GameObject weaponInventoryPrefab;
-    public AudioManager audio;
+    public AudioManager audioManager;
 
     void Awake(){
-        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     // Is triggered whenever player picks up stick off ground.
     public void Collect(){
-        audio.collectGenericSFX.Play();
+        audioManager.collectGenericSFX.Play();
         Destroy(gameObject);
         OnWeaponCollected?.Invoke(weaponInventoryPrefab);
     }
