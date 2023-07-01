@@ -105,7 +105,8 @@ public class PlayerScript : MonoBehaviour
                 
             velocity.x = moveInput.x * speed;
 
-            if (moveInput.y > 0 && velocity.y == 0 && !isHeadTouchingWall()) // first condition prevents you from double jumping and second condition prevents you from sticking to underside of obstacle if spamming jump key
+            // First condition only triggers jump if player is pressing Up or W on keyboard, second condition prevents you from double jumping, and third condition prevents you from sticking to underside of obstacle if spamming jump key
+            if (moveInput.y > 0 && velocity.y == 0 && !isHeadTouchingWall()) 
             {
                 velocity.y = moveInput.y * jumpSpeed;
             } 

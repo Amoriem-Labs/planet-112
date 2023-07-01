@@ -42,7 +42,7 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < inventorySlots.Count; i++){
             InventorySlot inventorySlot = inventorySlots[i];
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
-            if (slotTransform.childCount > 0){
+            if (slotTransform.childCount > 0 && slotTransform.GetComponentInChildren<InventoryItem>().stackSize < 99){
                 InventoryItem inventoryItem = inventorySlot.transform.GetComponentInChildren<InventoryItem>();
                 if (inventoryItem.displayName == inventoryItemPrefab.GetComponent<InventoryItem>().displayName){
                     inventoryItem.AddToStack();
@@ -56,7 +56,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // If item doesn't exist in inventory, then add that item to the first empty InventorySlot.
+        // If item doesn't exist in inventory or inventory stackSize is at 99, then add that item to the first empty InventorySlot.
         for (int i = 0; i < inventorySlots.Count; i++){
             InventorySlot inventorySlot = inventorySlots[i];
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
