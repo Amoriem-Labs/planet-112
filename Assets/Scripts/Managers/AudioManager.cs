@@ -18,7 +18,7 @@ public class AudioManager : MonoBehaviour
     public float volumeBGM;
     public float volumeSFX;
 
-    void Start(){
+    void Awake(){
         soundtracks = new AudioSource[]{plainsSoundtrack};
         SFXs = new AudioSource[]{plantSFX, growingSFX, collectGenericSFX, collectFruitSFX, takeDamageSFX};
     }

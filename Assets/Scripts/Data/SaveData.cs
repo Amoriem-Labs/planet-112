@@ -94,12 +94,13 @@ public class GameStateData
 }
 
 // Contains the settings data that the player configurated
+[Serializable]
 public class SettingsData
 {
     public bool fullScreen; // bool for whether the game is fullscreen or not
     public float volumeBGM; // slider volume of the background music
     public float volumeSFX; // slider volume of the SFX
-    public float uiScale; // dropdown scale for size of UI
+    public int uiScaleIndex; // dropdown scale for size of UI
 }
 #endregion
 

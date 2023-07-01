@@ -53,11 +53,14 @@ public class PersistentData : MonoBehaviour
         // Initialize settings from settings in currSaveData
         // TODO: also edit the sliders and checkboxes on settings panel too;
         settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
+        settings.loadScreen(settings.fullScreen);
         audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
         audioManager.OnMusicVolumeChanged(audioManager.volumeBGM);
         audioManager.volumeSFX = currSaveData.gameStateData.settingsData.volumeSFX;
         audioManager.OnSFXVolumeChanged(audioManager.volumeSFX);
-        settings.uiScale = currSaveData.gameStateData.settingsData.uiScale;
+        settings.loadVolumeSliders(audioManager.volumeBGM, audioManager.volumeSFX);
+        settings.uiScaleIndex = currSaveData.gameStateData.settingsData.uiScaleIndex;
+        settings.scaleUI(settings.uiScaleIndex);
     }
 
     public static void WriteToSave(int saveIndex)
@@ -137,7 +140,7 @@ public class PersistentData : MonoBehaviour
         initSettingsData.fullScreen = settings.fullScreen;
         initSettingsData.volumeBGM = audioManager.volumeBGM;
         initSettingsData.volumeSFX = audioManager.volumeSFX;
-        initSettingsData.uiScale = settings.uiScale;
+        initSettingsData.uiScaleIndex = settings.uiScaleIndex;
         
         initGameStateData.settingsData = initSettingsData;
         newSave.gameStateData = initGameStateData;

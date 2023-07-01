@@ -57,7 +57,7 @@ public class DataManager : MonoBehaviour
                 tempSaveData.gameStateData.settingsData.fullScreen = settingsData.fullScreen;
                 tempSaveData.gameStateData.settingsData.volumeBGM = settingsData.volumeBGM;
                 tempSaveData.gameStateData.settingsData.volumeSFX = settingsData.volumeSFX;
-                tempSaveData.gameStateData.settingsData.uiScale = settingsData.uiScale;
+                tempSaveData.gameStateData.settingsData.uiScaleIndex = settingsData.uiScaleIndex;
 
                 // Serialize the temporary object into new JSON and save string.
                 string jsonString = JsonUtility.ToJson(tempSaveData);

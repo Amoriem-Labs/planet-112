@@ -3001,13 +3001,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fullScreen: 0
+  fullScreenToggleCheckbox: {fileID: 1571079545}
   cam: {fileID: 519420028}
   hotbarCanvas: {fileID: 143864973}
   inventoryCanvas: {fileID: 1422333537}
   quitPanel: {fileID: 483690220}
   savePanel: {fileID: 177403143}
+  musicSlider: {fileID: 627253544}
+  sfxSlider: {fileID: 74307105}
+  uiScalings:
+  - 0.8
+  - 0.9
+  - 1
+  - 1.1
+  - 1.2
+  uiScaleIndex: 0
   persistentData: {fileID: 1107218979}
-  uiScale: 0
 --- !u!1 &293020812
 GameObject:
   m_ObjectHideFlags: 0
