@@ -9,7 +9,8 @@ public class PlayerScript : MonoBehaviour
 {
     public List<PlantScript> closePlants = new List<PlantScript>();
 
-    public TriggerResponse detectionRange;
+    public TriggerResponse nearbyPlantDetectionRange;
+    public TriggerResponse regularDetectionRange;
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float sideRay; //set to 0.4f
@@ -68,8 +69,10 @@ public class PlayerScript : MonoBehaviour
         colliderScript.gameObject.name = "DetectionRange";
         colliderScript.SetCollider(typeof(BoxCollider2D), new Vector2(0, 0), new Vector2(2, 0.9f), 0,
             OnDetectorTriggerEnter2D, OnDetectorTriggerExit2D);*/
-        detectionRange.onTriggerEnter2D = OnDetectorTriggerEnter2D;
-        detectionRange.onTriggerExit2D = OnDetectorTriggerExit2D;
+        nearbyPlantDetectionRange.onTriggerEnter2D = OnPlantDetectorTriggerEnter2D;
+        nearbyPlantDetectionRange.onTriggerExit2D = OnPlantDetectorTriggerExit2D;
+        regularDetectionRange.onTriggerEnter2D = OnRegularTriggerEnter2D;
+        regularDetectionRange.onTriggerExit2D = OnRegularTriggerExit2D;
     }
 
     private void OnEnable()
@@ -230,8 +233,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // Player interaction.
-    private void OnDetectorTriggerEnter2D(Collider2D collision)
+    #region Collider methods.
+    // The below two methods are for detecting nearby plants and use the PlantDetectionRange child object's BoxCollider2D.
+    private void OnPlantDetectorTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "plant")
         {
@@ -239,7 +243,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnDetectorTriggerExit2D(Collider2D collision)
+    private void OnPlantDetectorTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "plant")
         {
@@ -247,7 +251,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
+    // The below two methods are for regular collisions and use the RegularDetectionRange child object's BoxCollider2D.
+    // In a "regular" collision, the player's BoxCollider2D is set to be the same size as the player sprite instead of being larger or smaller than the player sprite.
+    private void OnRegularTriggerEnter2D(Collider2D collision){
         // If player collides with collectible, the collect method is called for that collectible.
         if (collision.gameObject.tag == "collectible"){
             ICollectible collectible = collision.GetComponent<ICollectible>();
@@ -256,4 +262,10 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
+
+    private void OnRegularTriggerExit2D(Collider2D collision){
+        // Ghost method. Right now there's no interaction for what happens when a player exits a regular collision.
+        // Necessary to instantiate in order for TriggerResponse script's onTriggerExit2D variable to have a reference.
+    }
+    #endregion
 }
