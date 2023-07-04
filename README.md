@@ -1,8 +1,10 @@
 # README
 
-## Jacob's Logs
-8/18/2022
-Right now we have player movement with A and D or right and left.
-Press E by a plant to increment it's life stage.
+07/04/2023
+Player movement is with both WASD and arrow keys.
+Press E by a plant to pick up the plant.
 Press G to spawn a new plant.
-Each plant will automatically increase its life stage according to the timer set by stageMax or whatever I called it (it's serialized in the inspector)
+Press I to open the inventory.
+Press Esc to open the settings.
+Press 1 through 9 to use the items in the hotbar.
+Each plant will automatically increase its life stage according to the timer set by stageTimeMax.
