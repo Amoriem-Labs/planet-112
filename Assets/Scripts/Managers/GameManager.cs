@@ -5,12 +5,14 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public PersistentData persistentData;
+    public Settings settings;
 
     private void Start()
     {
         // need to replace when we have a title screen
-        //persistentData.CreateNewSave(0); // Now it should work ;D // uncomment this later
-        persistentData.LoadSave(1); // I will need to change this back to LoadSave(0).. it is only LoadSave(1) right now for testing purposes
+        // persistentData.CreateNewSave(0); // Should only run CreateNewSave(0) when creating a new game file for the first time... otherwise just load in the autosaved file
+        persistentData.LoadSave(0);
+        settings.LoadSaveFileUIs(); // This loads in the text UI for the save files in the savePanel of the Settings menu
     }
 
     #region PlantFunctions

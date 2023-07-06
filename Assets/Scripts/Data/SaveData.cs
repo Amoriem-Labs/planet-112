@@ -8,6 +8,7 @@ using UnityEngine;
 public class SaveData
 {
     public List<LevelData> levelDatas; // a list of all the unlocked levels in a run
+    public int currLevelIndex; // index of which level the player last saved 
     public PlayerData playerData; // explained in definition
     public GameStateData gameStateData; // explained in definition
     public EventsData eventsData; //explained in definition
@@ -19,10 +20,13 @@ public class SaveData
 public class LevelData
 {
     public int levelID; // id of the level. Each level (individual scene) has a unique id, labeled on the game map.
+    public string biome; // biome that level is in. 
     public List<PlantData> plantDatas; // a list of all the existing, planted plants in a level. 
     // TODO: should this be an "agentsData" list containing pests, neutrals, NPCs, etc (non-player agents)
     public List<PestData> pestDatas; // similar. could be null (since using probaility model) or existing (aka saved during battle).
     public int oxygenLevel; // total oxygen level of the level, updated every time a plant spawns / dies.
+    public int firstTargetOxygenLevel; // first target oxygen level of the level, once player reaches this oxygen level, they can move onto the next level
+    public int secondTargetOxygenLevel; // second target oxygen level of the level, once player reaches this oxygen level, they get a 2% attack damage boost
     public int[] mapGrid; // the current distribution of this level's map's grids. Use 1D array math thingy to represent 2D array.
     public PlantData plantInHand; // if any, the plant the player picked up. Can move it to personal data for cross level or make it into a list. 
 }

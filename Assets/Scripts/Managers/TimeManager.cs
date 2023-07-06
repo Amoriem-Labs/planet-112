@@ -10,6 +10,8 @@ public class TimeManager : MonoBehaviour
     public static float gameTimeScale = 1f; // tune this down, game time counts faster. Tune this up, game time counts slower. 
     public CoroutineHandle timerHandle;
 
+    public PersistentData persistentData;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +26,7 @@ public class TimeManager : MonoBehaviour
 
         // affected by time scale, cancels when object is destroyed
         timerHandle = Timing.CallPeriodically(float.PositiveInfinity, timeUnit * gameTimeScale, 
-            delegate { CountTimeUnit(); }, gameObject);
+            delegate { CountTimeUnit(); Autosave(); }, gameObject);
     }
 
     void CountTimeUnit()
@@ -47,6 +49,13 @@ public class TimeManager : MonoBehaviour
                     gameStateData.timePassedHours -= 24;
                 }
             }
+        }
+    }
+
+    void Autosave(){
+        if (gameStateData.timePassedSeconds % 60 == 0){
+            Autosave();
+            print("autosaving");
         }
     }
 

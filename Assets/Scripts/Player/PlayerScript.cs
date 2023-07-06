@@ -13,8 +13,6 @@ public class PlayerScript : MonoBehaviour
     public TriggerResponse regularDetectionRange;
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
-    [SerializeField] float sideRay; //set to 0.4f
-    [SerializeField] float diagonalRay; //set to 0.435f
     [SerializeField] GameObject plantObject;
 
     Controls controls;
@@ -22,7 +20,8 @@ public class PlayerScript : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
-    [SerializeField] float headRay;
+    [SerializeField] float groundRay; // serialized to 0.5f
+    [SerializeField] float diagonalRay; // serialized to 0.56f
 
     GameObject background;
 
@@ -108,8 +107,8 @@ public class PlayerScript : MonoBehaviour
                 
             velocity.x = moveInput.x * speed;
 
-            // First condition only triggers jump if player is pressing Up or W on keyboard, second condition prevents you from double jumping, and third condition prevents you from sticking to underside of obstacle if spamming jump key
-            if (moveInput.y > 0 && velocity.y == 0 && !isHeadTouchingWall()) 
+            // First condition only triggers jump if player is pressing Up or W on keyboard, second condition and third condition prevents you from double jumping
+            if (moveInput.y > 0 && isGrounded() && velocity.y == 0)
             {
                 velocity.y = moveInput.y * jumpSpeed;
             } 
@@ -117,14 +116,17 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private bool isHeadTouchingWall(){
+    private bool isGrounded(){
         LayerMask obstacleLayerMask = LayerMask.GetMask("Obstacle");
-        RaycastHit2D headCheck = Physics2D.Raycast(transform.position, Vector2.up, headRay, obstacleLayerMask);
+        RaycastHit2D obstacleDownCheck = Physics2D.Raycast(transform.position, Vector2.down, groundRay, obstacleLayerMask);
+        RaycastHit2D obstacleDiagonalDownLeftCheck = Physics2D.Raycast(transform.position, new Vector2(-1,-1), diagonalRay, obstacleLayerMask);
+        RaycastHit2D obstacleDiagonalDownRightCheck = Physics2D.Raycast(transform.position, new Vector2(1,-1), diagonalRay, obstacleLayerMask);
+        LayerMask groundLayerMask = LayerMask.GetMask("Ground");
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundRay, groundLayerMask);
         //8 is binary -- to look at just layer 3, we need binary 1000 
 
-        return headCheck.collider != null;
+        return obstacleDownCheck.collider != null || obstacleDiagonalDownLeftCheck.collider != null || obstacleDiagonalDownRightCheck.collider != null || groundCheck.collider != null;
     }
-    
 
     public PlantScript findClosestPlant()
     {

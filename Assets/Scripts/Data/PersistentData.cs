@@ -39,7 +39,15 @@ public class PersistentData : MonoBehaviour
         }
 
         //Here is where I insert my code to link backend to frontend.
-        // need to implement levelData, GameStateData, and eventData to frontend.
+        // need to implement levelData, and eventData to frontend.
+
+        // Load in current level
+        LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
+        LevelManager.currentLevelID = currLevel.levelID;
+        LevelManager.currentBiome = currLevel.biome;
+        LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
+        LevelManager.currentFirstTargetOxygenLevel = currLevel.firstTargetOxygenLevel;
+        LevelManager.currentSecondTargetOxygenLevel = currLevel.secondTargetOxygenLevel;
 
         // Initialize player position from player position in currSaveData
         var pos = player.transform.position;
@@ -51,7 +59,6 @@ public class PersistentData : MonoBehaviour
         inventory.LoadInventory(currSaveData.playerData);
 
         // Initialize settings from settings in currSaveData
-        // TODO: also edit the sliders and checkboxes on settings panel too;
         settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
         settings.loadScreen(settings.fullScreen);
         audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
@@ -103,8 +110,12 @@ public class PersistentData : MonoBehaviour
 
         // deal with level datas
         newSave.levelDatas = new List<LevelData>();
-        LevelData firstLevel = new LevelData();
-        firstLevel.levelID = 0;
+        LevelData firstLevel = new LevelData(); // will need to change this later as we add more levels so that we can also save second level, not just first level
+        firstLevel.levelID = LevelManager.currentLevelID;
+        firstLevel.biome = LevelManager.currentBiome;
+        firstLevel.oxygenLevel = LevelManager.currentOxygenLevel;
+        firstLevel.firstTargetOxygenLevel = LevelManager.currentFirstTargetOxygenLevel;
+        firstLevel.secondTargetOxygenLevel = LevelManager.currentSecondTargetOxygenLevel;
         newSave.levelDatas.Add(firstLevel);
 
         // deal with player data
@@ -136,6 +147,11 @@ public class PersistentData : MonoBehaviour
         // deal with gamestate data
         GameStateData initGameStateData = new GameStateData();
         SettingsData initSettingsData = new SettingsData();
+
+        initGameStateData.timePassedSeconds = currSaveData.gameStateData.timePassedSeconds;
+        initGameStateData.timePassedMinutes = currSaveData.gameStateData.timePassedMinutes;
+        initGameStateData.timePassedHours = currSaveData.gameStateData.timePassedHours;
+        initGameStateData.timePassedDays = currSaveData.gameStateData.timePassedDays;
 
         initSettingsData.fullScreen = settings.fullScreen;
         initSettingsData.volumeBGM = audioManager.volumeBGM;
