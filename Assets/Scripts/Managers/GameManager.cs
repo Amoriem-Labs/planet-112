@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
         if (plantObj != null)
         {
+            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+            audioManager.plantSFX.Play();
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.InitializePlantData(location);
 
@@ -46,6 +48,9 @@ public class GameManager : MonoBehaviour
 
         if (plantObj != null)
         {
+            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+            audioManager.plantSFX.Play();
+
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.plantData = plantData;
 
