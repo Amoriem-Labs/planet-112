@@ -503,4 +503,116 @@ public static class PlantModuleArr
 
         }
     }*/
+
+    [System.Serializable]
+    public class TauntModuleData : TriggerAndTimerModuleData
+    {
+        public float tauntRangeRadius;
+        public float tauntDuration;
+        public float tauntCooldown;
+    }
+    public class TauntModule : TriggerAndTimerModule<TauntModuleData>
+    {
+        /*
+        Taunt module is for peach tree to attract insect aggros to itself. Insects prioritize attacking the peach tree over other plants ina  specific radius tauntRangeRadius. 
+        */
+
+        // public TauntModule(PlantScript plantScript)
+        // {
+        //     this.plantScript = plantScript;
+        //     moduleData = new TauntModuleData
+        //     {
+        //         tauntRangeRadius = plantScript.plantSO.tauntRangeRadius[plantScript.plantData.currStageOfLife],
+        //         tauntDuration = plantScript.plantSO.tauntDuration[plantScript.plantData.currStageOfLife],
+        //         tauntCooldown = plantScript.plantSO.tauntCooldown[plantScript.plantData.currStageOfLife],
+        //         timerData = new TimerModuleData
+        //         {
+        //             timePerCycle = plantScript.plantSO.tauntCooldown[plantScript.plantData.currStageOfLife], // attackRate
+        //             timeInCurrentCycleSoFar = 0f
+        //         },
+        //         triggerData = new TriggerModuleData()
+        //     };
+        //     // Don't forget to grant each module the correct datas to reference
+        //     timerModule.moduleData = moduleData.timerData;
+        //     triggerModule.moduleData = moduleData.triggerData;
+        // }
+
+        // public override void OnModuleAdd()
+        // {
+        //     base.OnModuleAdd();
+        //     triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
+        //         Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+        //     triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
+        //     triggerModule.colliderScript.gameObject.name = "TauntRange";
+        //     triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.tauntRangeRadius;
+        //     triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        //     triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+        //     triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
+        // }
+
+        // List<PestScript> pestsInRange = new List<PestScript>();
+        // protected override void OnCycleComplete()
+        // {
+        //     for (int i = 0; i < pestsInRange.Count; i++)
+        //     {
+        //         if (pestsInRange[i] == null) // potentially destroyed already
+        //         {
+        //             pestsInRange.RemoveAt(i);
+        //             i--;
+        //         }
+        //         else // damage the pests. (or launch proj etc etc)
+        //         {
+        //             Debug.Log("Taunting pest " + pestsInRange[i].name);
+        //         }
+        //     }
+        // }
+
+        // protected virtual void OnTriggerEnter2D(Collider2D collider)
+        // {
+        //     if (collider.gameObject.CompareTag("pest"))
+    }
+
+    [System.Serializable]
+    public class FruitProductionBoostModuleData : TriggerAndTimerModuleData
+    {
+        public float fruitProductionBoost;
+        // public float fruitProductionBoostDuration;
+        // public float fruitProductionBoostCooldown;
+    }
+    public class FruitProductionBoostModule : TriggerAndTimerModule<FruitProductionBoostModuleData>
+    {
+        // increase a plant's fruit generated per production by % fruitProductionBoost
+        public FruitProductionBoostModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new FruitProductionModuleData
+            {
+                timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife], // productionRate
+                productionQuantity = (float)plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife]*fruitProductionBoost,
+                fruitType = plantScript.plantSO.fruitType,
+                timeInCurrentCycleSoFar = 0f
+            };
+        }
+
+        // public override void Update()
+        // {
+        //     base.Update();
+        //     // ... other update code
+        // }
+
+        // public override void OnCycleComplete()
+        // {
+        //     // TODO: actual fruit production (visual + systemic)
+        //     Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
+        // }
+
+        // public override void OnPlantStageGrowth()
+        // {
+        //     // by now, stage should be inc'ed alrdy
+        //     moduleData.timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
+        //     moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
+        // }
+    }
+
+    
 }
