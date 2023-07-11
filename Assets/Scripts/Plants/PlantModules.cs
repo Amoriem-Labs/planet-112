@@ -512,6 +512,7 @@ public static class PlantModuleArr
         public float tauntRangeRadius;
         public float tauntDuration;
         public float tauntCooldown;
+        // dont forget to activate TauntModule
     }
     // public class TauntModule : TriggerAndTimerModule<TauntModuleData>
     // {
@@ -578,6 +579,7 @@ public static class PlantModuleArr
     public class FruitProductionBoostModuleData : TriggerAndTimerModuleData
     {
         public float fruitProductionBoost;
+        // public float productionrangeRadius /////////////////////////////
         // public float fruitProductionBoostDuration;
         // public float fruitProductionBoostCooldown;
     }
@@ -616,6 +618,12 @@ public static class PlantModuleArr
         //     moduleData.timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
         //     moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
         // }
+        public virtual void Update() { }
+        public virtual void OnModuleAdd() { }
+        public virtual void OnModuleRemove() { }
+        public virtual void OnPlantStageGrowth() { }
+        public virtual void OnPlantGrowthPause() { }
+        public virtual void OnPlantGrowthResume() { }
     }
 
 
