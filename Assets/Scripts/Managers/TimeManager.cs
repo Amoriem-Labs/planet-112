@@ -54,7 +54,7 @@ public class TimeManager : MonoBehaviour
 
     void Autosave(){
         if (gameStateData.timePassedSeconds % 60 == 0){
-            Autosave();
+            persistentData.CreateNewSave(0);
             print("autosaving");
         }
     }

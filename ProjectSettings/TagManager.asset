@@ -15,6 +15,7 @@ TagManager:
   - hotbar
   - inventoryPanel
   - shopManager
+  - Mav
   layers:
   - Default
   - TransparentFX

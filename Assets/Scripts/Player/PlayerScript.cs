@@ -32,6 +32,10 @@ public class PlayerScript : MonoBehaviour
     public bool settingsAreLoaded;
     public GameObject settingsCanvas;
 
+    public bool canOpenShop;
+    public bool shopIsLoaded;
+    public GameObject shopCanvas;
+
     private void Awake()
     {
         controls = new Controls();
@@ -39,6 +43,8 @@ public class PlayerScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         inventoryIsLoaded = false;
         settingsAreLoaded = false;
+        canOpenShop = false;
+        shopIsLoaded = false;
 
         // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
         //    or not when Game is played.
@@ -94,7 +100,7 @@ public class PlayerScript : MonoBehaviour
     {
         // Get character movement
         // If statement ensures that player cannot move while inventory screen is on
-        if (!inventoryIsLoaded){
+        if (!inventoryIsLoaded && !shopIsLoaded){
             Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
             Vector2 velocity = rb.velocity;
 
@@ -143,7 +149,7 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
+        if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
             //closestPlant.TakeDamage(50);
             //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
             if (plantInHand) // has a plant in hand
@@ -166,12 +172,21 @@ public class PlayerScript : MonoBehaviour
                     plantInHand = closestPlant;
                 }
             }
+
+            // If in front of Mav
+            if (canOpenShop && !shopIsLoaded){
+                shopCanvas.SetActive(true);
+                shopIsLoaded = true;
+            } else {
+                shopCanvas.SetActive(false);
+                shopIsLoaded = false;
+            }
         }
     }
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
+        if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
             
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
@@ -216,7 +231,7 @@ public class PlayerScript : MonoBehaviour
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
-        if (!inventoryIsLoaded || !TimeManager.IsGamePaused()){
+        if (!inventoryIsLoaded && !TimeManager.IsGamePaused() && !shopIsLoaded){
             string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
             string pressedKey = context.control.displayName;
             int index = Array.IndexOf(hotbarKeys, pressedKey);
@@ -259,11 +274,17 @@ public class PlayerScript : MonoBehaviour
                 collectible.Collect();
             }
         }
+        if (collision.gameObject.tag == "Mav"){
+            canOpenShop = true;
+            print("can open shop now! Press X.");
+        }
     }
 
     private void OnRegularTriggerExit2D(Collider2D collision){
-        // Ghost method. Right now there's no interaction for what happens when a player exits a regular collision.
-        // Necessary to instantiate in order for TriggerResponse script's onTriggerExit2D variable to have a reference.
+        if (collision.gameObject.tag == "Mav"){
+            canOpenShop = false;
+            print("cannot open shop anymore.");
+        }
     }
     #endregion
 }
