@@ -6,6 +6,9 @@ using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
+    public GameObject player;
+    public float y_offset;
+
     public Text costText;
     public Text infoText;
     public int totalSeafoamCost;
@@ -20,6 +23,16 @@ public class ShopManager : MonoBehaviour
         totalCrystallineCost = 0;
         infoText.text = "";
         updateCostText();
+    }
+
+    void Update()
+    {
+        if (player.GetComponent<PlayerScript>().shopIsLoaded){
+            var pos = transform.position;
+            pos.x = player.transform.position.x;
+            pos.y = player.transform.position.y + y_offset;
+            transform.position = pos;
+        }
     }
 
     public void updateCostText(){
