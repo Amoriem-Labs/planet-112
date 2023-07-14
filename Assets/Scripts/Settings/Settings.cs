@@ -12,9 +12,11 @@ public class Settings : MonoBehaviour
     public GameObject cam;
     public GameObject hotbarCanvas;
     public GameObject inventoryCanvas;
+    public GameObject shopCanvas;
     private Vector3 settingsStartingScale;
     private Vector3 hotbarStartingScale;
     private Vector3 inventoryStartingScale;
+    private Vector3 shopStartingScale;
     public GameObject quitPanel;
     public GameObject savePanel;
     public Slider musicSlider;
@@ -33,6 +35,7 @@ public class Settings : MonoBehaviour
         settingsStartingScale = transform.localScale;
         hotbarStartingScale = hotbarCanvas.transform.localScale;
         inventoryStartingScale = inventoryCanvas.transform.localScale;
+        shopStartingScale = shopCanvas.transform.localScale;
         uiScaleIndex = 2; // initial UI scale index
         GetComponentInChildren<Dropdown>().value = uiScaleIndex;
     }
@@ -78,6 +81,7 @@ public class Settings : MonoBehaviour
         transform.localScale = Vector3.Scale(settingsStartingScale, new Vector3(uiScalings[val], uiScalings[val], 1.0f));
         hotbarCanvas.transform.localScale = Vector3.Scale(hotbarStartingScale, new Vector3(uiScalings[val], uiScalings[val], 1.0f));
         inventoryCanvas.transform.localScale = Vector3.Scale(inventoryStartingScale, new Vector3(uiScalings[val], uiScalings[val], 1.0f));
+        shopCanvas.transform.localScale = Vector3.Scale(shopStartingScale, new Vector3(uiScalings[val], uiScalings[val], 1.0f));
         uiScaleIndex = val;
         GetComponentInChildren<Dropdown>().value = val;
     }

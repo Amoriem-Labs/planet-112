@@ -8,7 +8,7 @@ using MEC;
 // This is an abstract class: we can't create instances of it, but other (non-abstract) classes can inherit from this. In general, you can have specific variables to child classes (which inherit from this class).
 public abstract class PlantScript : MonoBehaviour
 {
-    // The scriptable oxject that contains fixed (non-dynamic) data about this plant.
+    // The scriptable object that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
 
     // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
