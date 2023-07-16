@@ -11,6 +11,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource collectGenericSFX;
     public AudioSource collectFruitSFX;
     public AudioSource takeDamageSFX;
+    public AudioSource buySFX;
+    public AudioSource sellSFX;
 
     public AudioSource[] soundtracks;
     public AudioSource[] SFXs;

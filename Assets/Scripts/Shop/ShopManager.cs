@@ -19,6 +19,7 @@ public class ShopManager : MonoBehaviour
 
     public FruitManager fruitManager;
     public InventoryManager inventoryManager;
+    public AudioManager audioManager;
 
     void Awake(){
         totalSeafoamCost = 0;
@@ -105,6 +106,8 @@ public class ShopManager : MonoBehaviour
     // need to have this itneract w the shop item texts
     public void Buy(){
         if (fruitManager.nSeafoam >= totalSeafoamCost && fruitManager.nSunset >= totalSunsetCost && fruitManager.nAmethyst >= totalAmethystCost && fruitManager.nCrystalline >= totalCrystallineCost){
+            audioManager.buySFX.Play();
+            
             fruitManager.nSeafoam -= totalSeafoamCost;
             fruitManager.nSunset -= totalSunsetCost;
             fruitManager.nAmethyst -= totalAmethystCost;
@@ -130,9 +133,6 @@ public class ShopManager : MonoBehaviour
                     shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
                 }
             }
-
-            
-            
         } else {
             print("Not enough funds!");
         }

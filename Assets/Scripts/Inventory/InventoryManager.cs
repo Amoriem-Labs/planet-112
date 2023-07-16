@@ -26,6 +26,7 @@ public class InventoryManager : MonoBehaviour
 
     // Deletes all items in inventory. Is triggered by pressing R.
     public void ResetInventory(){
+        print("Resetting Inventory");
         foreach (Transform inventorySlotTransform in transform){
             if (inventorySlotTransform.GetChild(0).childCount > 0){
                 Destroy(inventorySlotTransform.GetChild(0).GetChild(0).gameObject);
@@ -49,7 +50,7 @@ public class InventoryManager : MonoBehaviour
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
             if (slotTransform.childCount > 0 && slotTransform.GetComponentInChildren<InventoryItem>().stackSize < 99){
                 InventoryItem inventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
-                if (inventoryItem.displayName == inventoryItemPrefab.GetComponent<InventoryItem>().displayName){
+                if (inventoryItem.displayName.Equals(inventoryItemPrefab.GetComponent<InventoryItem>().displayName)){
                     inventoryItem.AddToStack();
                     hotbarManager.UpdateHotbar();
                     if (inventoryItem.linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
@@ -127,13 +128,14 @@ public class InventoryManager : MonoBehaviour
                         // If there is more cost than or equal to the icura amount currently in this inventory slot, use up all of the icura in this inventory slot and wait for next iteration of loop to spend remaining icura needed to make the purchase.
                         if (fruitScript.fruitType.Equals(key)){
                             if (totalCostDict[key] >= inventoryItem.stackSize){
+                                totalCostDict[key] = totalCostDict[key] - inventoryItem.stackSize;
                                 inventoryItem.RemoveFromStack(inventoryItem.stackSize);
                                 Destroy(inventoryItem.gameObject);
                                 justDestroyed = true; // need to add this boolean logic b/c Unity doesn't actually destroy an object until the end of the function call.
                             } else { // otherwise, just deduct however much icura you owe from this inventory slot and have some icura in inventory leftover.
                                 inventoryItem.RemoveFromStack(totalCostDict[key]);
+                                totalCostDict[key] = totalCostDict[key] - inventoryItem.stackSize;
                             }
-                            totalCostDict[key] -= inventoryItem.stackSize;
                         }
                     }
                 }

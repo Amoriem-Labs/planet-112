@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-[Serializable]
+[Serializable] [CreateAssetMenu(fileName = "New Inventory Prefab", menuName = "Inventory Prefab")]
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public string displayName;

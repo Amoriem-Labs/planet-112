@@ -32,6 +32,8 @@ public class DataManager : MonoBehaviour
         // Generate the pathway to store the data
         string saveFile = getSaveFilePath(saveIndex);
 
+        print(saveFile);
+
         // Write JSON to file.
         File.WriteAllText(saveFile, jsonString);
     }
@@ -71,7 +73,7 @@ public class DataManager : MonoBehaviour
     // Get the filepath for this saveIndex
     private static string getSaveFilePath(int saveIndex)
     {
-        // saveIndex 0 is autosave?
+        // saveIndex 0 is autosave
         return Application.persistentDataPath + "/save" + saveIndex + "data.json";
     }
 }
