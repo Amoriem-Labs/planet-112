@@ -45,12 +45,32 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
+    public void AddToStack(int numAdd){
+        if (stackable){
+            stackSize += numAdd;
+            stackSizeText.text = stackSize.ToString();
+        } else {
+            stackSize = 1;
+            stackSizeText.text = "";
+        }
+    }
+
     public void RemoveFromStack(){
         if (stackable){
             stackSize--;
             stackSizeText.text = stackSize.ToString();
         }
         else {
+            stackSize = 0;
+            stackSizeText.text = "";
+        }
+    }
+
+    public void RemoveFromStack(int numRemove){
+        if (stackable){
+            stackSize -= numRemove;
+            stackSizeText.text = stackSize.ToString();
+        } else {
             stackSize = 0;
             stackSizeText.text = "";
         }

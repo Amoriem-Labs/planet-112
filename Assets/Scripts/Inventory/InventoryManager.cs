@@ -89,7 +89,9 @@ public class InventoryManager : MonoBehaviour
                         inventorySlot.DrawSlot(itemPrefab);
                         InventoryItem inventoryItem = inventorySlot.slotTransform.GetComponentInChildren<InventoryItem>();
                         inventoryItem.stackSize = inventoryItemData.count;
-                        inventoryItem.stackSizeText.text = inventoryItem.stackSize.ToString();
+                        if (inventoryItem.stackable){
+                            inventoryItem.stackSizeText.text = inventoryItem.stackSize.ToString();
+                        }
                     }
                 }
             }
@@ -100,5 +102,35 @@ public class InventoryManager : MonoBehaviour
         fruitManager.nCrystalline = playerData.nCrystalline;
         hotbarManager.UpdateHotbar();
         hotbarManager.UpdateFruitText();
+    }
+
+    // Updates inventory after buying an item
+    public void BuyUpdateInventory(GameObject inventoryItemPrefab, int numBought){
+        HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
+
+        // Searches if item already exists in inventory, and add to that item's stacksize if so.
+        for (int i = 0; i < inventorySlots.Count; i++){
+            InventorySlot inventorySlot = inventorySlots[i];
+            Transform slotTransform = inventorySlot.transform.GetChild(0); 
+            if (slotTransform.childCount > 0 && slotTransform.GetComponentInChildren<InventoryItem>().stackSize < 99){
+                InventoryItem inventoryItem = inventorySlot.transform.GetComponentInChildren<InventoryItem>();
+                if (inventoryItem.displayName == inventoryItemPrefab.GetComponent<InventoryItem>().displayName){
+                    inventoryItem.AddToStack(numBought);
+                    hotbarManager.UpdateHotbar();
+                    return;
+                }
+            }
+        }
+
+        // If item doesn't exist in inventory or inventory stackSize is at 99, then add that item to the first empty InventorySlot.
+        for (int i = 0; i < inventorySlots.Count; i++){
+            InventorySlot inventorySlot = inventorySlots[i];
+            Transform slotTransform = inventorySlot.transform.GetChild(0); 
+            if (slotTransform.childCount == 0){
+                inventorySlot.DrawSlot(inventoryItemPrefab);
+                hotbarManager.UpdateHotbar();
+                return;
+            }
+        }
     }
 }

@@ -98,11 +98,11 @@ public class PlayerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        Vector2 velocity = rb.velocity;
         // Get character movement
         // If statement ensures that player cannot move while inventory screen is on
         if (!inventoryIsLoaded && !shopIsLoaded){
             Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
-            Vector2 velocity = rb.velocity;
 
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
@@ -114,8 +114,10 @@ public class PlayerScript : MonoBehaviour
             {
                 velocity.y = moveInput.y * jumpSpeed;
             } 
-            rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
+        } else {
+            velocity.x = 0;
         }
+        rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
     }
 
     private bool isGrounded(){
@@ -149,31 +151,33 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
-            //closestPlant.TakeDamage(50);
-            //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
-            if (plantInHand) // has a plant in hand
-            {
-                if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+        if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
+            if (!shopIsLoaded){
+                //closestPlant.TakeDamage(50);
+                //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
+                if (plantInHand) // has a plant in hand
                 {
-                    plantInHand = null;
+                    if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+                    {
+                        plantInHand = null;
+                    }
+                    else
+                    {
+                        Debug.Log("Can't place it here; not enough space.");
+                    }
                 }
-                else
+                else // no plant in hand
                 {
-                    Debug.Log("Can't place it here; not enough space.");
+                    PlantScript closestPlant = findClosestPlant();
+                    if (closestPlant) // Could be null, gotta check
+                    {
+                        closestPlant.LiftPlant(transform);
+                        plantInHand = closestPlant;
+                    }
                 }
             }
-            else // no plant in hand
-            {
-                PlantScript closestPlant = findClosestPlant();
-                if (closestPlant) // Could be null, gotta check
-                {
-                    closestPlant.LiftPlant(transform);
-                    plantInHand = closestPlant;
-                }
-            }
-
             // If in front of Mav
+            print(shopIsLoaded);
             if (canOpenShop && !shopIsLoaded){
                 shopCanvas.SetActive(true);
                 shopIsLoaded = true;

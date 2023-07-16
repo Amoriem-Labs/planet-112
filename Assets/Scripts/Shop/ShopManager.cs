@@ -11,10 +11,14 @@ public class ShopManager : MonoBehaviour
 
     public Text costText;
     public Text infoText;
+    public List<ShopSlot> shopSlots;
     public int totalSeafoamCost;
     public int totalSunsetCost;
     public int totalAmethystCost;
     public int totalCrystallineCost;
+
+    public FruitManager fruitManager;
+    public InventoryManager inventoryManager;
 
     void Awake(){
         totalSeafoamCost = 0;
@@ -96,5 +100,43 @@ public class ShopManager : MonoBehaviour
 
     public void UndisplayInfo(){
         infoText.text = "";
+    }
+
+    // need to have this itneract w the shop item texts
+    public void Buy(){
+        if (fruitManager.nSeafoam >= totalSeafoamCost && fruitManager.nSunset >= totalSunsetCost && fruitManager.nAmethyst >= totalAmethystCost && fruitManager.nCrystalline >= totalCrystallineCost){
+            fruitManager.nSeafoam -= totalSeafoamCost;
+            fruitManager.nSunset -= totalSunsetCost;
+            fruitManager.nAmethyst -= totalAmethystCost;
+            fruitManager.nCrystalline -= totalCrystallineCost;
+
+            totalSeafoamCost = 0;
+            totalSunsetCost = 0;
+            totalAmethystCost = 0;
+            totalCrystallineCost = 0;
+            updateCostText();
+
+            foreach (ShopSlot shopSlot in shopSlots){
+                inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize);
+                shopSlot.buyStackSize = 0;
+                shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
+            }
+
+            
+        }
+    }
+
+    // need to have this interact w the shopItem texts
+    public void Reset(){
+        totalSeafoamCost = 0;
+        totalSunsetCost = 0;
+        totalAmethystCost = 0;
+        totalCrystallineCost = 0;
+        updateCostText();
+
+        foreach (ShopSlot shopSlot in shopSlots){
+            shopSlot.buyStackSize = 0;
+            shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
+        }
     }
 }

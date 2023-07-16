@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: sampleBlushberrySeed
   rarity: Common
-  cost: 37000000000000000100000000000000
+  cost: 02000000010000000000000000000000
+  inventoryItemPrefab: {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
   biome: Plains
   mainRole: Early Game / Fruit Production
