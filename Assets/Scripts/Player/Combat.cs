@@ -6,7 +6,7 @@ public class Combat : MonoBehaviour
 {
         public Transform attackPoint;
     public float attackRange = 0.5f;
-    public LayerMask pestLayers;
+    public LayerMask enemyLayers;
 
     // Press space to Attack
     void Update()
@@ -22,7 +22,7 @@ public class Combat : MonoBehaviour
         print("attacking");
 
         // Pests in within range of attack
-        Collider2D[] hitPests = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, pestLayers);
+        Collider2D[] hitPests = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
         // Damage pests
         foreach(Collider2D pest in hitPests)
