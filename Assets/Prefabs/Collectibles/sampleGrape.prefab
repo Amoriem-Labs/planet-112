@@ -105,8 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fruitInventoryPrefab: {fileID: 7623879302696645185, guid: c5a96065e722f8343b714f4c2ecdb7cb, type: 3}
-  audio: {fileID: 0}
-  fruitType: sunset
+  audioManager: {fileID: 0}
+  fruitType: Sunset
 --- !u!61 &841007726834113145
 BoxCollider2D:
   m_ObjectHideFlags: 0

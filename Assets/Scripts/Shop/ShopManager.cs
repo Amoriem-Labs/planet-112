@@ -110,6 +110,13 @@ public class ShopManager : MonoBehaviour
             fruitManager.nAmethyst -= totalAmethystCost;
             fruitManager.nCrystalline -= totalCrystallineCost;
 
+            Dictionary<string, int> totalCostDict = new Dictionary<string, int>(){
+                                        {"Seafoam", totalSeafoamCost},
+                                        {"Sunset", totalSunsetCost},
+                                        {"Amethyst", totalAmethystCost},
+                                        {"Crystalline", totalCrystallineCost}
+            };
+
             totalSeafoamCost = 0;
             totalSunsetCost = 0;
             totalAmethystCost = 0;
@@ -118,13 +125,16 @@ public class ShopManager : MonoBehaviour
 
             foreach (ShopSlot shopSlot in shopSlots){
                 if (shopSlot.buyStackSize > 0){
-                    inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize);
+                    inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize, totalCostDict);
                     shopSlot.buyStackSize = 0;
                     shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
                 }
             }
 
             
+            
+        } else {
+            print("Not enough funds!");
         }
     }
 

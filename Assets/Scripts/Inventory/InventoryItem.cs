@@ -125,16 +125,16 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         infoBar.UndisplayInfo();
         hotbar.UpdateHotbar();
         if (linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
-            if (fruitScript.fruitType.Equals("seafoam")){
+            if (fruitScript.fruitType.Equals("Seafoam")){
                 hotbar.fruitManager.nSeafoam -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("sunset")){
+            if (fruitScript.fruitType.Equals("Sunset")){
                 hotbar.fruitManager.nSunset -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("amethyst")){
+            if (fruitScript.fruitType.Equals("Amethyst")){
                 hotbar.fruitManager.nAmethyst -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("crystalline")){
+            if (fruitScript.fruitType.Equals("Crystalline")){
                 hotbar.fruitManager.nCrystalline -= stackSize;
             }
         }

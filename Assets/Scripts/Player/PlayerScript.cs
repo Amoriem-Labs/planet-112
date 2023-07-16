@@ -84,6 +84,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Inventory.started += OnInventory;
         controls.Main.Settings.started += OnSettings;
         controls.Main.Hotbar.started += OnHotbarPress;
+        controls.Main.Temp.started += OnResetInventory; // temporary keybinding. Just for debugging purposes.
     }
 
     private void OnDisable()
@@ -94,6 +95,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Inventory.started -= OnInventory;
         controls.Main.Settings.started -= OnSettings;
         controls.Main.Hotbar.started -= OnHotbarPress;
+        controls.Main.Temp.started -= OnResetInventory;
     }
 
     private void FixedUpdate()
@@ -249,6 +251,11 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    // Resets inventory. Is triggered by pressing R. Temporary keybinding. Will remove this feature in final game.
+    public void OnResetInventory(InputAction.CallbackContext context){
+        inventoryCanvas.GetComponentInChildren<InventoryManager>().ResetInventory();
+    }
+
     #region Collider methods.
     // The below two methods are for detecting nearby plants and use the PlantDetectionRange child object's BoxCollider2D.
     private void OnPlantDetectorTriggerEnter2D(Collider2D collision)
@@ -279,7 +286,7 @@ public class PlayerScript : MonoBehaviour
         }
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = true;
-            print("can open shop now! Press X.");
+            print("can open shop now! Press E.");
         }
     }
 
