@@ -117,9 +117,11 @@ public class ShopManager : MonoBehaviour
             updateCostText();
 
             foreach (ShopSlot shopSlot in shopSlots){
-                inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize);
-                shopSlot.buyStackSize = 0;
-                shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
+                if (shopSlot.buyStackSize > 0){
+                    inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize);
+                    shopSlot.buyStackSize = 0;
+                    shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
+                }
             }
 
             

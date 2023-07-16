@@ -177,7 +177,6 @@ public class PlayerScript : MonoBehaviour
                 }
             }
             // If in front of Mav
-            print(shopIsLoaded);
             if (canOpenShop && !shopIsLoaded){
                 shopCanvas.SetActive(true);
                 shopIsLoaded = true;

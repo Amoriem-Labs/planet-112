@@ -31,8 +31,10 @@ public class TimeManager : MonoBehaviour
 
     void CountTimeUnit()
     {
-        Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
-        + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        if (gameStateData.timePassedSeconds % 10 == 0){
+            Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
+            + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        }
 
         gameStateData.timePassedSeconds += timeUnit;
         if(gameStateData.timePassedSeconds >= 60)
