@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
-  m_Name: sampleBlushberrySeed
+  m_Name: BlushberrySeedPacket
   m_EditorClassIdentifier: 
   itemName: sampleBlushberrySeed
   rarity: Common
