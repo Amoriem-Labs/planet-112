@@ -172,7 +172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 6.7700806, y: 1.2967682}
+  m_AnchoredPosition: {x: 6.7700806, y: 1.2967529}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2405167502855553402
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8a16928dfca5bd8458a83f6bbd23a7ee, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1c4f412c1b3da1b418d5c6c6a2242b32, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: sampleRaspberry
   image: {fileID: 2947518957489665506}
-  sprite: {fileID: 21300000, guid: 8a16928dfca5bd8458a83f6bbd23a7ee, type: 3}
+  sprite: {fileID: 21300000, guid: 1c4f412c1b3da1b418d5c6c6a2242b32, type: 3}
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 6933400463334313573}

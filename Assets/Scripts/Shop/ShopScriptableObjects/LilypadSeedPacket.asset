@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Lilypad Seed Packet
   rarity: Common
-  cost: 00000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 0}
+  cost: 05000000000000000000000000000000
+  inventoryItemPrefab: {fileID: 2290849425908696756, guid: b21958e858e2d0442bd4ac7de913f6b2, type: 3}
   biome: Plains
-  mainRole: 
+  mainRole: Support

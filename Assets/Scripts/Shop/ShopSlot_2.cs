@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
 
-public class ShopSlot_2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ShopSlot_2 : MonoBehaviour
 {
     public ShopItem shopItemSO; // The scriptable object that contains fixed (non-dynamic) data about this shop item.
     public int buyStackSize; // The The amount of this item that the player is buying.
@@ -31,16 +30,16 @@ public class ShopSlot_2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         string amethystCostStr = "";
         string crystallineCostStr = "";
         if (cost[0] > 0){
-            seafoamCostStr = "<color='#5ADB97'>" + cost[0].ToString() + " Seafoam Icura</color>\n";
+            seafoamCostStr = "<color=#5ADB97>" + cost[0].ToString() + " Seafoam Icura</color>\n";
         }
         if (cost[1] > 0){
-            sunsetCostStr = "<color='#FF8500'>" + cost[1].ToString() + " Sunset Icura</color>\n";
+            sunsetCostStr = "<color=#FF8500>" + cost[1].ToString() + " Sunset Icura</color>\n";
         }
         if (cost[2] > 0){
-            amethystCostStr = "<color='#9966CC'>" + cost[2].ToString() + " Amethyst Icura</color>\n";
+            amethystCostStr = "<color=#9966CC>" + cost[2].ToString() + " Amethyst Icura</color>\n";
         }
         if (cost[3] > 0){
-            crystallineCostStr = "<color='#4B36F3'>" + cost[3].ToString() + " Crystalline Icura</color>";
+            crystallineCostStr = "<color=#4B36F3>" + cost[3].ToString() + " Crystalline Icura</color>";
         }
         priceText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
     }
@@ -83,7 +82,16 @@ public class ShopSlot_2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         return exceededSeafoamCapacity || exceededSunsetCapacity || exceededAmethystCapacity || exceededCrystallineCapacity;
     }
 
-    // Displays info text upon pointer entering slot
+    // Selects item when this item is clicked in inventory
+    public void Select(){
+        if (unlocked && !TimeManager.IsGamePaused()){
+            if (shopItemSO is ShopPlantSeed) { 
+                shopManager.DisplayInfo((ShopPlantSeed)shopItemSO); // temporary implementation, since downcasting is bad
+            }
+        }
+    }
+
+    /*// Displays info text upon pointer entering slot
     public void OnPointerEnter(PointerEventData eventData){
         if (unlocked && !TimeManager.IsGamePaused()){
             if (shopItemSO is ShopPlantSeed) { 
@@ -97,5 +105,5 @@ public class ShopSlot_2 : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (!TimeManager.IsGamePaused()){
             shopManager.UndisplayInfo();
         }
-    }
+    }*/
 }

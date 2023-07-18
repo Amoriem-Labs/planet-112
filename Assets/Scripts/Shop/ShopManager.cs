@@ -9,8 +9,8 @@ public class ShopManager : MonoBehaviour
     public GameObject player;
     public float y_offset;
 
-    public Text costText;
-    public Text infoText;
+    public TextMeshProUGUI costText;
+    public TextMeshProUGUI infoText;
     public List<ShopSlot> shopSlots;
     public int totalSeafoamCost;
     public int totalSunsetCost;
@@ -49,63 +49,51 @@ public class ShopManager : MonoBehaviour
         if (totalSeafoamCost > 0){
             if (totalSeafoamCost > fruitManager.nSeafoam){ color = "#FF0000"; }
             else { color = "#5ADB97"; }
-            seafoamCostStr = $"<color='{color}'>{totalSeafoamCost.ToString()} Seafoam Icura</color>\n";
+            seafoamCostStr = $"<color={color}>{totalSeafoamCost.ToString()} Seafoam Icura</color>\n";
         }
         if (totalSunsetCost > 0){
             if (totalSunsetCost > fruitManager.nSunset){ color = "#FF0000"; }
             else { color = "#FF8500"; }
-            sunsetCostStr = $"<color='{color}'>{totalSunsetCost.ToString()} Sunset Icura</color>\n";
+            sunsetCostStr = $"<color={color}>{totalSunsetCost.ToString()} Sunset Icura</color>\n";
         }
         if (totalAmethystCost > 0){
             if (totalAmethystCost > fruitManager.nAmethyst){ color = "#FF0000"; }
             else { color = "#9966CC"; }
-            amethystCostStr = $"<color='{color}'>{totalAmethystCost.ToString()} Amethyst Icura</color>\n";
+            amethystCostStr = $"<color={color}>{totalAmethystCost.ToString()} Amethyst Icura</color>\n";
         }
         if (totalCrystallineCost > 0){
             if (totalCrystallineCost > fruitManager.nCrystalline){ color = "#FF0000"; }
             else { color = "#4B36F3"; }
-            crystallineCostStr = $"<color='{color}'>{totalCrystallineCost.ToString()} Crystalline Icura</color>";
+            crystallineCostStr = $"<color={color}>{totalCrystallineCost.ToString()} Crystalline Icura</color>";
         }
-        costText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
+        //costText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
     }
 
     public void DisplayInfo(ShopPlantSeed shopPlantSeedSO){
-        string itemName = "<color='#DBDBDB'>" + shopPlantSeedSO.itemName + "</color>\n";
+        string itemName = "<color=#DBDBDB>" + shopPlantSeedSO.itemName + "</color>\n";
         string biome = "";
         string rarity = "";
-        string role = "<color='#DBDBDB'>" + shopPlantSeedSO.mainRole + "</color>\n";
-        string cost = "";
+        string role = "<color=#DBDBDB>" + shopPlantSeedSO.mainRole + "</color>\n";
 
         if (shopPlantSeedSO.biome.Equals("Plains")){
-            biome = "<color='#3EC500'>Plains</color>\n";
+            biome = "<color=#3EC500>Plains</color>\n";
         } else if (shopPlantSeedSO.biome.Equals("City")){
-            biome = "<color='#FF0000'>City</color>\n";
+            biome = "<color=#FF0000>City</color>\n";
         } else if (shopPlantSeedSO.biome.Equals("Cave")){
-            biome = "<color='#580089'>Cave</color>\n";
+            biome = "<color=#580089>Cave</color>\n";
         }
 
         if (shopPlantSeedSO.rarity.Equals("Common")){
-            rarity = "<color='#B0B0B0'>Common</color>\n";
+            rarity = "<color=#B0B0B0>Common</color>\n";
         } else if (shopPlantSeedSO.rarity.Equals("Rare")){
-            rarity = "<color='#2889E3'>Rare</color>\n";
+            rarity = "<color=#2889E3>Rare</color>\n";
         } else if (shopPlantSeedSO.rarity.Equals("Epic")){
-            rarity = "<color='#B467FF'>Epic</color>\n";
+            rarity = "<color=#B467FF>Epic</color>\n";
         } else if (shopPlantSeedSO.rarity.Equals("Legendary")){
-            rarity = "<color='#FFFF00'>Legendary</color>\n";
+            rarity = "<color=#FFFF00>Legendary</color>\n";
         }
 
-        string fruitType = "";
-        for (int i = 0; i < shopPlantSeedSO.cost.Length; i++){
-            if (shopPlantSeedSO.cost[i] != 0){
-                if (i == 0){ fruitType = "Seafoam"; }
-                if (i == 1){ fruitType = "Sunset"; }
-                if (i == 2){ fruitType = "Amethyst"; }
-                if (i == 3){ fruitType = "Crystalline"; }
-                cost += "- " + fruitType + " " + shopPlantSeedSO.cost[i] + " icura\n";
-            }
-        }
-
-        infoText.text = itemName + biome + rarity + role + "Cost\n" + cost;
+        infoText.text = itemName + biome + rarity + role;
     }
 
     public void UndisplayInfo(){

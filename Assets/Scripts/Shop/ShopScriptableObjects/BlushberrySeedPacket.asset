@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
   m_Name: BlushberrySeedPacket
   m_EditorClassIdentifier: 
-  itemName: sampleBlushberrySeed
+  itemName: Blushberry Seed Packet
   rarity: Common
-  cost: 02000000010000000000000000000000
+  cost: 05000000000000000000000000000000
   inventoryItemPrefab: {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
   biome: Plains
   mainRole: Early Game / Fruit Production

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
   m_Name: CryingLavenderSeedPacket
   m_EditorClassIdentifier: 
-  itemName: 
-  rarity: 
-  cost: 00000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 0}
-  biome: 
-  mainRole: 
+  itemName: Crying Lavender Seed Packet
+  rarity: Epic
+  cost: 3c000000000000000000000001000000
+  inventoryItemPrefab: {fileID: 5475830003357801135, guid: 5f874a23a17c7db4e840643d5693aa5e, type: 3}
+  biome: Plains
+  mainRole: Healing
