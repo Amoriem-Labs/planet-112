@@ -45,17 +45,26 @@ public class ShopManager : MonoBehaviour
         string sunsetCostStr = "";
         string amethystCostStr = "";
         string crystallineCostStr = "";
+        string color = "";
         if (totalSeafoamCost > 0){
-            seafoamCostStr = "<color='#5ADB97'>" + totalSeafoamCost.ToString() + " Seafoam Icura</color>\n";
+            if (totalSeafoamCost > fruitManager.nSeafoam){ color = "#FF0000"; }
+            else { color = "#5ADB97"; }
+            seafoamCostStr = $"<color='{color}'>{totalSeafoamCost.ToString()} Seafoam Icura</color>\n";
         }
         if (totalSunsetCost > 0){
-            sunsetCostStr = "<color='#FF8500'>" + totalSunsetCost.ToString() + " Sunset Icura</color>\n";
+            if (totalSunsetCost > fruitManager.nSunset){ color = "#FF0000"; }
+            else { color = "#FF8500"; }
+            sunsetCostStr = $"<color='{color}'>{totalSunsetCost.ToString()} Sunset Icura</color>\n";
         }
         if (totalAmethystCost > 0){
-            amethystCostStr = "<color='#9966CC'>" + totalAmethystCost.ToString() + " Amethyst Icura</color>\n";
+            if (totalAmethystCost > fruitManager.nAmethyst){ color = "#FF0000"; }
+            else { color = "#9966CC"; }
+            amethystCostStr = $"<color='{color}'>{totalAmethystCost.ToString()} Amethyst Icura</color>\n";
         }
         if (totalCrystallineCost > 0){
-            crystallineCostStr = "<color='#4B36F3'>" + totalCrystallineCost.ToString() + " Crystalline Icura</color>";
+            if (totalCrystallineCost > fruitManager.nCrystalline){ color = "#FF0000"; }
+            else { color = "#4B36F3"; }
+            crystallineCostStr = $"<color='{color}'>{totalCrystallineCost.ToString()} Crystalline Icura</color>";
         }
         costText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
     }
@@ -136,6 +145,15 @@ public class ShopManager : MonoBehaviour
         } else {
             print("Not enough funds!");
         }
+    }
+
+    public void Sell(){
+        audioManager.sellSFX.Play();
+        //fruitManager.nSeafoam += totalSeafoamSell;
+        //fruitManager.nSunset += totalSunsetSell;
+        //fruitManager.nAmethyst += totalAmethystSell;
+        //fruitManager.nCrystalline += totalCrystallineSell;
+        //inventoryItem.Sell(numSell)
     }
 
     // need to have this interact w the shopItem texts

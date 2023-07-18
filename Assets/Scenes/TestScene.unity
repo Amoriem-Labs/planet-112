@@ -2118,17 +2118,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4456878491667706420, guid: 69d707c961b43154cae21fad083754a0, type: 3}
   m_PrefabInstance: {fileID: 4456878491727413730}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &210990042 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4456878491667706424, guid: 69d707c961b43154cae21fad083754a0, type: 3}
-  m_PrefabInstance: {fileID: 4456878491727413730}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7112a65115f89a54c887316a6bef5c3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &214660423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5420,7 +5409,7 @@ MonoBehaviour:
   costText: {fileID: 652178912}
   infoText: {fileID: 691209532}
   shopSlots:
-  - {fileID: 210990042}
+  - {fileID: 0}
   totalSeafoamCost: 0
   totalSunsetCost: 0
   totalAmethystCost: 0
@@ -12592,6 +12581,10 @@ MonoBehaviour:
   - {fileID: 8668480039298811600, guid: a56be57e7c21ea14da0308613d3c393a, type: 3}
   - {fileID: 8259340269281083831, guid: 7339422af326e00409a871255ce5c9f1, type: 3}
   - {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
+  - {fileID: 5475830003357801135, guid: 5f874a23a17c7db4e840643d5693aa5e, type: 3}
+  - {fileID: 812395155182503007, guid: 36ff469af96c4e84a940c43c42e0f29b, type: 3}
+  - {fileID: 2290849425908696756, guid: b21958e858e2d0442bd4ac7de913f6b2, type: 3}
+  - {fileID: 6460909878121052546, guid: 2403cfc38f4479e44aca264ad588b345, type: 3}
 --- !u!1 &1022469713
 GameObject:
   m_ObjectHideFlags: 0
@@ -22532,14 +22525,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopSlot
       objectReference: {fileID: 0}
-    - target: {fileID: 4456878491667706424, guid: 69d707c961b43154cae21fad083754a0, type: 3}
-      propertyPath: shopItemSO
-      value: 
-      objectReference: {fileID: 11400000, guid: faa5a999021837240aee691ce6750852, type: 2}
-    - target: {fileID: 4456878491667706424, guid: 69d707c961b43154cae21fad083754a0, type: 3}
-      propertyPath: shopManager
-      value: 
-      objectReference: {fileID: 396241934}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69d707c961b43154cae21fad083754a0, type: 3}
 --- !u!1001 &6668063751203559066

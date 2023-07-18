@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Seed : MonoBehaviour, ICollectible
+public class SeedPacket : MonoBehaviour, ICollectible
 {
-    public GameObject seedInventoryPrefab;
     public AudioManager audioManager;
 
     void Awake()

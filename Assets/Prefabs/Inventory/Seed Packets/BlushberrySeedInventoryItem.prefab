@@ -61,13 +61,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ae03481de4eb3418da1c6e8814eb65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: sampleBerrySeed
+  displayName: Blushberry Seed Packet
   image: {fileID: 7566493340995512370}
-  sprite: {fileID: 21300000, guid: 6a568d0f42877f14a9dea430b33778b7, type: 3}
+  sprite: {fileID: 21300000, guid: 8b711bc42493e894b9b7aa4fbf0e13e9, type: 3}
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 4151209858776664017}
-  infoText: Blushberry Seed<br><color=#3EC500>Plains</color><br><color=#B0B0B0>Seafoam</color>
+  infoText: Blushberry Seed Packet<br><color=#3EC500>Plains</color>
   parentAfterDrag: {fileID: 0}
   rootInventorySlot: {fileID: 0}
   isHotbarItem: 0
