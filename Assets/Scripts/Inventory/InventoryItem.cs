@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
-[Serializable] [CreateAssetMenu(fileName = "New Inventory Prefab", menuName = "Inventory Prefab")]
+[Serializable]
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public string displayName;
@@ -140,6 +140,18 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
         hotbar.UpdateFruitText();
         Destroy(gameObject);
+    }
+
+    // Deletes numSell amount of this inventory item. Is triggered when selling items to Mav.
+    public void Sell(int numSell){
+        if (numSell == stackSize){
+            Delete();
+            return;
+        }
+        stackSize -= numSell;
+        stackSizeText.text = stackSize.ToString();
+        hotbar.UpdateHotbar();
+        hotbar.UpdateFruitText();
     }
 
     // Use inventory item. Is triggered when inventory item is in a hotbar slot and player presses a hotbar key.

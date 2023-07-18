@@ -9,7 +9,7 @@ public class ShopSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public ShopItem shopItemSO; // The scriptable object that contains fixed (non-dynamic) data about this shop item.
     public int buyStackSize; // The The amount of this item that the player is buying.
-    public TextMeshProUGUI buyStackText; // The Text object that links buyStackSize to the UI.
+    public TextMeshProUGUI buyStackText; // The TextMeshProUGUI object that displays the amount of item player has in cart.
     public bool unlocked; // Tells whether the shop item is unlocked to the player yet. Initial state of whether item is locked/unlocked is determined by the state of this boolean in the Inspector
     public Image lockedImage; // Image that shows up in the shop slot if the shop item is locked.
     public ShopManager shopManager; // ShopManager script that links all the systems together.
