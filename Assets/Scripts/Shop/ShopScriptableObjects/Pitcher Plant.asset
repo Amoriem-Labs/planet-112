@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
-  m_Name: BlushberrySeedPacket
+  m_Name: Pitcher Plant
   m_EditorClassIdentifier: 
-  itemName: Blushberry Seed Packet
-  rarity: Common
-  cost: 05000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
+  itemName: Pitcher Plant Seed
+  rarity: Rare
+  cost: 28000000000000000000000000000000
+  inventoryItemPrefab: {fileID: 6460909878121052546, guid: 2403cfc38f4479e44aca264ad588b345, type: 3}
   biome: Plains
-  mainRole: Early Game / Fruit Production
+  mainRole: Attack

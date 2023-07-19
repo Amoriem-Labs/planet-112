@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
-  m_Name: GoliathSunflowerSeedPacket
+  m_Name: Goliath Sunflower Seed
   m_EditorClassIdentifier: 
-  itemName: Goliath Sunflower Seed Packet
+  itemName: Goliath Sunflower Seed
   rarity: Epic
   cost: 28000000000000000000000000000000
   inventoryItemPrefab: {fileID: 812395155182503007, guid: 36ff469af96c4e84a940c43c42e0f29b, type: 3}

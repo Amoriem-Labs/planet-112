@@ -31,7 +31,7 @@ public class ShopSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             shopManager.totalSunsetCost += shopItemSO.cost[1];
             shopManager.totalAmethystCost += shopItemSO.cost[2];
             shopManager.totalCrystallineCost += shopItemSO.cost[3];
-            shopManager.updateCostText();
+            shopManager.updateCostText(shopItemSO.cost, buyStackSize);
             // TODO: add feature where player is alerted if they exceeded max capacity of cart
         }
     }
@@ -44,7 +44,7 @@ public class ShopSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             shopManager.totalSunsetCost -= shopItemSO.cost[1];
             shopManager.totalAmethystCost -= shopItemSO.cost[2];
             shopManager.totalCrystallineCost -= shopItemSO.cost[3];
-            shopManager.updateCostText();
+            shopManager.updateCostText(shopItemSO.cost, buyStackSize);
         }
     }
 

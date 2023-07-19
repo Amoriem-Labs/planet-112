@@ -16,6 +16,7 @@ TagManager:
   - inventoryPanel
   - shopManager
   - Mav
+  - buyStackText
   layers:
   - Default
   - TransparentFX

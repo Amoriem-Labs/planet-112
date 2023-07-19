@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
-  m_Name: LilypadSeedPacket
+  m_Name: Crying Lavender Seed
   m_EditorClassIdentifier: 
-  itemName: Lilypad Seed Packet
-  rarity: Common
-  cost: 05000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 2290849425908696756, guid: b21958e858e2d0442bd4ac7de913f6b2, type: 3}
+  itemName: Crying Lavender Seed
+  rarity: Epic
+  cost: 3c000000000000000000000001000000
+  inventoryItemPrefab: {fileID: 5475830003357801135, guid: 5f874a23a17c7db4e840643d5693aa5e, type: 3}
   biome: Plains
-  mainRole: Support
+  mainRole: Healing

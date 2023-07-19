@@ -11,6 +11,7 @@ public class InventoryManager : MonoBehaviour
     public bool draggingItem;
     public GameObject hotbar;
     public FruitManager fruitManager;
+    public ShopManager shopManager;
     public List<GameObject> possibleItemPrefabs; // Reference the possible prefabs that can be items in the inspector
 
     // Initializing inventory.
@@ -36,6 +37,12 @@ public class InventoryManager : MonoBehaviour
         hotbarManager.DeleteHotbar();
         fruitManager.Reset();
         hotbarManager.UpdateFruitText();
+        shopManager.ownedStockText.text = "0";
+        shopManager.equippedText.text = "--";
+        shopManager.seafoamStockText.text = "0";
+        shopManager.sunsetStockText.text = "0";
+        shopManager.amethystStockText.text = "0";
+        shopManager.crystallineStockText.text = "0";
     }
 
     // Searches if item already exists in inventory, and if so, add to that item's stackSize.
@@ -56,6 +63,7 @@ public class InventoryManager : MonoBehaviour
                     if (inventoryItem.linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
                         fruitManager.AddToFruitStack(fruitScript.fruitType);
                         hotbarManager.UpdateFruitText();
+                        shopManager.UpdateFruitStockText();
                     }
                     return;
                 }

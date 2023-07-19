@@ -9,13 +9,22 @@ public class ShopManager : MonoBehaviour
     public GameObject player;
     public float y_offset;
 
+    public GameObject selectionArrow;
+    public GameObject numSelectionsPanel;
+    public ShopSlot_2 currentlySelectedSlot;
     public TextMeshProUGUI costText;
     public TextMeshProUGUI infoText;
-    public List<ShopSlot> shopSlots;
     public int totalSeafoamCost;
     public int totalSunsetCost;
     public int totalAmethystCost;
     public int totalCrystallineCost;
+
+    public TextMeshProUGUI ownedStockText;
+    public TextMeshProUGUI equippedText;
+    public TextMeshProUGUI seafoamStockText;
+    public TextMeshProUGUI sunsetStockText;
+    public TextMeshProUGUI amethystStockText;
+    public TextMeshProUGUI crystallineStockText;
 
     public FruitManager fruitManager;
     public InventoryManager inventoryManager;
@@ -27,7 +36,16 @@ public class ShopManager : MonoBehaviour
         totalAmethystCost = 0;
         totalCrystallineCost = 0;
         infoText.text = "";
-        updateCostText();
+        ownedStockText.text = "--";
+        equippedText.text = "--";
+        costText.text = "";
+    }
+
+    void Start(){
+        seafoamStockText.text = fruitManager.nSeafoam.ToString();
+        sunsetStockText.text = fruitManager.nSunset.ToString();
+        amethystStockText.text = fruitManager.nAmethyst.ToString();
+        crystallineStockText.text = fruitManager.nCrystalline.ToString();
     }
 
     void Update()
@@ -40,7 +58,7 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    public void updateCostText(){
+    public void updateCostText(int[] cost, int buyStackSize){
         string seafoamCostStr = "";
         string sunsetCostStr = "";
         string amethystCostStr = "";
@@ -49,24 +67,51 @@ public class ShopManager : MonoBehaviour
         if (totalSeafoamCost > 0){
             if (totalSeafoamCost > fruitManager.nSeafoam){ color = "#FF0000"; }
             else { color = "#5ADB97"; }
-            seafoamCostStr = $"<color={color}>{totalSeafoamCost.ToString()} Seafoam Icura</color>\n";
+            seafoamCostStr = $"<color={color}>{cost[0].ToString()}x{buyStackSize.ToString()}={totalSeafoamCost.ToString()}</color>\n";
         }
         if (totalSunsetCost > 0){
             if (totalSunsetCost > fruitManager.nSunset){ color = "#FF0000"; }
             else { color = "#FF8500"; }
-            sunsetCostStr = $"<color={color}>{totalSunsetCost.ToString()} Sunset Icura</color>\n";
+            sunsetCostStr = $"<color={color}>{cost[1].ToString()}x{buyStackSize.ToString()}={totalSunsetCost.ToString()}</color>\n";
         }
         if (totalAmethystCost > 0){
             if (totalAmethystCost > fruitManager.nAmethyst){ color = "#FF0000"; }
-            else { color = "#9966CC"; }
-            amethystCostStr = $"<color={color}>{totalAmethystCost.ToString()} Amethyst Icura</color>\n";
+            else { color = "#B383E2"; }
+            amethystCostStr = $"<color={color}>{cost[2].ToString()}x{buyStackSize.ToString()}={totalAmethystCost.ToString()}</color>\n";
         }
         if (totalCrystallineCost > 0){
             if (totalCrystallineCost > fruitManager.nCrystalline){ color = "#FF0000"; }
             else { color = "#4B36F3"; }
-            crystallineCostStr = $"<color={color}>{totalCrystallineCost.ToString()} Crystalline Icura</color>";
+            crystallineCostStr = $"<color={color}>{cost[3].ToString()}x{buyStackSize.ToString()}={totalCrystallineCost.ToString()}</color>\n";
         }
-        //costText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
+        costText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
+    }
+
+    public void UpdateFruitStockText(){
+        seafoamStockText.text = fruitManager.nSeafoam.ToString();
+        sunsetStockText.text = fruitManager.nSunset.ToString();
+        amethystStockText.text = fruitManager.nAmethyst.ToString();
+        crystallineStockText.text = fruitManager.nCrystalline.ToString();
+    }
+
+    public void UpdateOwnedText(ShopItem shopItemSO){
+        int totalOwned = 0;
+        for (int i = 0; i < inventoryManager.inventorySlots.Count; i++){
+            InventorySlot inventorySlot = inventoryManager.inventorySlots[i];
+            Transform slotTransform = inventorySlot.transform.GetChild(0); 
+            if (slotTransform.childCount > 0){
+                InventoryItem inventoryItem = slotTransform.GetComponentInChildren<InventoryItem>();
+                if (inventoryItem.displayName.Equals(shopItemSO.inventoryItemPrefab.GetComponent<InventoryItem>().displayName)){
+                    totalOwned += inventoryItem.stackSize;
+                }
+            }
+        }
+        ownedStockText.text = totalOwned.ToString();
+    }
+
+    // TODO: implement this later when we actually have equipping clothing system for player
+    public void UpdateEquippedText(ShopItem shopItemSO){
+
     }
 
     public void DisplayInfo(ShopPlantSeed shopPlantSeedSO){
@@ -100,7 +145,30 @@ public class ShopManager : MonoBehaviour
         infoText.text = "";
     }
 
-    // need to have this itneract w the shop item texts
+    public void pointerDownAddToBuyStack(){
+        currentlySelectedSlot.isAdding = true;
+        currentlySelectedSlot.pointerDown();
+    }
+
+    public void pointerUpAddToBuyStack(){
+        currentlySelectedSlot.isAdding = false;
+        currentlySelectedSlot.pointerUp();
+    }
+
+    public void pointerDownRemoveFromBuyStack(){
+        currentlySelectedSlot.isRemoving = true;
+        currentlySelectedSlot.pointerDown();
+    }
+
+    public void pointerUpRemoveFromBuyStack(){
+        currentlySelectedSlot.isRemoving = false;
+        currentlySelectedSlot.pointerUp();
+    }
+
+    public void resetBuyStack(){
+        currentlySelectedSlot.resetBuyStack();
+    }
+
     public void Buy(){
         if (fruitManager.nSeafoam >= totalSeafoamCost && fruitManager.nSunset >= totalSunsetCost && fruitManager.nAmethyst >= totalAmethystCost && fruitManager.nCrystalline >= totalCrystallineCost){
             audioManager.buySFX.Play();
@@ -117,18 +185,12 @@ public class ShopManager : MonoBehaviour
                                         {"Crystalline", totalCrystallineCost}
             };
 
-            totalSeafoamCost = 0;
-            totalSunsetCost = 0;
-            totalAmethystCost = 0;
-            totalCrystallineCost = 0;
-            updateCostText();
+            Reset();
 
-            foreach (ShopSlot shopSlot in shopSlots){
-                if (shopSlot.buyStackSize > 0){
-                    inventoryManager.BuyUpdateInventory(shopSlot.shopItemSO.inventoryItemPrefab, shopSlot.buyStackSize, totalCostDict);
-                    shopSlot.buyStackSize = 0;
-                    shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
-                }
+            if (currentlySelectedSlot.buyStackSize > 0){
+                inventoryManager.BuyUpdateInventory(currentlySelectedSlot.shopItemSO.inventoryItemPrefab, currentlySelectedSlot.buyStackSize, totalCostDict);
+                currentlySelectedSlot.buyStackSize = 0;
+                currentlySelectedSlot.buyStackText.text = currentlySelectedSlot.buyStackSize.ToString();
             }
         } else {
             print("Not enough funds!");
@@ -150,11 +212,6 @@ public class ShopManager : MonoBehaviour
         totalSunsetCost = 0;
         totalAmethystCost = 0;
         totalCrystallineCost = 0;
-        updateCostText();
-
-        foreach (ShopSlot shopSlot in shopSlots){
-            shopSlot.buyStackSize = 0;
-            shopSlot.buyStackText.text = shopSlot.buyStackSize.ToString();
-        }
+        costText.text = "";
     }
 }
