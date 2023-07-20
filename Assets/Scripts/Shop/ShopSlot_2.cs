@@ -17,9 +17,11 @@ public class ShopSlot_2 : MonoBehaviour
     public bool isRemoving;
     private bool isFiring;
     private bool stopFiring;
+    public float timeElapsedSinceButtonDown;
 
     void Awake(){
         buyStackSize = 0;
+        buyStackText = GameObject.FindGameObjectWithTag("buyStackText").GetComponent<TextMeshProUGUI>();
         buyStackText.text = buyStackSize.ToString();
         DisplayPriceText(shopItemSO.cost);
         if (!unlocked){
@@ -28,11 +30,16 @@ public class ShopSlot_2 : MonoBehaviour
             lockedImage.enabled = false;
         }
         shopManager = GameObject.FindGameObjectWithTag("shopManager").GetComponent<ShopManager>();
+        timeElapsedSinceButtonDown = 0.0f;
     }
 
     void Update(){
-        if (isAdding){
+        if (isAdding || isRemoving){
+            timeElapsedSinceButtonDown += Time.deltaTime;
+        }
+        if (isFiring && isAdding){
             if (unlocked && buyStackSize < 99){
+            //if (unlocked && !exceededMaxCapacityOfCart() && buyStackSize < 99){
                 buyStackSize++;
                 buyStackText.text = buyStackSize.ToString();
                 shopManager.totalSeafoamCost += shopItemSO.cost[0];
@@ -42,7 +49,7 @@ public class ShopSlot_2 : MonoBehaviour
                 shopManager.updateCostText(shopItemSO.cost, buyStackSize);
             }
         }
-        if (isRemoving){
+        if (isFiring && isRemoving){
             if (buyStackSize > 0 && unlocked){
                 buyStackSize--;
                 buyStackText.text = buyStackSize.ToString();
@@ -67,7 +74,7 @@ public class ShopSlot_2 : MonoBehaviour
             sunsetCostStr = "<color=#FF8500>" + cost[1].ToString() + " Sunset Icura</color>\n";
         }
         if (cost[2] > 0){
-            amethystCostStr = "<color=#B383E2>" + cost[2].ToString() + " Amethyst Icura</color>\n";
+            amethystCostStr = "<color=#9966CC>" + cost[2].ToString() + " Amethyst Icura</color>\n";
         }
         if (cost[3] > 0){
             crystallineCostStr = "<color=#4B36F3>" + cost[3].ToString() + " Crystalline Icura</color>";
@@ -75,12 +82,32 @@ public class ShopSlot_2 : MonoBehaviour
         priceText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
     }
 
-    public void addToBuyStack(){
-        
+    public void pointerDown(){
+        stopFiring = false;
+        makeFireVariableTrue();
     }
 
-    public void removeFromBuyStack(){
-        
+    private void makeFireVariableTrue(){
+        isFiring = true;
+        Invoke("makeFireVariableFalse", timeElapsedSinceButtonDown/100);
+    }
+
+    public void pointerUp(){
+        isFiring = false;
+        stopFiring = true;
+        timeElapsedSinceButtonDown = 0.0f;
+    }
+
+    private void makeFireVariableFalse(){
+        isFiring = false;
+        if (!stopFiring){
+            if (1-timeElapsedSinceButtonDown/5 > 0){
+                Invoke("makeFireVariableTrue",1-timeElapsedSinceButtonDown/5);
+            } else {
+                makeFireVariableTrue();
+            }
+            
+        }
     }
 
     public void unlockItem(){
@@ -88,21 +115,34 @@ public class ShopSlot_2 : MonoBehaviour
         lockedImage.enabled = false;
     }
 
-    /*
-    private bool exceededMaxCapacityOfCart(){
+    /* private bool exceededMaxCapacityOfCart(){
         bool exceededSeafoamCapacity = shopManager.totalSeafoamCost + shopItemSO.cost[0] > 999;
         bool exceededSunsetCapacity = shopManager.totalSunsetCost + shopItemSO.cost[1] > 999;
         bool exceededAmethystCapacity = shopManager.totalAmethystCost + shopItemSO.cost[2] > 999;
         bool exceededCrystallineCapacity = shopManager.totalCrystallineCost + shopItemSO.cost[3] > 999;
         return exceededSeafoamCapacity || exceededSunsetCapacity || exceededAmethystCapacity || exceededCrystallineCapacity;
-    }*/
+    } */
 
     // Selects item when this item is clicked in inventory
     public void Select(){
         if (unlocked && !TimeManager.IsGamePaused()){
+            shopManager.selectionArrow.SetActive(true);
+            shopManager.numSelectionsPanel.SetActive(true);
             if (shopItemSO is ShopPlantSeed) { 
                 shopManager.DisplayInfo((ShopPlantSeed)shopItemSO); // temporary implementation, since downcasting is bad
             }
+            Vector2 new_selection_arrow_pos = shopManager.selectionArrow.transform.position;
+            Vector2 new_selections_panel_pos = shopManager.numSelectionsPanel.transform.position;
+            new_selection_arrow_pos.y = transform.position.y;
+            new_selections_panel_pos.y = transform.position.y;
+            shopManager.selectionArrow.transform.position = new_selection_arrow_pos;
+            shopManager.numSelectionsPanel.transform.position = new_selections_panel_pos;
+
+            shopManager.Reset();
+
+            shopManager.currentlySelectedSlot = this;
+            shopManager.UpdateOwnedText(shopItemSO);
+            shopManager.UpdateEquippedText(shopItemSO);
         }
     }
 }

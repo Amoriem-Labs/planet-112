@@ -13,6 +13,7 @@ public class ShopManager : MonoBehaviour
     public GameObject numSelectionsPanel;
     public ShopSlot_2 currentlySelectedSlot;
     public TextMeshProUGUI costText;
+    public GameObject buyButton;
     public TextMeshProUGUI infoText;
     public int totalSeafoamCost;
     public int totalSunsetCost;
@@ -46,6 +47,8 @@ public class ShopManager : MonoBehaviour
         sunsetStockText.text = fruitManager.nSunset.ToString();
         amethystStockText.text = fruitManager.nAmethyst.ToString();
         crystallineStockText.text = fruitManager.nCrystalline.ToString();
+        selectionArrow.SetActive(false);
+        numSelectionsPanel.SetActive(false);
     }
 
     void Update()
@@ -55,6 +58,11 @@ public class ShopManager : MonoBehaviour
             pos.x = player.transform.position.x;
             pos.y = player.transform.position.y + y_offset;
             transform.position = pos;
+        }
+        if (currentlySelectedSlot.buyStackSize > 0){
+            buyButton.SetActive(true);
+        } else {
+            buyButton.SetActive(false);
         }
     }
 
@@ -165,8 +173,14 @@ public class ShopManager : MonoBehaviour
         currentlySelectedSlot.pointerUp();
     }
 
-    public void resetBuyStack(){
-        currentlySelectedSlot.resetBuyStack();
+    public void Reset(){
+        totalSeafoamCost = 0;
+        totalSunsetCost = 0;
+        totalAmethystCost = 0;
+        totalCrystallineCost = 0;
+        costText.text = "";
+        currentlySelectedSlot.buyStackSize = 0;
+        currentlySelectedSlot.buyStackText.text = "0";
     }
 
     public void Buy(){
@@ -185,13 +199,13 @@ public class ShopManager : MonoBehaviour
                                         {"Crystalline", totalCrystallineCost}
             };
 
-            Reset();
-
             if (currentlySelectedSlot.buyStackSize > 0){
                 inventoryManager.BuyUpdateInventory(currentlySelectedSlot.shopItemSO.inventoryItemPrefab, currentlySelectedSlot.buyStackSize, totalCostDict);
-                currentlySelectedSlot.buyStackSize = 0;
-                currentlySelectedSlot.buyStackText.text = currentlySelectedSlot.buyStackSize.ToString();
+                UpdateFruitStockText();
+                ownedStockText.text = (int.Parse(ownedStockText.text) + currentlySelectedSlot.buyStackSize).ToString();
             }
+
+            Reset();
         } else {
             print("Not enough funds!");
         }
@@ -204,14 +218,5 @@ public class ShopManager : MonoBehaviour
         //fruitManager.nAmethyst += totalAmethystSell;
         //fruitManager.nCrystalline += totalCrystallineSell;
         //inventoryItem.Sell(numSell)
-    }
-
-    // need to have this interact w the shopItem texts
-    public void Reset(){
-        totalSeafoamCost = 0;
-        totalSunsetCost = 0;
-        totalAmethystCost = 0;
-        totalCrystallineCost = 0;
-        costText.text = "";
     }
 }

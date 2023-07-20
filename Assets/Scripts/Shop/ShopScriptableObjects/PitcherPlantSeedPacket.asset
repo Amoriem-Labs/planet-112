@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
+  m_Name: PitcherPlantSeedPacket
+  m_EditorClassIdentifier: 
+  itemName: Pitcher Plant Seed Packet
+  rarity: Rare
+  cost: 28000000000000000000000000000000
+  inventoryItemPrefab: {fileID: 6460909878121052546, guid: 2403cfc38f4479e44aca264ad588b345, type: 3}
+  biome: Plains
+  mainRole: Attack

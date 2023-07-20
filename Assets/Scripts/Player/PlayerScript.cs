@@ -189,6 +189,11 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    public void closeShopUI(){
+        shopCanvas.SetActive(false);
+        shopIsLoaded = false;
+    }
+
     public void GeneratePlant(InputAction.CallbackContext context)
     {
         if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
