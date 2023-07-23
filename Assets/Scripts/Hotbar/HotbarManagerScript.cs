@@ -20,10 +20,10 @@ public class HotbarManagerScript : MonoBehaviour
     #region Initializing hotbar
     void Awake(){
         hotbarItems = new HotbarItem[numHotbarSlots];
+        LinkSlotTransforms();
     }
 
     void Start(){
-        LinkSlotTransforms();
         UpdateFruitText();
     }
 

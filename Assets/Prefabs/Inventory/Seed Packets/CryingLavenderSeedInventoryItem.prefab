@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.47, y: 8}
-  m_SizeDelta: {x: 12.7742, y: 7.2962}
+  m_AnchoredPosition: {x: 4.6706, y: 8}
+  m_SizeDelta: {x: 14.373, y: 7.2962}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6221986133894733722
 CanvasRenderer:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 955172e39a0be85478180abf746eb291, type: 2}
   m_sharedMaterial: {fileID: -7009963781345518562, guid: 955172e39a0be85478180abf746eb291, type: 2}
@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ae03481de4eb3418da1c6e8814eb65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linkedShopItemSO: {fileID: 11400000, guid: 681d8f6161692994580a86cdab4958c5, type: 2}
   displayName: Crying Lavender Seed Packet
   image: {fileID: 2809000568246507286}
   sprite: {fileID: 21300000, guid: ffe12fca4d1d43640b302677cbde7a59, type: 3}
@@ -209,6 +210,8 @@ MonoBehaviour:
   linkedItemPrefab: {fileID: 8212463163903896523, guid: 36f1d2cce44e7c048847468254d9226b, type: 3}
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
+  playerScript: {fileID: 0}
+  type: 
 --- !u!23 &8266875912151335380
 MeshRenderer:
   m_ObjectHideFlags: 0

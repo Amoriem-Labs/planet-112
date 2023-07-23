@@ -111,8 +111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.4699707, y: 8}
-  m_SizeDelta: {x: 12.7742, y: 7.2962}
+  m_AnchoredPosition: {x: 4.6007, y: 8}
+  m_SizeDelta: {x: 14.5128, y: 7.2962}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2089846365734739895
 CanvasRenderer:
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 955172e39a0be85478180abf746eb291, type: 2}
   m_sharedMaterial: {fileID: -7009963781345518562, guid: 955172e39a0be85478180abf746eb291, type: 2}
@@ -271,6 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ae03481de4eb3418da1c6e8814eb65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  linkedShopItemSO: {fileID: 11400000, guid: 80ad630df868da748bbbec88b982bc4e, type: 2}
   displayName: sampleStick
   image: {fileID: 5589490670010231357}
   sprite: {fileID: 21300000, guid: b887739386a164e42a990523ce184275, type: 3}
@@ -284,3 +285,5 @@ MonoBehaviour:
   linkedItemPrefab: {fileID: 7186225590548099585, guid: f7b3ccd8a9f270e44aa6bb6d9034c138, type: 3}
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
+  playerScript: {fileID: 0}
+  type: 

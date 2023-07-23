@@ -111,8 +111,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.4699707, y: 8.020508}
-  m_SizeDelta: {x: 12.7742, y: 7.2962}
+  m_AnchoredPosition: {x: 4.546295, y: 8.020508}
+  m_SizeDelta: {x: 14.6216, y: 7.2962}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8124401325999815763
 CanvasRenderer:
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 955172e39a0be85478180abf746eb291, type: 2}
   m_sharedMaterial: {fileID: -7009963781345518562, guid: 955172e39a0be85478180abf746eb291, type: 2}
@@ -284,3 +284,4 @@ MonoBehaviour:
   linkedItemPrefab: {fileID: 841007726834113149, guid: 8aafbee83f2670e43993178e212813f0, type: 3}
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
+  playerScript: {fileID: 0}

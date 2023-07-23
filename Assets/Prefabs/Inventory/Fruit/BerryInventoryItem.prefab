@@ -150,6 +150,7 @@ MonoBehaviour:
   linkedItemPrefab: {fileID: 917211971986225222, guid: 7a786e886f6b9ea41aa3ba981a5851c1, type: 3}
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
+  playerScript: {fileID: 0}
 --- !u!23 &1709561970862775503
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -227,8 +228,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.47, y: 8.020508}
-  m_SizeDelta: {x: 12.7742, y: 7.2962}
+  m_AnchoredPosition: {x: 4.5366, y: 8.020508}
+  m_SizeDelta: {x: 14.641, y: 7.2962}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &729481330854548417
 CanvasRenderer:
@@ -258,7 +259,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 1
+  m_text: 99
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 955172e39a0be85478180abf746eb291, type: 2}
   m_sharedMaterial: {fileID: -7009963781345518562, guid: 955172e39a0be85478180abf746eb291, type: 2}

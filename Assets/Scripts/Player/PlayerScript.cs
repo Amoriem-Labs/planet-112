@@ -52,6 +52,7 @@ public class PlayerScript : MonoBehaviour
         inventoryCanvas.SetActive(false);
         settingsCanvas.SetActive(true);
         settingsCanvas.SetActive(false);
+        
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -181,6 +182,7 @@ public class PlayerScript : MonoBehaviour
             // If in front of Mav
             if (canOpenShop && !shopIsLoaded){
                 shopCanvas.SetActive(true);
+                shopCanvas.GetComponent<ShopManager>().OpenShopSelectUI();
                 shopIsLoaded = true;
             } else {
                 shopCanvas.SetActive(false);
@@ -206,7 +208,7 @@ public class PlayerScript : MonoBehaviour
     // Opens/closes inventory when player presses I
     public void OnInventory(InputAction.CallbackContext context)
     {
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && !shopIsLoaded){
             if (!inventoryIsLoaded){
                 inventoryCanvas.SetActive(true);
                 inventoryIsLoaded = true;
@@ -220,7 +222,7 @@ public class PlayerScript : MonoBehaviour
 
     // This functions exists for the exit button in inventory UI
     public void CloseInventory(){
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && !shopIsLoaded){
             inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
         }

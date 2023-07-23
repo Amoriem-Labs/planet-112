@@ -110,7 +110,7 @@ namespace UnityEngine.UI
         /// </summary>
         public float size { get { return m_Size; } set { if (SetPropertyUtility.SetStruct(ref m_Size, Mathf.Clamp01(value))) UpdateVisuals(); } }
 
-        [Range(0, 50)]
+        [Range(0, 11)]
         [SerializeField]
         private int m_NumberOfSteps = 0;
 

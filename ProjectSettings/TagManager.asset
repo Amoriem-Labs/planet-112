@@ -17,6 +17,7 @@ TagManager:
   - shopManager
   - Mav
   - buyStackText
+  - sellStackText
   layers:
   - Default
   - TransparentFX
