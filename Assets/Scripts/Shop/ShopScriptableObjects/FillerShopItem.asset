@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: '-'
   rarity: '-'
   cost: 00000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 0}
+  inventoryItemPrefab: {fileID: 100886760222676074, guid: 39c045922976237438aec45e100ac3de, type: 3}

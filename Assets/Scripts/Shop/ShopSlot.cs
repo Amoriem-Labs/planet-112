@@ -12,15 +12,17 @@ public class ShopSlot : MonoBehaviour
     public bool unlocked; // Tells whether the shop item is unlocked to the player yet. Initial state of whether item is locked/unlocked is determined by the state of this boolean in the Inspector
     public Image lockedImage; // Image that shows up in the shop slot if the shop item is locked.
     public ShopManager shopManager; // ShopManager script that links all the systems together.
+    public bool outOfStock; // Serialize in Inspector. This boolean determines whether the item is out of stock - if so, player is prevented from buying it.
     [HideInInspector]public bool isAdding;
     [HideInInspector]public bool isRemoving;
     [HideInInspector]private bool isFiring;
     [HideInInspector]private bool stopFiring;
     [HideInInspector]public float timeElapsedSinceButtonDown;
+    private Button button;
 
     void Awake(){
         DisplayPriceText(shopItemSO.cost);
-        Button button = GetComponent<Button>(); 
+        button = GetComponent<Button>();
         if (unlocked){
             lockedImage.enabled = false;
             ColorBlock unlockedColorBlock = button.colors;
@@ -36,6 +38,9 @@ public class ShopSlot : MonoBehaviour
         buyStackSize = 0;
         shopManager.buyStackText.text = buyStackSize.ToString();
         timeElapsedSinceButtonDown = 0.0f;
+        if (outOfStock){
+            makeOutOfStock();
+        }
     }
 
     void Update(){
@@ -43,15 +48,26 @@ public class ShopSlot : MonoBehaviour
             timeElapsedSinceButtonDown += Time.deltaTime;
         }
         if (isFiring && isAdding){
-            if (unlocked && buyStackSize < 99){
-            //if (unlocked && !exceededMaxCapacityOfCart() && buyStackSize < 99){
-                buyStackSize++;
-                shopManager.buyStackText.text = buyStackSize.ToString();
-                shopManager.totalSeafoamCost += shopItemSO.cost[0];
-                shopManager.totalSunsetCost += shopItemSO.cost[1];
-                shopManager.totalAmethystCost += shopItemSO.cost[2];
-                shopManager.totalCrystallineCost += shopItemSO.cost[3];
-                shopManager.updateCostText(shopItemSO.cost, buyStackSize, "buy");
+            if (unlocked){
+                if (shopItemSO.inventoryItemPrefab.GetComponent<InventoryItem>().stackable){
+                    if (buyStackSize < 99){
+                        buyStackSize++;
+                        shopManager.buyStackText.text = buyStackSize.ToString();
+                        shopManager.totalSeafoamCost += shopItemSO.cost[0];
+                        shopManager.totalSunsetCost += shopItemSO.cost[1];
+                        shopManager.totalAmethystCost += shopItemSO.cost[2];
+                        shopManager.totalCrystallineCost += shopItemSO.cost[3];
+                        shopManager.updateCostText(shopItemSO.cost, buyStackSize, "buy");
+                    }
+                } else {
+                    buyStackSize = 1;
+                    shopManager.buyStackText.text = "1";
+                    shopManager.totalSeafoamCost = shopItemSO.cost[0];
+                    shopManager.totalSunsetCost = shopItemSO.cost[1];
+                    shopManager.totalAmethystCost = shopItemSO.cost[2];
+                    shopManager.totalCrystallineCost = shopItemSO.cost[3];
+                    shopManager.updateCostText(shopItemSO.cost, buyStackSize, "buy");
+                }
             }
         }
         if (isFiring && isRemoving){
@@ -85,6 +101,44 @@ public class ShopSlot : MonoBehaviour
             crystallineCostStr = "<color=#4B36F3>" + cost[3].ToString() + " Crystalline Icura</color>";
         }
         priceText.text = seafoamCostStr + sunsetCostStr + amethystCostStr + crystallineCostStr;
+    }
+
+    public void makeOutOfStock(){
+        // Change color to a really dark color to indicate the item is out of stock.
+        Button button = GetComponent<Button>(); 
+        ColorBlock outOfStockColorBlock = button.colors;
+        outOfStockColorBlock.normalColor = new Color(0.6f, 0.6f, 0.6f);
+        outOfStockColorBlock.highlightedColor = new Color(0.6f, 0.6f, 0.6f);
+        outOfStockColorBlock.pressedColor = new Color(0.6f, 0.6f, 0.6f);
+        outOfStockColorBlock.selectedColor = new Color(0.6f, 0.6f, 0.6f);
+        button.colors = outOfStockColorBlock;
+
+        // Change boolean
+        outOfStock = true;
+
+        // Makes the shop selection arrow and selections panel invisible.
+        shopManager.buyUIselectionArrow.SetActive(false);
+        shopManager.buyUInumSelectionsPanel.SetActive(false);
+
+        // Indicate to player that item is out of stock.
+        priceText.text = "<color=red>Out of Stock</color>";
+    }
+
+    public void makeInStock(){
+        // Change color to a really dark color to indicate the item is out of stock.
+        Button button = GetComponent<Button>(); 
+        ColorBlock inStockColorBlock = button.colors;
+        inStockColorBlock.normalColor = new Color(1.0f, 1.0f, 1.0f);
+        inStockColorBlock.highlightedColor = new Color(0.8113208f, 0.8113208f, 0.8113208f);
+        inStockColorBlock.pressedColor = new Color(0.7843137f, 0.7843137f, 0.7843137f);
+        inStockColorBlock.selectedColor = new Color(0.7843137f, 0.7843137f, 0.7843137f);
+        button.colors = inStockColorBlock;
+
+        // Change boolean
+        outOfStock = false;
+
+        // Indicate to player that item is in stock.
+        DisplayPriceText(shopItemSO.cost);
     }
 
     public void pointerDown(){
@@ -122,7 +176,7 @@ public class ShopSlot : MonoBehaviour
 
     // Selects item when this item is clicked in inventory
     public void Select(){
-        if (unlocked && !TimeManager.IsGamePaused()){
+        if (unlocked && !outOfStock && !TimeManager.IsGamePaused()){
             // Change color of button when selected and changes the previously selected slot's color be back to the assigned unselected color.
             Button button = GetComponent<Button>(); 
             ColorBlock selectedColorBlock = button.colors;

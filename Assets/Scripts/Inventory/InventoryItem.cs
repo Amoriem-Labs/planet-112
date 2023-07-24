@@ -89,7 +89,6 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             draggingItem = false;
             thisBeingDragged = false;
             rootInventorySlot = transform.parent.parent;
-            
         }
     }
 
@@ -129,6 +128,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         int slotIndex = rootInventorySlot.GetComponent<InventorySlot>().inventorySlotIndex;
         GameObject sellShopUIgameObject = inventoryManager.linkedSellSlots[slotIndex].transform.GetChild(0).gameObject;
         Destroy(sellShopUIgameObject); // ... and also destroys the item in the shop sell UI's main panel
+        hotbar.UpdateHotbar();
     }
 
     // Deletes the shop sell UI item and corresponding inventory item. Is triggered when an item is sold in the shop.
@@ -144,9 +144,11 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         } else {
             stackSize -= numSell;
             stackSizeText.text = stackSize.ToString();
+            inventoryItemObject.GetComponent<InventoryItem>().stackSize = stackSize;
+            inventoryItemObject.GetComponent<InventoryItem>().stackSizeText.text = stackSize.ToString();
         }
-        hotbar.UpdateHotbar();
         hotbar.UpdateFruitText();
+        hotbar.Invoke("UpdateHotbar",0); // delays updating hotbar until next frame, after the gameobjects are destroyed
     }
 
     // Use inventory item. Is triggered when inventory item is in a hotbar slot and player presses a hotbar key.

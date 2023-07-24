@@ -55,7 +55,10 @@ public class ShopManager : MonoBehaviour
     public InventoryManager inventoryManager;
     public AudioManager audioManager;
 
+    public ShopSlot[] shopSlots;
+
     void Awake(){
+        shopSlots = GetComponentsInChildren<ShopSlot>(true);
         playerScript = player.GetComponent<PlayerScript>();
         selectUI.SetActive(true);
         buyUI.SetActive(false);
@@ -336,7 +339,11 @@ public class ShopManager : MonoBehaviour
                 inventoryManager.BuyUpdateInventory(currentlySelectedBuySlot.shopItemSO.inventoryItemPrefab, currentlySelectedBuySlot.buyStackSize, totalCostDict);
                 UpdateFruitStockText();
                 ownedStockText.text = (int.Parse(ownedStockText.text) + currentlySelectedBuySlot.buyStackSize).ToString();
-
+                
+                // If the item you are buying is not stackable, then prevent player from buying the item again
+                if (!currentlySelectedBuySlot.shopItemSO.inventoryItemPrefab.GetComponent<InventoryItem>().stackable){
+                    currentlySelectedBuySlot.makeOutOfStock();
+                }
                 Reset();
             } else {
                 print("Not enough funds!");
@@ -360,6 +367,16 @@ public class ShopManager : MonoBehaviour
 
             UpdateFruitStockText();
             ownedStockText.text = (int.Parse(ownedStockText.text) - currentlySelectedSellSlot.sellStackSize).ToString();
+            
+            // If selling a non-stackable item, then the shop will receive back their item and be in stock for the item again. 
+            if (!currentlySelectedSellSlot.linkedShopItem.stackable){
+                foreach (ShopSlot shopSlot in shopSlots){
+                    if (shopSlot.shopItemSO.inventoryItemPrefab.GetComponent<InventoryItem>().displayName.Equals(currentlySelectedSellSlot.linkedShopItem.displayName)){
+                        shopSlot.makeInStock();
+                        break;
+                    }
+                }
+            }
             Reset();
         }
     }

@@ -2050,6 +2050,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1678808358}
+        m_TargetAssemblyTypeName: HotbarManagerScript, Assembly-CSharp
+        m_MethodName: UpdateHotbar
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!222 &117100405
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2112,14 +2124,14 @@ PrefabInstance:
     - target: {fileID: 1246342525713916859, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: shopItemSO
       value: 
-      objectReference: {fileID: 11400000, guid: 7e04575562d77314b9fa515a78247543, type: 2}
+      objectReference: {fileID: 11400000, guid: b66a3b76b33a2724e99364324ec1f7b4, type: 2}
     - target: {fileID: 1246342525713916859, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: buyStackText
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4643739559447258348, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_text
-      value: Arrow
+      value: Bow
       objectReference: {fileID: 0}
     - target: {fileID: 4643739559802983883, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_text
@@ -2127,7 +2139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4643739560781678948, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Name
-      value: ArrowShopSlot
+      value: BowShopSlot
       objectReference: {fileID: 0}
     - target: {fileID: 4643739560781678951, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Pivot.x
@@ -2216,7 +2228,7 @@ PrefabInstance:
     - target: {fileID: 4749723763133326800, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: bd4bc2ea58fa6654c904c9d2e6c40072, type: 3}
+      objectReference: {fileID: 21300000, guid: 0baa34d5dc746464783ea13496f585cc, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
 --- !u!224 &123552056 stripped
@@ -7767,6 +7779,7 @@ MonoBehaviour:
   fruitManager: {fileID: 1088083372}
   inventoryManager: {fileID: 1013802915}
   audioManager: {fileID: 333394615}
+  shopSlots: []
 --- !u!1 &401699342
 GameObject:
   m_ObjectHideFlags: 0
@@ -11871,10 +11884,10 @@ PrefabInstance:
     - target: {fileID: 2263975336601135303, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0baa34d5dc746464783ea13496f585cc, type: 3}
+      objectReference: {fileID: 21300000, guid: b887739386a164e42a990523ce184275, type: 3}
     - target: {fileID: 4456878490300768191, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: m_text
-      value: Bow
+      value: Stick
       objectReference: {fileID: 0}
     - target: {fileID: 4456878491667706420, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: m_Pivot.x
@@ -11962,16 +11975,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4456878491667706423, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: m_Name
-      value: BowShopSlot
+      value: StickShopSlot
       objectReference: {fileID: 0}
     - target: {fileID: 7845277377639258344, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: unlocked
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7845277377639258344, guid: 69d707c961b43154cae21fad083754a0, type: 3}
+      propertyPath: outOfStock
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7845277377639258344, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: shopItemSO
       value: 
-      objectReference: {fileID: 11400000, guid: b66a3b76b33a2724e99364324ec1f7b4, type: 2}
+      objectReference: {fileID: 11400000, guid: 80ad630df868da748bbbec88b982bc4e, type: 2}
     - target: {fileID: 7845277377639258344, guid: 69d707c961b43154cae21fad083754a0, type: 3}
       propertyPath: buyStackText
       value: 
@@ -29913,19 +29930,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1246342525713916859, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: unlocked
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1246342525713916859, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: shopItemSO
       value: 
-      objectReference: {fileID: 11400000, guid: af538d3f7da33124791892608c83a858, type: 2}
+      objectReference: {fileID: 11400000, guid: 7e04575562d77314b9fa515a78247543, type: 2}
     - target: {fileID: 1246342525713916859, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: buyStackText
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4643739559447258348, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_text
-      value: 
+      value: Arrow
       objectReference: {fileID: 0}
     - target: {fileID: 4643739559802983883, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_text
@@ -29937,7 +29954,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4643739560781678948, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Name
-      value: EmptyShopSlot
+      value: ArrowShopSlot
       objectReference: {fileID: 0}
     - target: {fileID: 4643739560781678950, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Colors.m_SelectedColor.b
@@ -30038,7 +30055,7 @@ PrefabInstance:
     - target: {fileID: 4749723763133326800, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300000, guid: bd4bc2ea58fa6654c904c9d2e6c40072, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d778f2b966d0d7c429df10f5a9057174, type: 3}
 --- !u!224 &1815844690 stripped

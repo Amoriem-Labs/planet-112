@@ -80,6 +80,8 @@ public class InventoryManager : MonoBehaviour
             if (slotTransform.childCount == 0){
                 InventoryItem newInventoryItem = inventorySlot.DrawSlot(inventoryItemPrefab, 1);
                 linkedSellSlots[i].DrawSlot(inventoryItemPrefab, 1, newInventoryItem);
+                linkedSellSlots[i].linkedShopItem.parentAfterDrag = linkedSellSlots[i].transform;
+                linkedSellSlots[i].linkedInventoryItem.parentAfterDrag = inventorySlots[i].transform.GetChild(0).transform;
                 hotbarManager.UpdateHotbar();
                 if (inventoryItemPrefab.GetComponent<InventoryItem>().linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
                     fruitManager.AddToFruitStack(fruitScript.fruitType);
@@ -184,6 +186,8 @@ public class InventoryManager : MonoBehaviour
             if (slotTransform.childCount == 0 || justDestroyed){
                 InventoryItem newInventoryItem = inventorySlot.DrawSlot(inventoryItemPrefab, numBought);
                 linkedSellSlots[i].DrawSlot(inventoryItemPrefab, numBought, newInventoryItem);
+                linkedSellSlots[i].linkedShopItem.parentAfterDrag = linkedSellSlots[i].transform;
+                linkedSellSlots[i].linkedInventoryItem.parentAfterDrag = inventorySlots[i].transform.GetChild(0).transform;
                 justDestroyed = false;
                 hotbarManager.UpdateHotbar();
                 hotbarManager.UpdateFruitText();

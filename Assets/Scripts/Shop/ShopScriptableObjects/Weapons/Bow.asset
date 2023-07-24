@@ -17,4 +17,3 @@ MonoBehaviour:
   cost: 3c000000000000000000000000000000
   inventoryItemPrefab: {fileID: 2390408974617551437, guid: eeafd6ad933c7fd45936e5e854d0d938, type: 3}
   range: Long
-  effect: '-'

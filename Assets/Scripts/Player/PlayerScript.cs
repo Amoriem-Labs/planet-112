@@ -52,7 +52,8 @@ public class PlayerScript : MonoBehaviour
         inventoryCanvas.SetActive(false);
         settingsCanvas.SetActive(true);
         settingsCanvas.SetActive(false);
-        
+        shopCanvas.SetActive(true);
+        shopCanvas.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)

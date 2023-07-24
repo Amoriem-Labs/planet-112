@@ -50,8 +50,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
                 oldInventoryItem.transform.SetParent(droppedInventoryItem.parentAfterDrag);
                 oldInventoryItem.parentAfterDrag = droppedInventoryItem.parentAfterDrag;
                 InventoryItem oldShopItem = linkedSellSlotTransform.GetComponentInChildren<InventoryItem>();
-                oldShopItem.GetComponentInParent<SellSlot>().linkedInventoryItem = droppedInventoryItem;
-                oldShopItem.GetComponentInParent<SellSlot>().linkedShopItem = droppedShopItem;
+                linkedSellSlotTransform.GetComponent<SellSlot>().linkedInventoryItem = droppedInventoryItem;
+                linkedSellSlotTransform.GetComponent<SellSlot>().linkedShopItem = droppedShopItem;
                 oldShopItem.transform.SetParent(droppedShopItem.parentAfterDrag);
                 oldShopItem.parentAfterDrag = droppedShopItem.parentAfterDrag;
                 droppedSellSlot.linkedInventoryItem = oldInventoryItem;
