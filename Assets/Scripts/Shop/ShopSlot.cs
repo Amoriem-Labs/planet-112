@@ -177,6 +177,7 @@ public class ShopSlot : MonoBehaviour
     // Selects item when this item is clicked in inventory
     public void Select(){
         if (unlocked && !outOfStock && !TimeManager.IsGamePaused()){
+            shopManager.isBuySlotSelected = true;
             // Change color of button when selected and changes the previously selected slot's color be back to the assigned unselected color.
             Button button = GetComponent<Button>(); 
             ColorBlock selectedColorBlock = button.colors;

@@ -7752,6 +7752,8 @@ MonoBehaviour:
   caveScrollView: {fileID: 137284070}
   weaponScrollView: {fileID: 496548259}
   buyUIselectionArrow: {fileID: 733208021}
+  topEdgeBuyUI: 3.1
+  bottomEdgeBuyUI: 0.68
   buyUInumSelectionsPanel: {fileID: 1569660835}
   buyStackText: {fileID: 819642021}
   currentlySelectedBuySlot: {fileID: 629607108}
@@ -7780,6 +7782,7 @@ MonoBehaviour:
   inventoryManager: {fileID: 1013802915}
   audioManager: {fileID: 333394615}
   shopSlots: []
+  isBuySlotSelected: 0
 --- !u!1 &401699342
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,8 @@ public class ShopManager : MonoBehaviour
     public GameObject weaponScrollView;
 
     public GameObject buyUIselectionArrow;
+    public float topEdgeBuyUI; // Serialized in Inspector to 3.10f
+    public float bottomEdgeBuyUI; // Serialized in Inspector to 0.68f
     public GameObject buyUInumSelectionsPanel;
     public TextMeshProUGUI buyStackText;
     public ShopSlot currentlySelectedBuySlot;
@@ -56,6 +58,7 @@ public class ShopManager : MonoBehaviour
     public AudioManager audioManager;
 
     public ShopSlot[] shopSlots;
+    public bool isBuySlotSelected;
 
     void Awake(){
         shopSlots = GetComponentsInChildren<ShopSlot>(true);
@@ -83,6 +86,7 @@ public class ShopManager : MonoBehaviour
         cityScrollView.SetActive(false);
         caveScrollView.SetActive(false);
         weaponScrollView.SetActive(false);
+        isBuySlotSelected = false;
     }
 
     void Start(){
@@ -103,21 +107,39 @@ public class ShopManager : MonoBehaviour
             pos.x = player.transform.position.x;
             pos.y = player.transform.position.y + y_offset;
             transform.position = pos;
-        }
-        if (currentlySelectedBuySlot.buyStackSize > 0){
-            buyButton.SetActive(true);
-        } else {
-            buyButton.SetActive(false);
-        }
-        if (currentlySelectedSellSlot.sellStackSize > 0){
-            sellButton.SetActive(true);
-        } else {
-            sellButton.SetActive(false);
+
+            if (isBuySlotSelected){
+                Vector2 newBuyUIselectionArrowPosition = buyUIselectionArrow.transform.position;
+                newBuyUIselectionArrowPosition.y = currentlySelectedBuySlot.transform.position.y;
+                buyUIselectionArrow.transform.position = newBuyUIselectionArrowPosition;
+                Vector2 newBuyUInumSelectionsPanelPosition = buyUInumSelectionsPanel.transform.position;
+                newBuyUInumSelectionsPanelPosition.y = currentlySelectedBuySlot.transform.position.y;
+                buyUInumSelectionsPanel.transform.position = newBuyUInumSelectionsPanelPosition;
+                if (buyUIselectionArrow.transform.position.y > topEdgeBuyUI || buyUIselectionArrow.transform.position.y < bottomEdgeBuyUI){
+                    buyUIselectionArrow.SetActive(false);
+                    buyUInumSelectionsPanel.SetActive(false);
+                } else {
+                    buyUIselectionArrow.SetActive(true);
+                    buyUInumSelectionsPanel.SetActive(true);
+                }
+            }
+            
+            if (currentlySelectedBuySlot.buyStackSize > 0){
+                buyButton.SetActive(true);
+            } else {
+                buyButton.SetActive(false);
+            }
+            if (currentlySelectedSellSlot.sellStackSize > 0){
+                sellButton.SetActive(true);
+            } else {
+                sellButton.SetActive(false);
+            }
         }
     }
 
     public void OpenShopSelectUI(){
         Reset();
+        isBuySlotSelected = false;
         currentlySelectedSellSlot.GetComponent<Button>().colors = unselectedColorBlock;
         buyUIselectionArrow.SetActive(false);
         buyUInumSelectionsPanel.SetActive(false);
@@ -135,6 +157,7 @@ public class ShopManager : MonoBehaviour
 
     public void SelectBuyUI(){
         Reset();
+        isBuySlotSelected = false;
         currentlySelectedSellSlot.GetComponent<Button>().colors = unselectedColorBlock;
         currentlySelectedBuySlot.GetComponent<Button>().colors = unselectedColorBlock;
         buyUIselectionArrow.SetActive(false);
@@ -151,6 +174,7 @@ public class ShopManager : MonoBehaviour
 
     public void SelectSellUI(){
         Reset();
+        isBuySlotSelected = false;
         currentlySelectedBuySlot.GetComponent<Button>().colors = unselectedColorBlock;
         sellUIselectionArrow.SetActive(false);
         sellUInumSelectionsPanel.SetActive(false);
@@ -181,6 +205,7 @@ public class ShopManager : MonoBehaviour
 
     public void SwitchShopTab(string newShopTabName){
         Reset();
+        isBuySlotSelected = false;
         currentlySelectedBuySlot.GetComponent<Button>().colors = unselectedColorBlock;
         buyUIselectionArrow.SetActive(false);
         buyUInumSelectionsPanel.SetActive(false);
