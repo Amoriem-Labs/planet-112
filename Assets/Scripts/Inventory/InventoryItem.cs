@@ -10,6 +10,7 @@ using System;
 [Serializable]
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public ShopItem linkedShopItemSO; // Links the inventory item to the SellSlot in shop UI via a scriptable object.
     public string displayName;
     public Image image;
     public Sprite sprite;
@@ -17,7 +18,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public int stackSize;
     public TextMeshProUGUI stackSizeText;
     public string infoText;
-    [HideInInspector] public Transform parentAfterDrag;
+    public Transform parentAfterDrag;
     [HideInInspector] public Transform rootInventorySlot;
     private bool draggingItem;
     private bool thisBeingDragged;
@@ -25,19 +26,24 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public GameObject linkedItemPrefab;
     public HotbarManagerScript hotbar;
     public InfoBarScript infoBar;
+    public PlayerScript playerScript;
 
     // Initializing inventory item properties.
     void Awake(){
-        rootInventorySlot = transform.parent.parent;
-        draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        if (transform.parent.parent.TryGetComponent<InventorySlot>(out InventorySlot inventorySlot)){
+            rootInventorySlot = transform.parent.parent;
+            draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
+            infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
+        }
         hotbar = GameObject.FindGameObjectWithTag("hotbar").GetComponent<HotbarManagerScript>();
-        infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
+        parentAfterDrag = transform.parent;
     }
 
     #region Adding and Removing from Stack.
-    public void AddToStack(){
+    public void AddToStack(int numAdd){
         if (stackable){
-            stackSize++;
+            stackSize += numAdd;
             stackSizeText.text = stackSize.ToString();
         } else {
             stackSize = 1;
@@ -45,12 +51,11 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
     }
 
-    public void RemoveFromStack(){
+    public void RemoveFromStack(int numRemove){
         if (stackable){
-            stackSize--;
+            stackSize -= numRemove;
             stackSizeText.text = stackSize.ToString();
-        }
-        else {
+        } else {
             stackSize = 0;
             stackSizeText.text = "";
         }
@@ -59,7 +64,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     #region Dragging and Dropping Items
     public void OnBeginDrag(PointerEventData eventData){
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && playerScript.inventoryIsLoaded){
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
             transform.SetAsLastSibling();
@@ -70,7 +75,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnDrag(PointerEventData eventData){
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && playerScript.inventoryIsLoaded){
             Vector2 mousePosition = Mouse.current.position.ReadValue();
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             transform.position = worldPosition;
@@ -78,7 +83,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnEndDrag(PointerEventData eventData){
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && playerScript.inventoryIsLoaded){
             transform.SetParent(parentAfterDrag);
             image.raycastTarget = true;
             draggingItem = false;
@@ -88,38 +93,62 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     public void OnPointerEnter(PointerEventData eventData){
-        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused()){
+        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused() && playerScript.inventoryIsLoaded){
             image.raycastTarget = false;
         }
     }
 
     public void OnPointerExit(PointerEventData eventData){
-        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused()){
+        if (draggingItem && !thisBeingDragged && !TimeManager.IsGamePaused() && playerScript.inventoryIsLoaded){
             image.raycastTarget = true;
         }
     }
     #endregion
 
-    // Deletes the inventory item. Is triggered when inventory item is dragged to trash icon.
-    public void Delete(){
+    // Deletes the inventory item and corresponding shop sell UI item. Is triggered when inventory item is dragged to trash icon.
+    public void DeleteFromTrashing(){
         infoBar.UndisplayInfo();
-        hotbar.UpdateHotbar();
         if (linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
-            if (fruitScript.fruitType.Equals("seafoam")){
+            if (fruitScript.fruitType.Equals("Seafoam")){
                 hotbar.fruitManager.nSeafoam -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("sunset")){
+            if (fruitScript.fruitType.Equals("Sunset")){
                 hotbar.fruitManager.nSunset -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("amethyst")){
+            if (fruitScript.fruitType.Equals("Amethyst")){
                 hotbar.fruitManager.nAmethyst -= stackSize;
             }
-            if (fruitScript.fruitType.Equals("crystalline")){
+            if (fruitScript.fruitType.Equals("Crystalline")){
                 hotbar.fruitManager.nCrystalline -= stackSize;
             }
         }
         hotbar.UpdateFruitText();
-        Destroy(gameObject);
+        Destroy(gameObject); // Destroys the item in the inventory...
+        InventoryManager inventoryManager = rootInventorySlot.GetComponentInParent<InventoryManager>();
+        int slotIndex = rootInventorySlot.GetComponent<InventorySlot>().inventorySlotIndex;
+        GameObject sellShopUIgameObject = inventoryManager.linkedSellSlots[slotIndex].transform.GetChild(0).gameObject;
+        Destroy(sellShopUIgameObject); // ... and also destroys the item in the shop sell UI's main panel
+        hotbar.UpdateHotbar();
+    }
+
+    // Deletes the shop sell UI item and corresponding inventory item. Is triggered when an item is sold in the shop.
+    public void DeleteFromSelling(GameObject inventoryItemObject){
+        Destroy(gameObject); // Destroys the shop sell UI item...
+        Destroy(inventoryItemObject); // ... and also destroys the item in the shop sell UI's main panel
+    }
+
+    // Deletes numSell amount of this inventory item. Is triggered when selling items to Mav.
+    public void Sell(int numSell, GameObject inventoryItemObject){
+        if (numSell == stackSize){
+            DeleteFromSelling(inventoryItemObject);
+        } else {
+            stackSize -= numSell;
+            stackSizeText.text = stackSize.ToString();
+            inventoryItemObject.GetComponent<InventoryItem>().stackSize = stackSize;
+            inventoryItemObject.GetComponent<InventoryItem>().stackSizeText.text = stackSize.ToString();
+        }
+        hotbar.UpdateFruitText();
+        hotbar.Invoke("UpdateHotbar",0); // delays updating hotbar until next frame, after the gameobjects are destroyed
     }
 
     // Use inventory item. Is triggered when inventory item is in a hotbar slot and player presses a hotbar key.

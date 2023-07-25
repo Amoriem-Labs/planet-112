@@ -25,6 +25,7 @@ public class GridScript : MonoBehaviour
     static LevelData levelData; // reference to save
 
     public GameObject square; // a visualization object. Can be deleted along with the prefab later. 
+    public bool visualizeGrid;
 
     // Set the dimension of the grid and spawn in a new grid. Important. Called between level transitions.
     public static void SpawnGrid(Vector2 levelDim, LevelData saveLevelData)
@@ -167,7 +168,7 @@ public class GridScript : MonoBehaviour
         SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
             PersistentData.GetLevelData(LevelManager.currentLevelID));
 
-        VisualizeGrids();
+        if (visualizeGrid){ VisualizeGrids(); }
     }
 
     // Delete below when ready. They are just debugging print statements. 

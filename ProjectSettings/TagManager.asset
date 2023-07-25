@@ -13,6 +13,11 @@ TagManager:
   - Audio
   - infoBar
   - hotbar
+  - inventoryPanel
+  - shopManager
+  - Mav
+  - buyStackText
+  - sellStackText
   layers:
   - Default
   - TransparentFX

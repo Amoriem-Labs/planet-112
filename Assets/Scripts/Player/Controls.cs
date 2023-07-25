@@ -80,6 +80,15 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Temp"",
+                    ""type"": ""Button"",
+                    ""id"": ""d92edcde-b5c8-4e32-b491-34fd45996185"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -335,6 +344,17 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""action"": ""Settings"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ad484125-25b3-4f7e-87d9-15e22e6d8491"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Computer"",
+                    ""action"": ""Temp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -355,6 +375,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         m_Main_Inventory = m_Main.FindAction("Inventory", throwIfNotFound: true);
         m_Main_Hotbar = m_Main.FindAction("Hotbar", throwIfNotFound: true);
         m_Main_Settings = m_Main.FindAction("Settings", throwIfNotFound: true);
+        m_Main_Temp = m_Main.FindAction("Temp", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -420,6 +441,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_Inventory;
     private readonly InputAction m_Main_Hotbar;
     private readonly InputAction m_Main_Settings;
+    private readonly InputAction m_Main_Temp;
     public struct MainActions
     {
         private @Controls m_Wrapper;
@@ -430,6 +452,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         public InputAction @Inventory => m_Wrapper.m_Main_Inventory;
         public InputAction @Hotbar => m_Wrapper.m_Main_Hotbar;
         public InputAction @Settings => m_Wrapper.m_Main_Settings;
+        public InputAction @Temp => m_Wrapper.m_Main_Temp;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -457,6 +480,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Settings.started -= m_Wrapper.m_MainActionsCallbackInterface.OnSettings;
                 @Settings.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnSettings;
                 @Settings.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnSettings;
+                @Temp.started -= m_Wrapper.m_MainActionsCallbackInterface.OnTemp;
+                @Temp.performed -= m_Wrapper.m_MainActionsCallbackInterface.OnTemp;
+                @Temp.canceled -= m_Wrapper.m_MainActionsCallbackInterface.OnTemp;
             }
             m_Wrapper.m_MainActionsCallbackInterface = instance;
             if (instance != null)
@@ -479,6 +505,9 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                 @Settings.started += instance.OnSettings;
                 @Settings.performed += instance.OnSettings;
                 @Settings.canceled += instance.OnSettings;
+                @Temp.started += instance.OnTemp;
+                @Temp.performed += instance.OnTemp;
+                @Temp.canceled += instance.OnTemp;
             }
         }
     }
@@ -500,5 +529,6 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         void OnInventory(InputAction.CallbackContext context);
         void OnHotbar(InputAction.CallbackContext context);
         void OnSettings(InputAction.CallbackContext context);
+        void OnTemp(InputAction.CallbackContext context);
     }
 }

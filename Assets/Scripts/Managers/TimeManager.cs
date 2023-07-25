@@ -10,6 +10,8 @@ public class TimeManager : MonoBehaviour
     public static float gameTimeScale = 1f; // tune this down, game time counts faster. Tune this up, game time counts slower. 
     public CoroutineHandle timerHandle;
 
+    public PersistentData persistentData;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,13 +26,15 @@ public class TimeManager : MonoBehaviour
 
         // affected by time scale, cancels when object is destroyed
         timerHandle = Timing.CallPeriodically(float.PositiveInfinity, timeUnit * gameTimeScale, 
-            delegate { CountTimeUnit(); }, gameObject);
+            delegate { CountTimeUnit(); Autosave(); }, gameObject);
     }
 
     void CountTimeUnit()
     {
-        Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
-        + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        if (gameStateData.timePassedSeconds % 10 == 0){
+            Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
+            + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+        }
 
         gameStateData.timePassedSeconds += timeUnit;
         if(gameStateData.timePassedSeconds >= 60)
@@ -47,6 +51,13 @@ public class TimeManager : MonoBehaviour
                     gameStateData.timePassedHours -= 24;
                 }
             }
+        }
+    }
+
+    void Autosave(){
+        if (gameStateData.timePassedSeconds % 60 == 0){
+            persistentData.CreateNewSave(0);
+            print("autosaving");
         }
     }
 

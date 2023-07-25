@@ -10,7 +10,7 @@ public class Trash : MonoBehaviour, IDropHandler
         if (!TimeManager.IsGamePaused()){
             GameObject dropped = eventData.pointerDrag;
             InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
-            droppedInventoryItem.Delete();
+            droppedInventoryItem.DeleteFromTrashing();
         }
     }
 }

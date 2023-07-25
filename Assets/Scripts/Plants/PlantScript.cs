@@ -8,7 +8,7 @@ using MEC;
 // This is an abstract class: we can't create instances of it, but other (non-abstract) classes can inherit from this. In general, you can have specific variables to child classes (which inherit from this class).
 public abstract class PlantScript : MonoBehaviour
 {
-    // The scriptable oxject that contains fixed (non-dynamic) data about this plant.
+    // The scriptable object that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
 
     // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
@@ -18,7 +18,7 @@ public abstract class PlantScript : MonoBehaviour
     protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
 
     // this is the audio manager
-    private AudioManager audio;
+    private AudioManager audioManager;
 
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/
@@ -99,7 +99,7 @@ public abstract class PlantScript : MonoBehaviour
     public virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     public void InitializePlantData(Vector2 location)
@@ -180,7 +180,7 @@ public abstract class PlantScript : MonoBehaviour
     public void TakeDamage(int damage)
     {
         plantData.currentHealth -= damage;
-        audio.takeDamageSFX.Play();
+        audioManager.takeDamageSFX.Play();
 
         // check if plant dies.
         CheckPlantHealth();
@@ -290,7 +290,7 @@ public abstract class PlantScript : MonoBehaviour
         if (freedUpSpaceFromPrev.Length > 0) GridScript.SetTileStates(plantData.location, TileState.AVAILABLE_STATE, freedUpSpaceFromPrev);
 
         // plays sound for when plant grows
-        audio.growingSFX.Play();
+        audioManager.growingSFX.Play();
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {

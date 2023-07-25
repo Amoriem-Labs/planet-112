@@ -3,10 +3,15 @@
 ## Player Controls
 Player movement is with both WASD and arrow keys.  
 Press E by a plant to pick up the plant.  
+Press E when in front of Mav to open up her shop.  
+Press R to reset the inventory (use only for testing purposes). This keybinding will be disabled in the final product of the game.  
 Press G to spawn a new plant.  
 Press I to open the inventory.  
 Press Esc to open the settings.  
 Press 1 through 9 to use the items in the hotbar.
+
+Currently the game autosaves every 60 seconds.  
+Temporarily disabled visualization of grid. To turn it back on, go to Background in the Hierarchy and check "visualizeGrid" in the Inspector.
 
 ## Documentation
 [Storyline](https://docs.google.com/document/d/1KCsUWCJs6QGOLFqffXXp3BxNZvURIgNCGsbUw-r4euU/edit)  
