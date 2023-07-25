@@ -6,11 +6,6 @@ public class SeedPacket : MonoBehaviour, ICollectible
 {
     public AudioManager audioManager;
 
-    void Awake()
-    {
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-    }
-
     public void Collect(){
         // seed is not meant to be collected off the ground, so this method is just here to avoid compile error from not implementing Collect() from the interface
     }
@@ -19,6 +14,7 @@ public class SeedPacket : MonoBehaviour, ICollectible
     public void Use(){
         //print("planting seed");
         //TODO: implement planting of a specific seed
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         audioManager.plantSFX.Play();
     }
 }
