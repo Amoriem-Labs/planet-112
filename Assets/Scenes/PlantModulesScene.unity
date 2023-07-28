@@ -7918,6 +7918,7 @@ MonoBehaviour:
   plantPrefabsInit:
   - {fileID: 4709815205496673212, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
   - {fileID: 3408262346086830761, guid: b8ef05b7c9f99dc40889e5076f5c51b2, type: 3}
+  - {fileID: 1397232518086836577, guid: 855271d4750172546b1950141b3237e1, type: 3}
 --- !u!114 &798319918
 MonoBehaviour:
   m_ObjectHideFlags: 0

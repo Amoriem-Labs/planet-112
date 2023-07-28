@@ -45,6 +45,8 @@ public class Plant : ScriptableObject
     public float[] aoeAttackRate;
     public float[] aoeDamageAmount;
     public float[] aoeDamageRangeRadius;
+    // For TauntModule:
+    public float[] tauntRangeRadius;
 }
 
 [System.Serializable]

@@ -5,7 +5,8 @@ using UnityEngine;
 public enum PlantName // Actual names of the plants! 
 {
     Bob, //0
-    MrHealer
+    MrHealer,
+    PeachTree
 }
 
 public enum PlantTargetPriority // the priority of beginning targeted by pests.

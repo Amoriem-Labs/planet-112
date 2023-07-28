@@ -10,7 +10,8 @@ public enum PlantModuleEnum // serialized names of each of the modules
     FruitProduction,
     Healing,
     AoeDamage,
-    FruitProductionBoost
+    FruitProductionBoost,
+    Taunt
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -37,6 +38,7 @@ public static class PlantModuleArr
       {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
       {PlantModuleEnum.AoeDamage, (plantScript) => new AoeDamageModule(plantScript)},
       {PlantModuleEnum.FruitProductionBoost, (plantScript) => new FruitProductionBoostModule(plantScript)},
+      {PlantModuleEnum.Taunt, (plantScript) => new TauntModule(plantScript)},
     };
 
     // returns a new instance of the targetted plantModule 
@@ -510,70 +512,86 @@ public static class PlantModuleArr
     public class TauntModuleData : TriggerAndTimerModuleData
     {
         public float tauntRangeRadius;
-        public float tauntDuration;
-        public float tauntCooldown;
         // dont forget to activate TauntModule
     }
-    // public class TauntModule : TriggerAndTimerModule<TauntModuleData>
-    // {
-    //     /*
-    //     Taunt module is for peach tree to attract insect aggros to itself. Insects prioritize attacking the peach tree over other plants ina  specific radius tauntRangeRadius. 
-    //     */
+    public class TauntModule : TriggerAndTimerModule<TauntModuleData>
+    {
+        /*
+        Taunt module is for peach tree to attract insect aggros to itself. Insects prioritize attacking the peach tree over other plants in a specific radius tauntRangeRadius. 
+        */
 
-    //     // public TauntModule(PlantScript plantScript)
-    //     // {
-    //     //     this.plantScript = plantScript;
-    //     //     moduleData = new TauntModuleData
-    //     //     {
-    //     //         tauntRangeRadius = plantScript.plantSO.tauntRangeRadius[plantScript.plantData.currStageOfLife],
-    //     //         tauntDuration = plantScript.plantSO.tauntDuration[plantScript.plantData.currStageOfLife],
-    //     //         tauntCooldown = plantScript.plantSO.tauntCooldown[plantScript.plantData.currStageOfLife],
-    //     //         timerData = new TimerModuleData
-    //     //         {
-    //     //             timePerCycle = plantScript.plantSO.tauntCooldown[plantScript.plantData.currStageOfLife], // attackRate
-    //     //             timeInCurrentCycleSoFar = 0f
-    //     //         },
-    //     //         triggerData = new TriggerModuleData()
-    //     //     };
-    //     //     // Don't forget to grant each module the correct datas to reference
-    //     //     timerModule.moduleData = moduleData.timerData;
-    //     //     triggerModule.moduleData = moduleData.triggerData;
-    //     // }
+        public TauntModule(PlantScript plantScript) : base(plantScript)
+        {
+            moduleData = new TauntModuleData
+            {
+                tauntRangeRadius = plantScript.plantSO.tauntRangeRadius[plantScript.plantData.currStageOfLife],
+                triggerData = new TriggerModuleData(),
+                timerData = new TimerModuleData
+                {
+                    // timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife], // attackRate
+                    timeInCurrentCycleSoFar = 0f
+                },
+            };
+            // Don't forget to grant each module the correct datas to reference
+            timerModule.moduleData = moduleData.timerData;
+            triggerModule.moduleData = moduleData.triggerData;
+        }
 
-    //     // public override void OnModuleAdd()
-    //     // {
-    //     //     base.OnModuleAdd();
-    //     //     triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
-    //     //         Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
-    //     //     triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
-    //     //     triggerModule.colliderScript.gameObject.name = "TauntRange";
-    //     //     triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.tauntRangeRadius;
-    //     //     triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
-    //     //     triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
-    //     //     triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
-    //     // }
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+            triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
+                Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+            triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
+            triggerModule.colliderScript.gameObject.name = "TauntRange";
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.tauntRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
+        }
 
-    //     // List<PestScript> pestsInRange = new List<PestScript>();
-    //     // protected override void OnCycleComplete()
-    //     // {
-    //     //     for (int i = 0; i < pestsInRange.Count; i++)
-    //     //     {
-    //     //         if (pestsInRange[i] == null) // potentially destroyed already
-    //     //         {
-    //     //             pestsInRange.RemoveAt(i);
-    //     //             i--;
-    //     //         }
-    //     //         else // damage the pests. (or launch proj etc etc)
-    //     //         {
-    //     //             Debug.Log("Taunting pest " + pestsInRange[i].name);
-    //     //         }
-    //     //     }
-    //     // }
+        List<PestScript> pestsInRange = new List<PestScript>();
+        protected override void OnCycleComplete()
+        {
+            for (int i = 0; i < pestsInRange.Count; i++)
+            {
+                if (pestsInRange[i] == null) // potentially destroyed already
+                {
+                    pestsInRange.RemoveAt(i);
+                    i--;
+                }
+                else // damage the pests. (or launch proj etc etc)
+                {
+                    Debug.Log("Taunting pest " + pestsInRange[i].name);
+                }
+            }
+        }
 
-    //     // protected virtual void OnTriggerEnter2D(Collider2D collider)
-    //     // {
-    //     //     if (collider.gameObject.CompareTag("pest"))
-    // }
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+                 if (collider.gameObject.CompareTag("pest"))
+            {
+                pestsInRange.Add(collider.gameObject.GetComponent<PestScript>());
+            }
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("pest"))
+            {
+                pestsInRange.Remove(collider.gameObject.GetComponent<PestScript>());
+            }
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.tauntRangeRadius = plantScript.plantSO.tauntRangeRadius[plantScript.plantData.currStageOfLife];
+            // update the collider
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.tauntRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        }
+    }
 
     [System.Serializable]
     public class FruitProductionBoostModuleData : TriggerAndTimerModuleData
