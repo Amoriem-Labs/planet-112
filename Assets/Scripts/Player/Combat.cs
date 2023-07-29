@@ -8,7 +8,7 @@ public class Combat : MonoBehaviour
     public float attackRange = 0.5f;
     public LayerMask pestLayers;
 
-    // Press space to Attack
+    // Attacks if space is pressed
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
