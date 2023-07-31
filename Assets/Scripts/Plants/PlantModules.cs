@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Random=UnityEngine.Random;
 
 public enum PlantModuleEnum // serialized names of each of the modules
 {
     // Test,
     // InstaKillPests,
     FruitProduction,
+    OxygenProduction,
     Healing,
     AoeDamage,
     FruitProductionBoost,
-    Taunt
+    OxygenProductionBoost,
+    Taunt,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -35,9 +38,11 @@ public static class PlantModuleArr
       // {PlantModuleEnum.Test, (plantScript) => new TestModule(plantScript)},
       // {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
       {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
+      {PlantModuleEnum.OxygenProduction, (plantScript) => new OxygenProductionModule(plantScript)},
       {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
       {PlantModuleEnum.AoeDamage, (plantScript) => new AoeDamageModule(plantScript)},
       {PlantModuleEnum.FruitProductionBoost, (plantScript) => new FruitProductionBoostModule(plantScript)},
+      {PlantModuleEnum.OxygenProductionBoost, (plantScript) => new OxygenProductionBoostModule(plantScript)},
       {PlantModuleEnum.Taunt, (plantScript) => new TauntModule(plantScript)},
     };
 
@@ -208,7 +213,8 @@ public static class PlantModuleArr
     [System.Serializable]
     public class FruitProductionModuleData : TimerModuleData
     {
-        public int productionQuantity; 
+        public float fruitProductionRate;
+        public int fruitProductionQuantity; 
         public FruitType fruitType; 
     }
     public class FruitProductionModule : TimerModule<FruitProductionModuleData>
@@ -218,30 +224,71 @@ public static class PlantModuleArr
             // load from default, presumably assume that this happens before retrieving from data.
             moduleData = new FruitProductionModuleData
             {
-                timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife], // productionRate
-                productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife],
+                timePerCycle = plantScript.plantSO.fruitProductionRate[plantScript.plantData.currStageOfLife], // fruitProductionRate
+                timeInCurrentCycleSoFar = 0f,
+                fruitProductionQuantity = plantScript.plantSO.fruitProductionQuantity[plantScript.plantData.currStageOfLife],
                 fruitType = plantScript.plantSO.fruitType,
-                timeInCurrentCycleSoFar = 0f
             };
         }
 
-        public override void Update()
+        public override void OnModuleAdd()
         {
-            base.Update();
-            // ... other update code
+            base.OnModuleAdd();
         }
 
         public override void OnCycleComplete()
         {
-            // TODO: actual fruit production (visual + systemic)
-            Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
+            for (int i = 0; i < moduleData.fruitProductionQuantity; i++){
+                float velocityMag = 3.0f;
+                float xComp = Random.Range(-1,1);
+                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                Vector2 randomVelocity = new Vector2(xComp, yComp);
+                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(moduleData.fruitType), 
+                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+            }
+            Debug.Log("Producing " + moduleData.fruitProductionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
         }
 
         public override void OnPlantStageGrowth()
         {
             // by now, stage should be inc'ed alrdy
-            moduleData.timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
-            moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
+            moduleData.timePerCycle = plantScript.plantSO.fruitProductionRate[plantScript.plantData.currStageOfLife];
+            moduleData.fruitProductionQuantity = plantScript.plantSO.fruitProductionQuantity[plantScript.plantData.currStageOfLife];
+        }
+    }
+
+    [System.Serializable]
+    public class OxygenProductionModuleData : TimerModuleData
+    {
+        public int oxygenProductionQuantity; 
+    }
+    public class OxygenProductionModule : TimerModule<OxygenProductionModuleData>
+    {
+        public OxygenProductionModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new OxygenProductionModuleData
+            {
+                timeInCurrentCycleSoFar = 0f,
+                oxygenProductionQuantity = plantScript.plantSO.oxygenProductionQuantity[plantScript.plantData.currStageOfLife],
+            };
+        }
+
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+        }
+
+        public override void OnCycleComplete()
+        {
+            LevelManager.UpdateOxygenLevel(plantScript.ID, moduleData.oxygenProductionQuantity);
+            Debug.Log("Producing " + moduleData.oxygenProductionQuantity + " oxygen.");
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.oxygenProductionQuantity = plantScript.plantSO.oxygenProductionQuantity[plantScript.plantData.currStageOfLife];
         }
     }
 
@@ -340,6 +387,7 @@ public static class PlantModuleArr
     {
         public float damageAmount;
         public float damageRangeRadius;
+        public int maxPestsTargetable;
     }
     public class AoeDamageModule : TriggerAndTimerModule<AoeDamageModuleData>
     {
@@ -350,6 +398,7 @@ public static class PlantModuleArr
             {
                 damageAmount = plantScript.plantSO.aoeDamageAmount[plantScript.plantData.currStageOfLife],
                 damageRangeRadius = plantScript.plantSO.aoeDamageRangeRadius[plantScript.plantData.currStageOfLife],
+                maxPestsTargetable = plantScript.plantSO.aoeMaxPestsTargetable[plantScript.plantData.currStageOfLife],
                 timerData = new TimerModuleData
                 {
                     timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife], // attackRate
@@ -387,7 +436,10 @@ public static class PlantModuleArr
                 }
                 else // damage the pests. (or launch proj etc etc)
                 {
-                    Debug.Log("Attacking pest " + pestsInRange[i].name);
+                    if (i < moduleData.maxPestsTargetable){
+                        pestsInRange[i].pestData.currentHealth -= moduleData.damageAmount;
+                        Debug.Log("Attacking pest " + pestsInRange[i].name);
+                    }
                 }
             }
         }
@@ -413,6 +465,7 @@ public static class PlantModuleArr
             // by now, stage should be inc'ed alrdy
             moduleData.damageAmount = plantScript.plantSO.aoeDamageAmount[plantScript.plantData.currStageOfLife];
             moduleData.damageRangeRadius = plantScript.plantSO.aoeDamageRangeRadius[plantScript.plantData.currStageOfLife];
+            moduleData.maxPestsTargetable = plantScript.plantSO.aoeMaxPestsTargetable[plantScript.plantData.currStageOfLife];
             moduleData.timerData.timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife];
             // update the collider
             triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.damageRangeRadius;
@@ -528,7 +581,6 @@ public static class PlantModuleArr
                 triggerData = new TriggerModuleData(),
                 timerData = new TimerModuleData
                 {
-                    // timePerCycle = plantScript.plantSO.aoeAttackRate[plantScript.plantData.currStageOfLife], // attackRate
                     timeInCurrentCycleSoFar = 0f
                 },
             };
@@ -562,6 +614,7 @@ public static class PlantModuleArr
                 }
                 else // damage the pests. (or launch proj etc etc)
                 {
+                    pestsInRange[i].switchTargetPlant(plantScript);
                     Debug.Log("Taunting pest " + pestsInRange[i].name);
                 }
             }
@@ -596,53 +649,196 @@ public static class PlantModuleArr
     [System.Serializable]
     public class FruitProductionBoostModuleData : TriggerAndTimerModuleData
     {
-        public float fruitProductionBoost;
-        // public float productionrangeRadius /////////////////////////////
-        // public float fruitProductionBoostDuration;
-        // public float fruitProductionBoostCooldown;
+        public float fruitProductionBoostDecimal;
+        public float fruitProductionBoostRangeRadius;
     }
     public class FruitProductionBoostModule : TriggerAndTimerModule<FruitProductionBoostModuleData>
     {
         // increase a plant's fruit generated per production by % fruitProductionBoost
-        // float fruitProductionBoost;
         public FruitProductionBoostModule(PlantScript plantScript) : base(plantScript)
         {
             // load from default, presumably assume that this happens before retrieving from data.
             moduleData = new FruitProductionBoostModuleData
             {
-                // timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife], // productionRate
-                fruitProductionBoost = 1.5f, // arbitrary value for now
-                // productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife]*fruitProductionBoost,
-                // fruitType = plantScript.plantSO.fruitType,
-                // timeInCurrentCycleSoFar = 0f
+                fruitProductionBoostDecimal = plantScript.plantSO.fruitProductionBoostDecimal[plantScript.plantData.currStageOfLife],
+                fruitProductionBoostRangeRadius = plantScript.plantSO.fruitProductionBoostRangeRadius[plantScript.plantData.currStageOfLife],
+                timerData = new TimerModuleData
+                {
+                    timeInCurrentCycleSoFar = 0f,
+                },
+                triggerData = new TriggerModuleData(),
             };
+            timerModule.moduleData = moduleData.timerData;
+            triggerModule.moduleData = moduleData.triggerData;
         }
 
-        // public override void Update()
-        // {
-        //     base.Update();
-        //     // ... other update code
-        // }
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+            triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
+                Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+            triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
+            triggerModule.colliderScript.gameObject.name = "FruitProductionBoostRange";
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.fruitProductionBoostRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
+        }
 
-        // public override void OnCycleComplete()
-        // {
-        //     // TODO: actual fruit production (visual + systemic)
-        //     Debug.Log("Producing " + moduleData.productionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
-        // }
+        List<PlantScript> plantsInRange = new List<PlantScript>();
+        protected override void OnCycleComplete()
+        {
+            for (int i = 0; i < plantsInRange.Count; i++)
+            {
+                if (plantsInRange[i] == null) // potentially destroyed already
+                {
+                    plantsInRange.RemoveAt(i);
+                    i--;
+                }
+                else // boost fruit production for nearby plants
+                {
+                    if (plantsInRange[i].plantModules.ContainsKey(PlantModuleEnum.FruitProduction)){
+                        FruitProductionModule fruitProductionModule = (FruitProductionModule)plantsInRange[i].plantModules[PlantModuleEnum.FruitProduction];
+                        fruitProductionModule.moduleData.fruitProductionQuantity = (int)Math.Ceiling(plantsInRange[i].plantSO.fruitProductionQuantity[plantsInRange[i].plantData.currStageOfLife] * moduleData.fruitProductionBoostDecimal);
+                        plantsInRange[i].plantModules[PlantModuleEnum.FruitProduction] = fruitProductionModule;
+                    }
+                }
+            }
+        }
 
-        // public override void OnPlantStageGrowth()
-        // {
-        //     // by now, stage should be inc'ed alrdy
-        //     moduleData.timePerCycle = plantScript.plantSO.productionRate[plantScript.plantData.currStageOfLife];
-        //     moduleData.productionQuantity = plantScript.plantSO.productionQuantity[plantScript.plantData.currStageOfLife];
-        // }
-        public virtual void Update() { }
-        public virtual void OnModuleAdd() { }
-        public virtual void OnModuleRemove() { }
-        public virtual void OnPlantStageGrowth() { }
-        public virtual void OnPlantGrowthPause() { }
-        public virtual void OnPlantGrowthResume() { }
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("plant"))
+            {
+                plantsInRange.Add(collider.gameObject.GetComponent<PlantScript>());
+                Debug.Log("Boosting fruit production for plant " + collider.gameObject.GetComponent<PlantScript>().name);
+            }
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("plant"))
+            {
+                // Decrease fruit production boost for plants that are now out of range
+                PlantScript exitingPlantScript = collider.gameObject.GetComponent<PlantScript>();
+                if (exitingPlantScript.plantModules.ContainsKey(PlantModuleEnum.FruitProduction)){
+                    FruitProductionModule fruitProductionModule = (FruitProductionModule)exitingPlantScript.plantModules[PlantModuleEnum.FruitProduction];
+                    fruitProductionModule.moduleData.fruitProductionQuantity = (int)Math.Floor(fruitProductionModule.moduleData.fruitProductionQuantity / moduleData.fruitProductionBoostDecimal);
+                    exitingPlantScript.plantModules[PlantModuleEnum.FruitProduction] = fruitProductionModule;
+                }
+                Debug.Log("Deboosting fruit production for plant " + exitingPlantScript.name);
+                plantsInRange.Remove(exitingPlantScript);
+            }
+        }
+
+        // find a way to increase production quantity of nearby plants until dead
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.fruitProductionBoostDecimal = plantScript.plantSO.fruitProductionBoostDecimal[plantScript.plantData.currStageOfLife];
+            moduleData.fruitProductionBoostRangeRadius = plantScript.plantSO.fruitProductionBoostRangeRadius[plantScript.plantData.currStageOfLife];
+            // update the collider
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.fruitProductionBoostRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        }
     }
 
+    [System.Serializable]
+    public class OxygenProductionBoostModuleData : TriggerAndTimerModuleData
+    {
+        public float oxygenProductionBoostDecimal;
+        public float oxygenProductionBoostRangeRadius;
+    }
+    public class OxygenProductionBoostModule : TriggerAndTimerModule<OxygenProductionBoostModuleData>
+    {
+        // increase a plant's fruit generated per production by % oxygenProductionBoost
+        public OxygenProductionBoostModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new OxygenProductionBoostModuleData
+            {
+                oxygenProductionBoostDecimal = plantScript.plantSO.oxygenProductionBoostDecimal[plantScript.plantData.currStageOfLife],
+                oxygenProductionBoostRangeRadius = plantScript.plantSO.oxygenProductionBoostRangeRadius[plantScript.plantData.currStageOfLife],
+                triggerData = new TriggerModuleData(),
+                timerData = new TimerModuleData
+                {
+                    timeInCurrentCycleSoFar = 0f,
+                },
+            };
+            timerModule.moduleData = moduleData.timerData;
+            triggerModule.moduleData = moduleData.triggerData;
+        }
 
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+            triggerModule.colliderScript = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.circleDetector,
+                Vector2.zero, Quaternion.identity, plantScript.gameObject.transform).GetComponent<TriggerResponse>();
+            triggerModule.colliderScript.gameObject.transform.localPosition = Vector2.zero;
+            triggerModule.colliderScript.gameObject.name = "OxygenProductionBoostRange";
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.oxygenProductionBoostRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+            triggerModule.colliderScript.onTriggerEnter2D = OnTriggerEnter2D;
+            triggerModule.colliderScript.onTriggerExit2D = OnTriggerExit2D;
+        }
+
+        List<PlantScript> plantsInRange = new List<PlantScript>();
+        protected override void OnCycleComplete()
+        {
+            for (int i = 0; i < plantsInRange.Count; i++)
+            {
+                if (plantsInRange[i] == null) // potentially destroyed already
+                {
+                    plantsInRange.RemoveAt(i);
+                    i--;
+                }
+                else // boost oxygen production for nearby plants
+                {
+                    if (plantsInRange[i].plantModules.ContainsKey(PlantModuleEnum.OxygenProduction)){
+                        OxygenProductionModule oxygenProductionModule = (OxygenProductionModule)plantsInRange[i].plantModules[PlantModuleEnum.OxygenProduction];
+                        int newOxygenLevel = (int)Math.Ceiling(plantsInRange[i].plantSO.oxygenProductionQuantity[plantsInRange[i].plantData.currStageOfLife] * moduleData.oxygenProductionBoostDecimal);
+                        oxygenProductionModule.moduleData.oxygenProductionQuantity = newOxygenLevel;
+                        plantsInRange[i].plantModules[PlantModuleEnum.OxygenProduction] = oxygenProductionModule;
+                        Debug.Log("Boosting oxygen production for plant " + plantsInRange[i].name);
+                    }
+                }
+            }
+        }
+
+        // find a way to increase production quantity of nearby plants until dead
+        protected virtual void OnTriggerEnter2D(Collider2D collider)
+        {
+                 if (collider.gameObject.CompareTag("plant"))
+            {
+                plantsInRange.Add(collider.gameObject.GetComponent<PlantScript>());
+            }
+        }
+
+        protected virtual void OnTriggerExit2D(Collider2D collider)
+        {
+            if (collider.gameObject.CompareTag("plant"))
+            {
+                // Decrease oxygen production boost for plants that are now out of range
+                PlantScript exitingPlantScript = collider.gameObject.GetComponent<PlantScript>();
+                if (exitingPlantScript.plantModules.ContainsKey(PlantModuleEnum.OxygenProduction)){
+                    OxygenProductionModule oxygenProductionModule = (OxygenProductionModule)exitingPlantScript.plantModules[PlantModuleEnum.OxygenProduction];
+                    oxygenProductionModule.moduleData.oxygenProductionQuantity = (int)Math.Floor(oxygenProductionModule.moduleData.oxygenProductionQuantity / moduleData.oxygenProductionBoostDecimal);
+                    exitingPlantScript.plantModules[PlantModuleEnum.OxygenProduction] = oxygenProductionModule;
+                }
+                Debug.Log("Deboosting oxygen production for plant " + exitingPlantScript.name);
+                plantsInRange.Remove(exitingPlantScript);
+            }
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.oxygenProductionBoostDecimal = plantScript.plantSO.oxygenProductionBoostDecimal[plantScript.plantData.currStageOfLife];
+            moduleData.oxygenProductionBoostRangeRadius = plantScript.plantSO.oxygenProductionBoostRangeRadius[plantScript.plantData.currStageOfLife];
+            // update the collider
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().radius = moduleData.oxygenProductionBoostRangeRadius;
+            triggerModule.colliderScript.gameObject.GetComponent<CircleCollider2D>().offset = Vector2.zero;
+        }
+    }
 }

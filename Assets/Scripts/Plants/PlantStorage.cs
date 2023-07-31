@@ -6,7 +6,14 @@ public enum PlantName // Actual names of the plants!
 {
     Bob, //0
     MrHealer,
-    PeachTree
+    Blushberry,
+    SnakePlant,
+    Lilypad,
+    PeachTree,
+    PitcherPlant,
+    GoliathSunflower,
+    CryingLavender,
+    GinkgoTree,
 }
 
 public enum PlantTargetPriority // the priority of beginning targeted by pests.
@@ -16,14 +23,6 @@ public enum PlantTargetPriority // the priority of beginning targeted by pests.
     three,
     four,
     five // highest currently
-}
-
-public enum FruitType // bunch of icuras
-{
-    seafoam,
-    sunset,
-    crystalline,
-    amethyst
 }
 
 public enum HealMode

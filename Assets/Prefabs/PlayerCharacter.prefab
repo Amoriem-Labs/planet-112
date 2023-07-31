@@ -115,7 +115,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 4.96, y: 8.72}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -155,18 +155,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.030920804, y: 0.006090075}
+  m_Offset: {x: 0, y: 0.006090075}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.22717276, y: 0.44719476}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.64, y: 0.64}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4.96, y: 8.72}
+    newSize: {x: 4.96, y: 8.72}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5161871, y: 0.90656966}
+  m_Size: {x: 0.35, y: 0.6}
   m_EdgeRadius: 0
 --- !u!114 &4721409493239636386
 MonoBehaviour:
@@ -181,11 +181,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   closePlants: []
-  detectionRange: {fileID: 7792482495207512216}
+  nearbyPlantDetectionRange: {fileID: 0}
+  regularDetectionRange: {fileID: 0}
   speed: 4
   jumpSpeed: 5
   plantObject: {fileID: 5392039749182135098, guid: 1c7817bfe7467435aaff38f65326be98, type: 3}
-  groundedRay: 0.5
+  groundRay: 0
+  diagonalRay: 0
+  inventoryIsLoaded: 0
+  inventoryCanvas: {fileID: 0}
+  hotbarPanel: {fileID: 0}
+  settingsAreLoaded: 0
+  settingsCanvas: {fileID: 0}
 --- !u!114 &6951981859433477780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,7 +236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6201913644617933384, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
       propertyPath: m_Size.y
-      value: 0.9
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 6201913644617933385, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
       propertyPath: m_RootOrder
@@ -281,17 +288,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
---- !u!114 &7792482495207512216 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6201913644617933391, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}
-  m_PrefabInstance: {fileID: 4194515994323106519}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ee76a2a33aec61478efd0c8b048cb82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7792482495207512222 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6201913644617933385, guid: b1834e0cd3e67984b820e32803d7c4f8, type: 3}

@@ -30,7 +30,7 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  defaultModules: 0100000002000000
+  defaultModules: 0000000001000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array: []
@@ -61,14 +61,10 @@ MonoBehaviour:
   - {x: 0, y: 0.2}
   - {x: 0, y: 0.35}
   - {x: 0, y: 0.45}
-  oxygenProductionLevels: 000000000a000000140000001e000000
-  productionRate:
-  - 1
-  - 2
-  - 5
-  - 10
-  productionQuantity: 05000000020000000300000004000000
-  fruitType: 2
+  fruitProductionRate: []
+  fruitProductionQuantity: 
+  fruitType: 3
+  oxygenProductionQuantity: 00000000000000000000000000000000
   healRate:
   - 1
   - 2
@@ -100,3 +96,10 @@ MonoBehaviour:
   - 3
   - 4
   - 5
+  aoeMaxPestsTargetable: 
+  tauntRangeRadius: []
+  fruitProductionBoostDecimal: []
+  fruitProductionBoostRangeRadius: []
+  oxygenProductionBoostDecimal: []
+  oxygenProductionBoostRangeRadius: []
+  unlockPlantability: 0
