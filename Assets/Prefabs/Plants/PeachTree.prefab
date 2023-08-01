@@ -99,7 +99,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSO: {fileID: 11400000, guid: bad162045b55efc4baadace164f608f1, type: 2}
+  ID: 0
   plantData:
     location: {x: 0, y: 0}
     currStageOfLife: 0

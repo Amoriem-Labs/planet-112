@@ -12,6 +12,17 @@ public enum TileState
     WATER_STATE,
 }
 
+public class GridSquare
+{
+    public Vector2 gridPos; // position of grid square in grid coordinates
+    public List<PlantScript> plantsOnTop; // a list of plants planted at this grid square
+
+    public GridSquare(Vector2 gridPos){
+        this.gridPos = gridPos;
+        plantsOnTop = new List<PlantScript>();
+    }
+}
+
 // an encapsulated class with static methods to access and manipulate the CURRENT LEVEL's gridmap only. 
 public class GridScript : MonoBehaviour 
 {
@@ -26,6 +37,7 @@ public class GridScript : MonoBehaviour
     static LevelData levelData; // reference to save
 
     public GameObject square; // a visualization object. Can be deleted along with the prefab later. 
+    public static GridSquare[,] mapSquare; // a 2D array representing all the squares on the screen
     private static GameObject squareStatic; // a static version of square prefab, to be used for static methods in GridScript.
     public bool visualizeGrid;
 
@@ -45,11 +57,13 @@ public class GridScript : MonoBehaviour
         }
 
         mapGrid = new TileState[rows, columns]; // reset the map. All default to available state.
+        mapSquare = new GridSquare[rows, columns]; // initialize map square array;
         for (int row = 0; row < rows; row++) // transform the map into enum state
         {
             for (int col = 0; col < columns; col++)
             {
                 mapGrid[row, col] = (TileState)levelData.mapGrid[GridConfigs.TwoDIndexToOneD(row, col, columns)];
+                mapSquare[row, col] = new GridSquare(new Vector2(row, col));
             }
         }
     }
@@ -76,6 +90,13 @@ public class GridScript : MonoBehaviour
     // Ensures that the entire space is cleared.
     public static bool CheckCenterTileAvailability(Vector2 centerGridPos, GameObject prefab)
     {
+        if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.AVAILABLE_STATE){
+            if (prefab.TryGetComponent<PlantScript>(out PlantScript plantScript)){
+                if (plantScript.plantSO.unlockPlantability){
+                    return false;
+                }
+            }
+        }
         if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.OCCUPIED_STATE)
         {
             Debug.Log("Grid " + centerGridPos.ToString() + " is occupied!");
@@ -98,6 +119,13 @@ public class GridScript : MonoBehaviour
         foreach (Vector2 gridPos in additionRelativeGrids)
         {
             Vector2 tile = centerGridPos + gridPos;
+            if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.AVAILABLE_STATE){
+                if (gameObject.TryGetComponent<PlantScript>(out PlantScript plantScript)){
+                    if (plantScript.plantSO.unlockPlantability){
+                        return false;
+                    }
+                }
+            }
             if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.OCCUPIED_STATE)
             {
                 Debug.Log("Relative grid " + gridPos.ToString() + " is occupied!");
@@ -120,12 +148,13 @@ public class GridScript : MonoBehaviour
     // encapsulates here, returns the instantiated object to the user.
     public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
     {
+        print(mapGrid[(int)centerGridPos.y, (int)centerGridPos.x]);
         // Check if the grid tiles satisfy the current spacing availabilities. 
         if(!CheckCenterTileAvailability(centerGridPos, prefab) || !CheckOtherTilesAvailability(centerGridPos, prefab, additionRelativeGrids)) return null; // need to make sure enough space.
 
         // Have space! Time to add it in. 
         if(prefab.TryGetComponent<PlantScript>(out PlantScript plantScript)){
-            if (plantScript.plantSO.unlockPlantability){
+            if (plantScript.plantSO.unlockPlantability && GetTileState(centerGridPos) == TileState.WATER_STATE){
                 SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
             } else {
                 SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
@@ -133,6 +162,7 @@ public class GridScript : MonoBehaviour
             }
         }
         
+        mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Add(prefab.GetComponent<PlantScript>());
         return Instantiate(prefab, GridToCoordinates(centerGridPos), prefab.transform.rotation);
     }
 
@@ -142,16 +172,16 @@ public class GridScript : MonoBehaviour
         if (!CheckCenterTileAvailability(centerGridPos, gameObject) || !CheckOtherTilesAvailability(centerGridPos, gameObject, additionRelativeGrids)) return false; // need to make sure enough space.
         // Have space! Time to add it in. 
         if(gameObject.TryGetComponent<PlantScript>(out PlantScript plantScript)){
-            if (plantScript.plantSO.unlockPlantability){
-                SetTileStates(centerGridPos, TileState.WATER_STATE, additionRelativeGrids);
+            if (plantScript.plantSO.unlockPlantability && GetTileState(centerGridPos) == TileState.WATER_STATE){
+                SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
             } else {
                 SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
-                Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
+                Debug.Log("New plant placed at grid " + centerGridPos.ToString());
             }
             Debug.Log("Plant placed at grid " + centerGridPos.ToString());
         }
         gameObject.transform.position = GridToCoordinates(centerGridPos);
-
+        mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Add(gameObject.GetComponent<PlantScript>());
         return true;
     }
 
@@ -169,19 +199,12 @@ public class GridScript : MonoBehaviour
         }
     }
 
-    public static void FlipGridState(Vector2 gridPos){
-        if (GetTileState(gridPos) == TileState.WATER_STATE){
-            SetTileStates(gridPos, TileState.AVAILABLE_STATE);
-        }
-        if (GetTileState(gridPos) == TileState.AVAILABLE_STATE){
-            SetTileStates(gridPos, TileState.WATER_STATE);
-        }
-    }
-
     // Marks that grid location as available. Also, other object's responsibility to destroy itself.
-    public static void RemoveObjectFromGrid(Vector2 centerGridPos, Vector2[] additionRelativeGrids = null)
+    public static void RemoveObjectFromGrid(Vector2 centerGridPos, PlantScript plantScript, Vector2[] additionRelativeGrids = null)
     {
-        SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
+        if (GetTileState(centerGridPos) == TileState.OCCUPIED_STATE) SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
+        if (GetTileState(centerGridPos) == TileState.AVAILABLE_STATE) SetTileStates(centerGridPos, TileState.WATER_STATE, additionRelativeGrids);
+        mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Remove(plantScript);
     }
 
     private static bool CheckOutOfBounds(Vector2 tile) // (col, row)
@@ -199,7 +222,6 @@ public class GridScript : MonoBehaviour
             {
                 Vector3 worldLoc = GridToCoordinates(new Vector2(col, row)); // col is x, row is y
                 var sprObj = Instantiate(square, worldLoc, Quaternion.identity);
-                sprObj.GetComponent<GridSquare>().gridPos = new Vector2(col, row);
                 sprObj.transform.localScale = new Vector3(0.1f, 0.1f, 1);
                 // Blue is available, red is occupied, green is water. 
                 if (mapGrid[row, col] == TileState.AVAILABLE_STATE) sprObj.GetComponent<SpriteRenderer>().color = Color.blue;

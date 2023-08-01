@@ -15,17 +15,17 @@ MonoBehaviour:
   pName: 4
   maxStage: 0
   maxAttackers: 3
-  pestAttackPriority: 3
+  pestAttackPriority: 1
   spriteArray:
   - {fileID: 21300000, guid: 1a291d973633e034bafcfdecad467429, type: 3}
   stageTimeMax:
   - 1
   maxHealth:
-  - 50
+  - 500
   defaultModules: 
   relativeGridsOccupied:
   - vec2Array:
-    - {x: 0, y: 1}
+    - {x: 0, y: 0}
   targetRectParameters:
   - vec2Array:
     - {x: 0, y: 0.2}

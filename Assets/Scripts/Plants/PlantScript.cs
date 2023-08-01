@@ -201,9 +201,6 @@ public abstract class PlantScript : MonoBehaviour
             Debug.Log("PLANT KILLED GG");
             GameManager.KillPlant(this);
             LevelManager.UpdateOxygenLevel(ID, 0);
-            if (plantSO.unlockPlantability){
-                FlipTile();
-            }
         }
     }
 
@@ -318,7 +315,7 @@ public abstract class PlantScript : MonoBehaviour
         // pause modules accordingly
         foreach (var module in plantModules.Values) module.OnPlantGrowthPause();
         // Free up the space
-        GridScript.RemoveObjectFromGrid(plantData.location,
+        GridScript.RemoveObjectFromGrid(plantData.location, this,
             plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
         // Pause the growth
         StopPlantGrowth(); // aware of potential bug? like coroutine generated after pausing? do we need a bool + if in coroutine?
@@ -332,6 +329,7 @@ public abstract class PlantScript : MonoBehaviour
         transform.localPosition = Vector3.zero;
 
         Debug.Log("Plant has been lifted, and growth paused at " + plantData.stageTimeLeft + " seconds");
+        Debug.Log(GridScript.GetTileState(GridScript.CoordinatesToGrid(transform.position)));
     }
 
     public bool PlacePlant(Vector2 location)
@@ -376,14 +374,21 @@ public abstract class PlantScript : MonoBehaviour
         Debug.DrawLine(offsetBottomCenter, transform.position, Color.red, 0.5f, false);
     }
 
-    public void FlipTile(){
-        Vector2 gridPos = GridScript.CoordinatesToGrid(transform.position);
-        GridScript.FlipGridState(gridPos);
-    }
-
     public void Update()
     {
         // Modules shouldn't work when the plants is picked up? unless...
         if (pickedUp == false) UpdateAllModules();
+
+        // If this plant is lilypad and there is another plant on top of lilypad and if pest aggro is on lilypad, switches the pest aggro to the plant on top of lilypad.
+        Vector2 gridCoordinates = GridScript.CoordinatesToGrid(transform.position);
+        List<PlantScript> plantsInGridSquare = GridScript.mapSquare[(int)gridCoordinates.y, (int)gridCoordinates.x].plantsOnTop;
+        if (plantsInGridSquare.Count > 1){
+        //if (unlockPlantability && GetTileState(transform.position) == TileState.OCCUPIED_STATE){
+            foreach (PestScript pestScript in pestScripts){
+                foreach (PlantScript plantScript in plantsInGridSquare){
+                    if (plantScript != this && pestScript.targetPlantScript != plantScript) pestScript.switchTargetPlant(plantScript);
+                }
+            }
+        }
     }
 }

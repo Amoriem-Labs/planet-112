@@ -74,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -2
   m_Sprite: {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   m_Color: {r: 1, g: 0, b: 0.14030313, a: 1}
   m_FlipX: 0
@@ -125,11 +125,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantSO: {fileID: 11400000, guid: 1397288e41ab23d449a99804a3fa7c1b, type: 2}
+  ID: 0
   plantData:
     location: {x: 0, y: 0}
     currStageOfLife: 0
     plantName: 0
     stageTimeLeft: 0
-    fruitProduceTimeLeft: 0
     currentHealth: 0
-    plantModules: 
+  attackers: 0
+  pestScripts: []
+  inMotion: 0
+  pickedUp: 0

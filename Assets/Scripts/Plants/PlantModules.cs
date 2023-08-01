@@ -282,7 +282,6 @@ public static class PlantModuleArr
         public override void OnCycleComplete()
         {
             LevelManager.UpdateOxygenLevel(plantScript.ID, moduleData.oxygenProductionQuantity);
-            Debug.Log("Producing " + moduleData.oxygenProductionQuantity + " oxygen.");
         }
 
         public override void OnPlantStageGrowth()
