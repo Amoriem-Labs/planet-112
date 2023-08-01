@@ -148,6 +148,12 @@ public class PlayerScript : MonoBehaviour
                 closestPlantDist = currentPlantDist;
                 closestPlant = plant;
             }
+            // Below if statement makes sure that when there is both lilypad and 
+            //      another plant planted on top of the lilypad, the player ALWAYS picks up the plant on top of the lilypad first
+            if (currentPlantDist == closestPlantDist && !plant.plantSO.unlockPlantability){
+                closestPlantDist = currentPlantDist;
+                closestPlant = plant;
+            }
         }
         return closestPlant; // null if empty, or closest plant is outside
     }

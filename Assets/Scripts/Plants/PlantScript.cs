@@ -200,6 +200,15 @@ public abstract class PlantScript : MonoBehaviour
             // sadly, plant dies.
             Debug.Log("PLANT KILLED GG");
             GameManager.KillPlant(this);
+
+            // If this plant is a lilypad and there's other plants on the same square, also kill the other plants
+            List<PlantScript> plantsOnTopThisSquare = GridScript.GetGridSquare(transform.position).plantsOnTop;
+            if (plantSO.unlockPlantability && plantsOnTopThisSquare.Count > 1){
+                foreach (PlantScript plantScript in plantsOnTopThisSquare){
+                    if (plantScript != this) GameManager.KillPlant(plantScript);
+                }
+            }
+
             LevelManager.UpdateOxygenLevel(ID, 0);
         }
     }
@@ -385,8 +394,10 @@ public abstract class PlantScript : MonoBehaviour
         if (plantsInGridSquare.Count > 1){
         //if (unlockPlantability && GetTileState(transform.position) == TileState.OCCUPIED_STATE){
             foreach (PestScript pestScript in pestScripts){
-                foreach (PlantScript plantScript in plantsInGridSquare){
-                    if (plantScript != this && pestScript.targetPlantScript != plantScript) pestScript.switchTargetPlant(plantScript);
+                if (pestScript != null){ // pest script could've been modified mid-for loop. So check if not null in case the pest script was removed from pestScripts list mid-for loop from PestScript.switchTargetPlant() being called.
+                    foreach (PlantScript plantScript in plantsInGridSquare){
+                        if (plantScript != this && pestScript.targetPlantScript != plantScript) pestScript.switchTargetPlant(plantScript);
+                    }
                 }
             }
         }

@@ -126,11 +126,13 @@ public class PestScript : MonoBehaviour
     }
 
     public void switchTargetPlant(PlantScript plantScript){
+        targetPlantScript.pestScripts.Remove(this);
         targetPlantScript = plantScript;
+        StartAttack();
         // Idk exactly how the below code works so may need to comment it out later - Victor.
-        queryCount++; // curr query finished, move onto next one in queue
+        //queryCount++; // curr query finished, move onto next one in queue
         // if queue not empty, then next. This ensures no pather overlap.
-        if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue());
+        //if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue());
     }
 
     Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();

@@ -87,6 +87,13 @@ public class GridScript : MonoBehaviour
         return mapGrid[(int)gridPos.y, (int)gridPos.x];
     }
 
+    // return the state of current gridPos
+    public static GridSquare GetGridSquare(Vector2 gridPos)
+    {
+        // maybe switch x and y? YES
+        return mapSquare[(int)gridPos.y, (int)gridPos.x];
+    }
+
     // Ensures that the entire space is cleared.
     public static bool CheckCenterTileAvailability(Vector2 centerGridPos, GameObject prefab)
     {
@@ -202,8 +209,12 @@ public class GridScript : MonoBehaviour
     // Marks that grid location as available. Also, other object's responsibility to destroy itself.
     public static void RemoveObjectFromGrid(Vector2 centerGridPos, PlantScript plantScript, Vector2[] additionRelativeGrids = null)
     {
-        if (GetTileState(centerGridPos) == TileState.OCCUPIED_STATE) SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
-        if (GetTileState(centerGridPos) == TileState.AVAILABLE_STATE) SetTileStates(centerGridPos, TileState.WATER_STATE, additionRelativeGrids);
+        if (GetTileState(centerGridPos) == TileState.OCCUPIED_STATE){
+            SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
+        }
+        else if (GetTileState(centerGridPos) == TileState.AVAILABLE_STATE){
+            SetTileStates(centerGridPos, TileState.WATER_STATE, additionRelativeGrids);
+        }
         mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Remove(plantScript);
     }
 
