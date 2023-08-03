@@ -7,14 +7,17 @@ TagManager:
   - Ground
   - pest
   - plant
+  - Obstacle
   - background
   - collectible
-  - inventoryPanel
   - Audio
   - infoBar
-  - infoImage
   - hotbar
-  - GameManager
+  - inventoryPanel
+  - shopManager
+  - Mav
+  - buyStackText
+  - sellStackText
   layers:
   - Default
   - TransparentFX

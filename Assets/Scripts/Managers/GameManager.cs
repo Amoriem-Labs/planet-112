@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private void Awake()
+    public PersistentData persistentData;
+    public Settings settings;
+
+    private void Start()
     {
-        PersistentData.CreateNewSave(0); // Now it should work ;D
-        PersistentData.LoadSave(0);
+        // need to replace when we have a title screen
+        // persistentData.CreateNewSave(0); // Should only run CreateNewSave(0) when creating a new game file for the first time... otherwise just load in the autosaved file
+        persistentData.LoadSave(0);
+        settings.LoadSaveFileUIs(); // This loads in the text UI for the save files in the savePanel of the Settings menu
     }
 
     #region PlantFunctions
@@ -21,6 +26,8 @@ public class GameManager : MonoBehaviour
 
         if (plantObj != null)
         {
+            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+            audioManager.plantSFX.Play();
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.InitializePlantData(location);
 
@@ -41,6 +48,9 @@ public class GameManager : MonoBehaviour
 
         if (plantObj != null)
         {
+            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+            audioManager.plantSFX.Play();
+
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.plantData = plantData;
 

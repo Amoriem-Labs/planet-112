@@ -8,6 +8,7 @@ using UnityEngine;
 public class SaveData
 {
     public List<LevelData> levelDatas; // a list of all the unlocked levels in a run
+    public int currLevelIndex; // index of which level the player last saved 
     public PlayerData playerData; // explained in definition
     public GameStateData gameStateData; // explained in definition
     public EventsData eventsData; //explained in definition
@@ -19,10 +20,13 @@ public class SaveData
 public class LevelData
 {
     public int levelID; // id of the level. Each level (individual scene) has a unique id, labeled on the game map.
+    public string biome; // biome that level is in. 
     public List<PlantData> plantDatas; // a list of all the existing, planted plants in a level. 
     // TODO: should this be an "agentsData" list containing pests, neutrals, NPCs, etc (non-player agents)
     public List<PestData> pestDatas; // similar. could be null (since using probaility model) or existing (aka saved during battle).
     public int oxygenLevel; // total oxygen level of the level, updated every time a plant spawns / dies.
+    public int firstTargetOxygenLevel; // first target oxygen level of the level, once player reaches this oxygen level, they can move onto the next level
+    public int secondTargetOxygenLevel; // second target oxygen level of the level, once player reaches this oxygen level, they get a 2% attack damage boost
     public int[] mapGrid; // the current distribution of this level's map's grids. Use 1D array math thingy to represent 2D array.
     public PlantData plantInHand; // if any, the plant the player picked up. Can move it to personal data for cross level or make it into a list. 
 }
@@ -62,15 +66,21 @@ public class PestData
 [Serializable]
 public class PlayerData
 {
+    public Vector2 location; // x_index, y_index of the player in the map 2D array
     public List<InventoryItemData> inventoryItemDatas; // a list of all the items that the player has in the inventory
+    public int nSeafoam; // number of seafoam icura player has in inventory
+    public int nSunset; // number of sunset icura player has in inventory
+    public int nAmethyst; // number of amethyst icura player has in inventory
+    public int nCrystalline; // number of crystalline icura player has in inventory
 }
 
 // Contains the dynamic data of any item that can exist in an inventory. 
 [Serializable]
 public class InventoryItemData
 {
-    public int itemType; // the type of the item, used to get the inherited, specific item at run time.
+    public string itemName; // name of the item
     public int count; // the amount of this item that the player has
+    // public int inventorySlotIndex; // the location of this item in the inventory, may actually not need this variable since the list already has index in it
 }
 #endregion
 
@@ -88,10 +98,13 @@ public class GameStateData
 }
 
 // Contains the settings data that the player configurated
+[Serializable]
 public class SettingsData
 {
+    public bool fullScreen; // bool for whether the game is fullscreen or not
     public float volumeBGM; // slider volume of the background music
-    public bool mutedBGM; // is the background music muted?
+    public float volumeSFX; // slider volume of the SFX
+    public int uiScaleIndex; // dropdown scale for size of UI
 }
 #endregion
 

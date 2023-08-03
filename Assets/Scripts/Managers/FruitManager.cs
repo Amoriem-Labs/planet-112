@@ -9,17 +9,24 @@ public class FruitManager : MonoBehaviour
     public int nAmethyst = 0;
     public int nCrystalline = 0;
 
+    public void Reset(){
+        nSeafoam = 0;
+        nSunset = 0;
+        nAmethyst = 0;
+        nCrystalline = 0;
+    }
+
     public void AddToFruitStack(string fruitType){
-        if (fruitType.Equals("seafoam")){
+        if (fruitType.Equals("Seafoam")){
             nSeafoam += 1;
         }
-        if (fruitType.Equals("sunset")){
+        if (fruitType.Equals("Sunset")){
             nSunset += 1;
         }
-        if (fruitType.Equals("amethyst")){
+        if (fruitType.Equals("Amethyst")){
             nAmethyst += 1;
         }
-        if (fruitType.Equals("crystalline")){
+        if (fruitType.Equals("Crystalline")){
             nCrystalline += 1;
         }
     }

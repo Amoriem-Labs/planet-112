@@ -9,7 +9,8 @@ public class PlayerScript : MonoBehaviour
 {
     public List<PlantScript> closePlants = new List<PlantScript>();
 
-    public TriggerResponse detectionRange;
+    public TriggerResponse nearbyPlantDetectionRange;
+    public TriggerResponse regularDetectionRange;
     [SerializeField] float speed = 5f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] GameObject plantObject;
@@ -19,7 +20,8 @@ public class PlayerScript : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
-    [SerializeField] float groundedRay;
+    [SerializeField] float groundRay; // serialized to 0.5f
+    [SerializeField] float diagonalRay; // serialized to 0.56f
 
     GameObject background;
 
@@ -30,7 +32,9 @@ public class PlayerScript : MonoBehaviour
     public bool settingsAreLoaded;
     public GameObject settingsCanvas;
 
-    public AudioManager audio;
+    public bool canOpenShop;
+    public bool shopIsLoaded;
+    public GameObject shopCanvas;
 
     private void Awake()
     {
@@ -39,6 +43,8 @@ public class PlayerScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         inventoryIsLoaded = false;
         settingsAreLoaded = false;
+        canOpenShop = false;
+        shopIsLoaded = false;
 
         // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
         //    or not when Game is played.
@@ -46,14 +52,16 @@ public class PlayerScript : MonoBehaviour
         inventoryCanvas.SetActive(false);
         settingsCanvas.SetActive(true);
         settingsCanvas.SetActive(false);
-
-        audio = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        shopCanvas.SetActive(true);
+        shopCanvas.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
         {
             Debug.LogError("RigidBody2D is null!");
         }
+
+        // Debug.Log(null || null);
 
         // Pre-existing or prefab instantiation is faster than run time script generation
         /*GameObject childObject = new GameObject();
@@ -64,8 +72,10 @@ public class PlayerScript : MonoBehaviour
         colliderScript.gameObject.name = "DetectionRange";
         colliderScript.SetCollider(typeof(BoxCollider2D), new Vector2(0, 0), new Vector2(2, 0.9f), 0,
             OnDetectorTriggerEnter2D, OnDetectorTriggerExit2D);*/
-        detectionRange.onTriggerEnter2D = OnDetectorTriggerEnter2D;
-        detectionRange.onTriggerExit2D = OnDetectorTriggerExit2D;
+        nearbyPlantDetectionRange.onTriggerEnter2D = OnPlantDetectorTriggerEnter2D;
+        nearbyPlantDetectionRange.onTriggerExit2D = OnPlantDetectorTriggerExit2D;
+        regularDetectionRange.onTriggerEnter2D = OnRegularTriggerEnter2D;
+        regularDetectionRange.onTriggerExit2D = OnRegularTriggerExit2D;
     }
 
     private void OnEnable()
@@ -76,6 +86,7 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Inventory.started += OnInventory;
         controls.Main.Settings.started += OnSettings;
         controls.Main.Hotbar.started += OnHotbarPress;
+        controls.Main.Temp.started += OnResetInventory; // temporary keybinding. Just for debugging purposes.
     }
 
     private void OnDisable()
@@ -86,38 +97,43 @@ public class PlayerScript : MonoBehaviour
         controls.Main.Inventory.started -= OnInventory;
         controls.Main.Settings.started -= OnSettings;
         controls.Main.Hotbar.started -= OnHotbarPress;
+        controls.Main.Temp.started -= OnResetInventory;
     }
 
     private void FixedUpdate()
     {
+        Vector2 velocity = rb.velocity;
         // Get character movement
         // If statement ensures that player cannot move while inventory screen is on
-        if (!inventoryIsLoaded){
+        if (!inventoryIsLoaded && !shopIsLoaded){
             Vector2 moveInput = controls.Main.Movement.ReadValue<Vector2>();
-            Vector2 velocity = rb.velocity;
 
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
+                
+            velocity.x = moveInput.x * speed;
 
-            if (moveInput.x != 0){
-                velocity.x = moveInput.x * speed;
-            }
-
-            if (moveInput.y > 0 && IsGrounded())
+            // First condition only triggers jump if player is pressing Up or W on keyboard, second condition and third condition prevents you from double jumping
+            if (moveInput.y > 0 && isGrounded() && velocity.y == 0)
             {
                 velocity.y = moveInput.y * jumpSpeed;
-            }
-
-            rb.velocity = velocity;
+            } 
+        } else {
+            velocity.x = 0;
         }
+        rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
     }
 
-    private bool IsGrounded()
-    {
-        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundedRay, 8);
+    private bool isGrounded(){
+        LayerMask obstacleLayerMask = LayerMask.GetMask("Obstacle");
+        RaycastHit2D obstacleDownCheck = Physics2D.Raycast(transform.position, Vector2.down, groundRay, obstacleLayerMask);
+        RaycastHit2D obstacleDiagonalDownLeftCheck = Physics2D.Raycast(transform.position, new Vector2(-1,-1), diagonalRay, obstacleLayerMask);
+        RaycastHit2D obstacleDiagonalDownRightCheck = Physics2D.Raycast(transform.position, new Vector2(1,-1), diagonalRay, obstacleLayerMask);
+        LayerMask groundLayerMask = LayerMask.GetMask("Ground");
+        RaycastHit2D groundCheck = Physics2D.Raycast(transform.position, Vector2.down, groundRay, groundLayerMask);
         //8 is binary -- to look at just layer 3, we need binary 1000 
 
-        return groundCheck.collider != null && groundCheck.collider.gameObject.CompareTag("Ground");
+        return obstacleDownCheck.collider != null || obstacleDiagonalDownLeftCheck.collider != null || obstacleDiagonalDownRightCheck.collider != null || groundCheck.collider != null;
     }
 
     public PlantScript findClosestPlant()
@@ -139,37 +155,53 @@ public class PlayerScript : MonoBehaviour
     PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
-        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
-            //closestPlant.TakeDamage(50);
-            //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
-            if (plantInHand) // has a plant in hand
-            {
-                if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+        if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
+            if (!shopIsLoaded){
+                //closestPlant.TakeDamage(50);
+                //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
+                if (plantInHand) // has a plant in hand
                 {
-                    plantInHand = null;
+                    if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+                    {
+                        plantInHand = null;
+                    }
+                    else
+                    {
+                        Debug.Log("Can't place it here; not enough space.");
+                    }
                 }
-                else
+                else // no plant in hand
                 {
-                    Debug.Log("Can't place it here; not enough space.");
+                    PlantScript closestPlant = findClosestPlant();
+                    if (closestPlant) // Could be null, gotta check
+                    {
+                        closestPlant.LiftPlant(transform);
+                        plantInHand = closestPlant;
+                    }
                 }
             }
-            else // no plant in hand
-            {
-                PlantScript closestPlant = findClosestPlant();
-                if (closestPlant) // Could be null, gotta check
-                {
-                    closestPlant.LiftPlant(transform);
-                    plantInHand = closestPlant;
-                }
+            // If in front of Mav
+            if (canOpenShop && !shopIsLoaded){
+                shopCanvas.SetActive(true);
+                shopCanvas.GetComponent<ShopManager>().OpenShopSelectUI();
+                shopIsLoaded = true;
+            } else {
+                shopCanvas.SetActive(false);
+                shopIsLoaded = false;
             }
         }
     }
 
+    public void closeShopUI(){
+        shopCanvas.SetActive(false);
+        shopIsLoaded = false;
+    }
+
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
+        if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
-            audio.plantSFX.Play();
+            
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
         }
     }
@@ -177,7 +209,7 @@ public class PlayerScript : MonoBehaviour
     // Opens/closes inventory when player presses I
     public void OnInventory(InputAction.CallbackContext context)
     {
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && !shopIsLoaded){
             if (!inventoryIsLoaded){
                 inventoryCanvas.SetActive(true);
                 inventoryIsLoaded = true;
@@ -191,7 +223,7 @@ public class PlayerScript : MonoBehaviour
 
     // This functions exists for the exit button in inventory UI
     public void CloseInventory(){
-        if (!TimeManager.IsGamePaused()){
+        if (!TimeManager.IsGamePaused() && !shopIsLoaded){
             inventoryCanvas.SetActive(false);
             inventoryIsLoaded = false;
         }
@@ -212,7 +244,7 @@ public class PlayerScript : MonoBehaviour
 
     // Calls the Use() method for the item in hotbar slot whose key was pressed.
     public void OnHotbarPress(InputAction.CallbackContext context){
-        if (!inventoryIsLoaded || !TimeManager.IsGamePaused()){
+        if (!inventoryIsLoaded && !TimeManager.IsGamePaused() && !shopIsLoaded){
             string[] hotbarKeys = new string[]{"1","2","3","4","5","6","7","8","9"};
             string pressedKey = context.control.displayName;
             int index = Array.IndexOf(hotbarKeys, pressedKey);
@@ -227,8 +259,14 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // Player interaction.
-    private void OnDetectorTriggerEnter2D(Collider2D collision)
+    // Resets inventory. Is triggered by pressing R. Temporary keybinding. Will remove this feature in final game.
+    public void OnResetInventory(InputAction.CallbackContext context){
+        inventoryCanvas.GetComponentInChildren<InventoryManager>().ResetInventory();
+    }
+
+    #region Collider methods.
+    // The below two methods are for detecting nearby plants and use the PlantDetectionRange child object's BoxCollider2D.
+    private void OnPlantDetectorTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "plant")
         {
@@ -236,7 +274,7 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnDetectorTriggerExit2D(Collider2D collision)
+    private void OnPlantDetectorTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "plant")
         {
@@ -244,7 +282,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision){
+    // The below two methods are for regular collisions and use the RegularDetectionRange child object's BoxCollider2D.
+    // In a "regular" collision, the player's BoxCollider2D is set to be the same size as the player sprite instead of being larger or smaller than the player sprite.
+    private void OnRegularTriggerEnter2D(Collider2D collision){
         // If player collides with collectible, the collect method is called for that collectible.
         if (collision.gameObject.tag == "collectible"){
             ICollectible collectible = collision.GetComponent<ICollectible>();
@@ -252,5 +292,17 @@ public class PlayerScript : MonoBehaviour
                 collectible.Collect();
             }
         }
+        if (collision.gameObject.tag == "Mav"){
+            canOpenShop = true;
+            print("can open shop now! Press E.");
+        }
     }
+
+    private void OnRegularTriggerExit2D(Collider2D collision){
+        if (collision.gameObject.tag == "Mav"){
+            canOpenShop = false;
+            print("cannot open shop anymore.");
+        }
+    }
+    #endregion
 }
