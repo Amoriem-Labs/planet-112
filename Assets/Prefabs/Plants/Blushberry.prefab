@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5905190623981141661}
   - component: {fileID: 4935054991245510836}
   - component: {fileID: 707766874340070093}
+  - component: {fileID: 234757807990113029}
   m_Layer: 10
   m_Name: Blushberry
   m_TagString: plant
@@ -128,7 +129,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.88, y: 0.96}
+    oldSize: {x: 0.22, y: 0.24}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -182,3 +183,23 @@ MonoBehaviour:
   pestScripts: []
   inMotion: 0
   pickedUp: 0
+--- !u!95 &234757807990113029
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 169657205195364939}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 586eb9da920c9c142b8c7675998550c4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

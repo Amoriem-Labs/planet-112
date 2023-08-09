@@ -126,13 +126,8 @@ public class PestScript : MonoBehaviour
     }
 
     public void switchTargetPlant(PlantScript plantScript){
-        targetPlantScript.pestScripts.Remove(this);
         targetPlantScript = plantScript;
-        StartAttack();
-        // Idk exactly how the below code works so may need to comment it out later - Victor.
-        //queryCount++; // curr query finished, move onto next one in queue
-        // if queue not empty, then next. This ensures no pather overlap.
-        //if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue());
+        ResumePestModule(currAttackModule);
     }
 
     Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
@@ -346,7 +341,7 @@ public class PestScript : MonoBehaviour
         }
     }
 
-    // this is to deal with the case where a staionary plant already being attacked is being moved
+    // this is to deal with the case where a stationary plant already being attacked is being moved
     public void ChaseAfterPlant()
     {
         //Debug.Log("CHASE AFTER PLANT ACTIVATED");

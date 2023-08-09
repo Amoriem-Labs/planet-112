@@ -75,9 +75,9 @@ public class GridScript : MonoBehaviour
     }
 
     // Math to go from a grid index to world coord
-    public static Vector3 GridToCoordinates(Vector2 gridPos)
+    public static Vector3 GridToCoordinates(Vector2 gridPos, float offset = 0f)
     {   // unit size is int... watch out.
-        return new Vector3(gridPos.x * unitSize + unitSize / 2.0f, gridPos.y * unitSize, 0);
+        return new Vector3(gridPos.x * unitSize + unitSize / 2.0f, gridPos.y * unitSize + offset, 0);
     }
 
     // return the state of current gridPos
@@ -153,9 +153,8 @@ public class GridScript : MonoBehaviour
     }
 
     // encapsulates here, returns the instantiated object to the user.
-    public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, Vector2[] additionRelativeGrids = null)
+    public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, float offset, Vector2[] additionRelativeGrids = null)
     {
-        print(mapGrid[(int)centerGridPos.y, (int)centerGridPos.x]);
         // Check if the grid tiles satisfy the current spacing availabilities. 
         if(!CheckCenterTileAvailability(centerGridPos, prefab) || !CheckOtherTilesAvailability(centerGridPos, prefab, additionRelativeGrids)) return null; // need to make sure enough space.
 
@@ -168,12 +167,11 @@ public class GridScript : MonoBehaviour
                 Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
             }
         }
-        
-        mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Add(prefab.GetComponent<PlantScript>());
-        return Instantiate(prefab, GridToCoordinates(centerGridPos), prefab.transform.rotation);
+        GetGridSquare(centerGridPos).plantsOnTop.Add(prefab.GetComponent<PlantScript>());
+        return Instantiate(prefab, GridToCoordinates(centerGridPos, offset), prefab.transform.rotation);
     }
 
-    public static bool PlaceObjectAtGrid(Vector2 centerGridPos, GameObject gameObject, Vector2[] additionRelativeGrids = null)
+    public static bool PlaceObjectAtGrid(Vector2 centerGridPos, GameObject gameObject, float offset, Vector2[] additionRelativeGrids = null)
     {
         // Check if the grid tiles satisfy the current spacing availabilities. 
         if (!CheckCenterTileAvailability(centerGridPos, gameObject) || !CheckOtherTilesAvailability(centerGridPos, gameObject, additionRelativeGrids)) return false; // need to make sure enough space.
@@ -187,8 +185,8 @@ public class GridScript : MonoBehaviour
             }
             Debug.Log("Plant placed at grid " + centerGridPos.ToString());
         }
-        gameObject.transform.position = GridToCoordinates(centerGridPos);
-        mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Add(gameObject.GetComponent<PlantScript>());
+        gameObject.transform.position = GridToCoordinates(centerGridPos, offset);
+        GetGridSquare(centerGridPos).plantsOnTop.Add(gameObject.GetComponent<PlantScript>());
         return true;
     }
 

@@ -17,10 +17,20 @@ MonoBehaviour:
   maxAttackers: 3
   pestAttackPriority: 3
   spriteArray:
-  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 3}
   - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
+  animatorArray:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  offset:
+  - 0
+  - 0
+  - 0
+  - 0
   stageTimeMax:
   - 10
   - 20
@@ -30,7 +40,7 @@ MonoBehaviour:
   - 300
   - 500
   - 1000
-  defaultModules: 0000000001000000
+  defaultModules: 01000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array: []

@@ -14,6 +14,8 @@ public class Plant : ScriptableObject
     
     // currStageOfLife is the accessing index to everything below. Stage 0 is a seed, everything builds on this.
     public Sprite[] spriteArray; // Array of sprites per each growth stage
+    public RuntimeAnimatorController[] animatorArray; // Animations for each growth stage. Due to time constraints, not all stages will have an animation.
+    public float[] offset; // offset used to spawn in plants in world coords so that plant doesn't look embedded on ground.
     public float[] stageTimeMax; // Time spent in each growth stage
     public float[] maxHealth; // Max HP for each stage
 

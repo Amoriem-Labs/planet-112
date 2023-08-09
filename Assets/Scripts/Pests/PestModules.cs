@@ -626,7 +626,7 @@ public static class PestModuleArr
         {
             // Launch projectile
             if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
-            {   
+            {
                 Debug.Log("Projectile being generated...");
                 TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
                     pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();

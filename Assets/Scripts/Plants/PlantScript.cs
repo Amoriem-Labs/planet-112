@@ -18,7 +18,8 @@ public abstract class PlantScript : MonoBehaviour
     public Dictionary<PlantModuleEnum, IPlantModule> plantModules = new Dictionary<PlantModuleEnum, IPlantModule>();
 
     // this needs to be here, because each instance has its own sprite renderer
-    protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
+    protected SpriteRenderer spriteRenderer;
+    protected Animator animator; // Due to time constraints, not every plant has an animation, so that's why we have both sprite renderers and animators
 
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/
@@ -99,6 +100,7 @@ public abstract class PlantScript : MonoBehaviour
     public virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     public void InitializePlantData(Vector2 location)
@@ -137,8 +139,9 @@ public abstract class PlantScript : MonoBehaviour
     // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.
     public void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
     {
-        // Set sprite
+        // Set sprite and animations
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+        animator.runtimeAnimatorController = plantSO.animatorArray[plantData.currStageOfLife];
 
         if (plantData.currStageOfLife != plantSO.maxStage) // if they are equal then no need to keep growing.
         {
@@ -164,7 +167,7 @@ public abstract class PlantScript : MonoBehaviour
                 float maxHealth = plantSO.maxHealth[plantData.currStageOfLife];
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * maxHealth, maxHealth);
                 break;
-            case HealMode.missing: // less hp, more healing; more hp, less healing. Sett passive.
+            case HealMode.missing: // less hp, more healing; more hp, less healing. Set passive.
                 float maxHP = plantSO.maxHealth[plantData.currStageOfLife];
                 float missingHealth = maxHP - plantData.currentHealth;
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * missingHealth, maxHP);
@@ -282,6 +285,8 @@ public abstract class PlantScript : MonoBehaviour
 
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+        animator.runtimeAnimatorController = plantSO.animatorArray[plantData.currStageOfLife];
+        transform.position = GridScript.GridToCoordinates(plantData.location, plantSO.offset[plantData.currStageOfLife]);
 
         // update hitbox
         SetMainCollider();
@@ -344,7 +349,7 @@ public abstract class PlantScript : MonoBehaviour
     public bool PlacePlant(Vector2 location)
     {
         // Check grid and place
-        if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
+        if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.offset[plantData.currStageOfLife], plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
         {
             pickedUp = false;
             // resume modules accordingly
@@ -389,14 +394,13 @@ public abstract class PlantScript : MonoBehaviour
         if (pickedUp == false) UpdateAllModules();
 
         // If this plant is lilypad and there is another plant on top of lilypad and if pest aggro is on lilypad, switches the pest aggro to the plant on top of lilypad.
-        Vector2 gridCoordinates = GridScript.CoordinatesToGrid(transform.position);
-        List<PlantScript> plantsInGridSquare = GridScript.mapSquare[(int)gridCoordinates.y, (int)gridCoordinates.x].plantsOnTop;
+        List<PlantScript> plantsInGridSquare = GridScript.GetGridSquare(GridScript.CoordinatesToGrid(transform.position)).plantsOnTop;
         if (plantsInGridSquare.Count > 1){
-        //if (unlockPlantability && GetTileState(transform.position) == TileState.OCCUPIED_STATE){
             foreach (PestScript pestScript in pestScripts){
-                if (pestScript != null){ // pest script could've been modified mid-for loop. So check if not null in case the pest script was removed from pestScripts list mid-for loop from PestScript.switchTargetPlant() being called.
-                    foreach (PlantScript plantScript in plantsInGridSquare){
-                        if (plantScript != this && pestScript.targetPlantScript != plantScript) pestScript.switchTargetPlant(plantScript);
+                foreach (PlantScript plantScript in plantsInGridSquare){
+                    Debug.Log(plantScript);
+                    if (!plantScript.plantSO.unlockPlantability){
+                        pestScript.switchTargetPlant(plantScript);
                     }
                 }
             }

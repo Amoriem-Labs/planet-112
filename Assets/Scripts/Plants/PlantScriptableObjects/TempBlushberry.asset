@@ -19,6 +19,12 @@ MonoBehaviour:
   spriteArray:
   - {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
   - {fileID: 21300000, guid: 2ebf1bbd6257dce44a18fea17e16c881, type: 3}
+  animatorArray:
+  - {fileID: 0}
+  - {fileID: 9100000, guid: 586eb9da920c9c142b8c7675998550c4, type: 2}
+  offset:
+  - 0.1
+  - 0.3
   stageTimeMax:
   - 3
   maxHealth:
@@ -26,9 +32,10 @@ MonoBehaviour:
   - 50
   defaultModules: 0000000001000000
   relativeGridsOccupied:
-  - vec2Array: []
   - vec2Array:
-    - {x: 1, y: 1}
+    - {x: 0, y: 0.2}
+  - vec2Array:
+    - {x: 0, y: 1}
   targetRectParameters:
   - vec2Array:
     - {x: 0, y: 0.2}
@@ -38,10 +45,10 @@ MonoBehaviour:
     - {x: 0.2, y: 0.35}
   hitboxSize:
   - {x: 0.2, y: 0.2}
-  - {x: 0, y: 0}
+  - {x: 0.2, y: 0.2}
   hitboxOffset:
   - {x: 0, y: 0}
-  - {x: 0, y: 0.45}
+  - {x: 0, y: 0}
   fruitProductionRate:
   - 2
   - 120

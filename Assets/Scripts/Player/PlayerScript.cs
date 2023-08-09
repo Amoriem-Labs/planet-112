@@ -206,7 +206,7 @@ public class PlayerScript : MonoBehaviour
     public void GeneratePlant(InputAction.CallbackContext context)
     {
         if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
-            GameObject plant = GameManager.SpawnPlant(PlantName.GinkgoTree, GridScript.CoordinatesToGrid(transform.position));
+            GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
         }
     }

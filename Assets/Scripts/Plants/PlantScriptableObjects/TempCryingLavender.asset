@@ -13,36 +13,41 @@ MonoBehaviour:
   m_Name: TempCryingLavender
   m_EditorClassIdentifier: 
   pName: 8
-  maxStage: 3
+  maxStage: 0
   maxAttackers: 3
-  pestAttackPriority: 0
+  pestAttackPriority: 3
   spriteArray:
-  - {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  - {fileID: -779908278, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  - {fileID: 885484244, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  stageTimeMax:
-  - 5
-  - 20
-  - 30
+  - {fileID: 0}
+  animatorArray:
+  - {fileID: 9100000, guid: 450408fa40c9fd147ab7247350cfc107, type: 2}
+  offset:
+  - 0.1
+  stageTimeMax: []
   maxHealth:
-  - 100
-  - 300
-  - 500
-  - 1000
-  defaultModules: 02000000
-  relativeGridsOccupied: []
-  targetRectParameters: []
-  hitboxSize: []
-  hitboxOffset: []
+  - 50
+  defaultModules: 0200000001000000
+  relativeGridsOccupied:
+  - vec2Array:
+    - {x: 0, y: 1}
+  targetRectParameters:
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.1, y: 0.1}
+  hitboxSize:
+  - {x: 0.2, y: 0.2}
+  hitboxOffset:
+  - {x: 0, y: 0}
   fruitProductionRate: []
   fruitProductionQuantity: 
   fruitType: 0
-  oxygenProductionQuantity: 
-  healRate: []
-  healAmount: []
-  healMode: 
-  healRangeRadius: []
+  oxygenProductionQuantity: 02000000
+  healRate:
+  - 60
+  healAmount:
+  - 10
+  healMode: 00000000
+  healRangeRadius:
+  - 5
   aoeAttackRate: []
   aoeDamageAmount: []
   aoeDamageRangeRadius: []
