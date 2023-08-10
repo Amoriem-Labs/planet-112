@@ -32,7 +32,8 @@ MonoBehaviour:
   - 100
   defaultModules: 03000000
   relativeGridsOccupied:
-  - vec2Array: []
+  - vec2Array:
+    - {x: 1, y: 0}
   - vec2Array:
     - {x: 1, y: 0}
     - {x: 0, y: 1}

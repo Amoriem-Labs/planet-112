@@ -210,7 +210,7 @@ public class GridScript : MonoBehaviour
         if (GetTileState(centerGridPos) == TileState.OCCUPIED_STATE){
             SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
         }
-        else if (GetTileState(centerGridPos) == TileState.AVAILABLE_STATE){
+        else if (GetTileState(centerGridPos) == TileState.AVAILABLE_STATE && plantScript.plantSO.unlockPlantability){
             SetTileStates(centerGridPos, TileState.WATER_STATE, additionRelativeGrids);
         }
         mapSquare[(int)centerGridPos.y, (int)centerGridPos.x].plantsOnTop.Remove(plantScript);
