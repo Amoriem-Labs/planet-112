@@ -32,23 +32,21 @@ MonoBehaviour:
   - 50
   defaultModules: 0000000001000000
   relativeGridsOccupied:
-  - vec2Array:
-    - {x: 0, y: 0.2}
-  - vec2Array:
-    - {x: 0, y: 1}
+  - vec2Array: []
+  - vec2Array: []
   targetRectParameters:
   - vec2Array:
-    - {x: 0, y: 0.2}
-    - {x: 0.1, y: 0.1}
+    - {x: 0, y: 0.1}
+    - {x: 0.2, y: 0.2}
   - vec2Array:
-    - {x: 0, y: 0.2}
-    - {x: 0.2, y: 0.35}
+    - {x: 0, y: 0.3}
+    - {x: 0.4, y: 0.4}
   hitboxSize:
   - {x: 0.2, y: 0.2}
-  - {x: 0.2, y: 0.2}
+  - {x: 0.4, y: 0.4}
   hitboxOffset:
-  - {x: 0, y: 0}
-  - {x: 0, y: 0}
+  - {x: 0, y: 0.1}
+  - {x: 0, y: 0.3}
   fruitProductionRate:
   - 2
   - 120

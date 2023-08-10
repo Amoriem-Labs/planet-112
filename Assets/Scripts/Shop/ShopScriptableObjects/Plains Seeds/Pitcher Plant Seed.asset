@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c72ef95e7848fe4bad338adf665157e, type: 3}
-  m_Name: Peach Tree
+  m_Name: Pitcher Plant Seed
   m_EditorClassIdentifier: 
-  itemName: Peach Tree Seed
+  itemName: Pitcher Plant Seed
   rarity: Rare
   cost: 28000000000000000000000000000000
-  inventoryItemPrefab: {fileID: 438510925259122769, guid: a129220371b177a438214c4de40c9249, type: 3}
+  inventoryItemPrefab: {fileID: 6460909878121052546, guid: 2403cfc38f4479e44aca264ad588b345, type: 3}
   biome: Plains
-  mainRole: Fruit Production
+  mainRole: Attack

@@ -10,7 +10,6 @@ public class DataManager : MonoBehaviour
     {
         // Generate the pathway to get the data
         string saveFile = getSaveFilePath(saveIndex);
-
         // Does the file exist?
         if (File.Exists(saveFile))
         {

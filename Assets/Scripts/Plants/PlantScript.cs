@@ -398,7 +398,6 @@ public abstract class PlantScript : MonoBehaviour
         if (plantsInGridSquare.Count > 1){
             foreach (PestScript pestScript in pestScripts){
                 foreach (PlantScript plantScript in plantsInGridSquare){
-                    Debug.Log(plantScript);
                     if (!plantScript.plantSO.unlockPlantability){
                         pestScript.switchTargetPlant(plantScript);
                     }

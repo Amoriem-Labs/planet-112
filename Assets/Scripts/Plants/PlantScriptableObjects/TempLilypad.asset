@@ -21,23 +21,22 @@ MonoBehaviour:
   animatorArray:
   - {fileID: 9100000, guid: 1fc88486526d02a48849a184318e106e, type: 2}
   offset:
-  - 0
+  - 0.1
   stageTimeMax:
   - 1
   maxHealth:
   - 500
   defaultModules: 
   relativeGridsOccupied:
-  - vec2Array:
-    - {x: 0, y: 0}
+  - vec2Array: []
   targetRectParameters:
   - vec2Array:
-    - {x: 0, y: 0.2}
-    - {x: 0.1, y: 0.1}
+    - {x: 0, y: 0.1}
+    - {x: 0.5, y: 0.3}
   hitboxSize:
-  - {x: 0.2, y: 0.2}
+  - {x: 0.5, y: 0.3}
   hitboxOffset:
-  - {x: 0, y: 0}
+  - {x: 0, y: 0.1}
   fruitProductionRate: []
   fruitProductionQuantity: 
   fruitType: 0

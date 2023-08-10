@@ -13,55 +13,43 @@ MonoBehaviour:
   m_Name: TempPitcherPlant
   m_EditorClassIdentifier: 
   pName: 6
-  maxStage: 2
+  maxStage: 1
   maxAttackers: 3
   pestAttackPriority: 3
   spriteArray:
   - {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
-  - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
-  - {fileID: 21300000, guid: 95e9500848a372348a6e167ae7327a86, type: 3}
-  animatorArray:
   - {fileID: 0}
+  animatorArray:
   - {fileID: 0}
   - {fileID: 9100000, guid: fc4ea7ee5566f6746ac227e80d7d054d, type: 2}
   offset:
   - 0.1
-  - 0.1
-  - 0.7
+  - 0.5
   stageTimeMax:
-  - 30
-  - 30
+  - 5
   maxHealth:
   - 0
-  - 50
   - 100
   defaultModules: 03000000
   relativeGridsOccupied:
   - vec2Array: []
   - vec2Array:
-    - {x: 2, y: 2}
-  - vec2Array:
-    - {x: 2, y: 2}
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
   targetRectParameters:
   - vec2Array:
-    - {x: 0, y: 0.2}
-    - {x: 0.1, y: 0.1}
-  - vec2Array:
-    - {x: 0, y: 0.2}
+    - {x: 0, y: 0.1}
     - {x: 0.2, y: 0.2}
   - vec2Array:
-    - {x: 0, y: 0.2}
-    - {x: 0.2, y: 0.5}
+    - {x: 0, y: 0.5}
+    - {x: 0.5, y: 0.5}
   hitboxSize:
   - {x: 0.2, y: 0.2}
-  - {x: 0.3, y: 0.4}
-  - {x: 0.32, y: 0.7}
-  - {x: 0.32, y: 0.9}
+  - {x: 0.5, y: 0.5}
   hitboxOffset:
-  - {x: 0, y: 0}
-  - {x: 0, y: 0.2}
-  - {x: 0, y: 0.35}
-  - {x: 0, y: 0.45}
+  - {x: 0, y: 0.1}
+  - {x: 0, y: 0.5}
   fruitProductionRate: []
   fruitProductionQuantity: 
   fruitType: 0
@@ -76,13 +64,11 @@ MonoBehaviour:
   - 30
   aoeDamageAmount:
   - 0
-  - 0
   - 100
   aoeDamageRangeRadius:
   - 0
-  - 0
   - 7
-  aoeMaxPestsTargetable: 000000000000000005000000
+  aoeMaxPestsTargetable: 0000000005000000
   tauntRangeRadius: []
   fruitProductionBoostDecimal: []
   fruitProductionBoostRangeRadius: []
