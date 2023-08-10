@@ -20,10 +20,14 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
   - {fileID: 1437945139, guid: c547066a2a8be418db43c5494dd63b9b, type: 3}
   - {fileID: 21300000, guid: 95e9500848a372348a6e167ae7327a86, type: 3}
+  animatorArray:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 9100000, guid: fc4ea7ee5566f6746ac227e80d7d054d, type: 2}
   offset:
   - 0.1
-  - 0
-  - 0.55
+  - 0.1
+  - 0.7
   stageTimeMax:
   - 30
   - 30

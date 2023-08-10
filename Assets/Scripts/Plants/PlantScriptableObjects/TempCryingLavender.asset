@@ -21,7 +21,7 @@ MonoBehaviour:
   animatorArray:
   - {fileID: 9100000, guid: 450408fa40c9fd147ab7247350cfc107, type: 2}
   offset:
-  - 0.1
+  - 0.35
   stageTimeMax: []
   maxHealth:
   - 50

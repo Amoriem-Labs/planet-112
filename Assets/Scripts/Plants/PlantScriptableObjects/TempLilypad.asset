@@ -18,6 +18,8 @@ MonoBehaviour:
   pestAttackPriority: 1
   spriteArray:
   - {fileID: 21300000, guid: 1a291d973633e034bafcfdecad467429, type: 3}
+  animatorArray:
+  - {fileID: 9100000, guid: 1fc88486526d02a48849a184318e106e, type: 2}
   offset:
   - 0
   stageTimeMax:

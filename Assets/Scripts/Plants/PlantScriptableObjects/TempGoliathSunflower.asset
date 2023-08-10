@@ -23,19 +23,51 @@ MonoBehaviour:
   animatorArray:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  offset: []
-  stageTimeMax: []
-  maxHealth: []
-  defaultModules: 
-  relativeGridsOccupied: []
-  targetRectParameters: []
-  hitboxSize: []
-  hitboxOffset: []
-  fruitProductionRate: []
-  fruitProductionQuantity: 
+  - {fileID: 9100000, guid: 42a47775efb4ca54caefc8fca53a660c, type: 2}
+  offset:
+  - 0.1
+  - 0.1
+  - 0.6
+  stageTimeMax:
+  - 30
+  - 30
+  maxHealth:
+  - 0
+  - 50
+  - 100
+  defaultModules: 0000000001000000
+  relativeGridsOccupied:
+  - vec2Array:
+    - {x: 2, y: 2}
+  - vec2Array:
+    - {x: 2, y: 2}
+  - vec2Array:
+    - {x: 2, y: 2}
+  targetRectParameters:
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.1, y: 0.1}
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.2, y: 0.2}
+  - vec2Array:
+    - {x: 0, y: 0.2}
+    - {x: 0.2, y: 0.2}
+  hitboxSize:
+  - {x: 0.2, y: 0.2}
+  - {x: 0.2, y: 0.2}
+  - {x: 0.2, y: 0.2}
+  hitboxOffset:
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 0}
+  fruitProductionRate:
+  - 0
+  - 0
+  - 120
+  fruitProductionQuantity: 000000000000000014000000
   fruitType: 0
-  oxygenProductionQuantity: 
+  oxygenProductionQuantity: 00000000050000000a000000
   healRate: []
   healAmount: []
   healMode: 
