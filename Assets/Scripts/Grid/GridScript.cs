@@ -7,19 +7,27 @@ using System;
 // Enum that contains serializable ints to mark the state of each grid. 
 public enum TileState
 {
-    AVAILABLE_STATE, // default state
-    OCCUPIED_STATE,
-    WATER_STATE,
+    AVAILABLE_STATE, // allows plant to be able to grow into this tile
+    OCCUPIED_STATE, // prevents a plant from being planted at this tile
+    WATER_STATE, // for water level. Only lilypads can be planted on water state currently
 }
 
 public class GridSquare
 {
     public Vector2 gridPos; // position of grid square in grid coordinates
     public List<PlantScript> plantsOnTop; // a list of plants planted at this grid square
+    public bool plantable; // plantable tiles. These are the tiles that will have a planted_grass or unplanted_grass prefab on them.
+    public GameObject grassObject; // grass prefab. If this GridSquare is plantable, grassObject will be the grass prefab located at this GridSquare's gridPos. If this GridSquare is unplantable, then grassObject will be null
 
-    public GridSquare(Vector2 gridPos){
+    public GridSquare(Vector2 gridPos, bool plantable){
         this.gridPos = gridPos;
         plantsOnTop = new List<PlantScript>();
+        this.plantable = plantable;
+        grassObject = null;
+    }
+
+    public void AddGrassObject(GameObject newGrass){
+        grassObject = newGrass;
     }
 }
 
@@ -34,12 +42,27 @@ public class GridScript : MonoBehaviour
     static int columns; // x
     static int rows; // y
     static TileState[,] mapGrid; // encapsulated 2D map coord array. 
+    static bool[,] plantableGrid; // encapsulated 2D map coord array dictating whether this tile is plantable
     static LevelData levelData; // reference to save
 
     public GameObject square; // a visualization object. Can be deleted along with the prefab later. 
     public static GridSquare[,] mapSquare; // a 2D array representing all the squares on the screen
+    public Transform squareParent; // a visualization object. Can be deleted along with the prefab later. 
     private static GameObject squareStatic; // a static version of square prefab, to be used for static methods in GridScript.
-    public bool visualizeGrid;
+    public bool visualizeGrid; // boolean that can be set in Inspector whether to visualize grid or not
+
+    public GameObject grass; // the prefab to visualize ground tiles
+    public static GameObject grassStatic; // a static version of grass prefab, to be used for static methods in GridScript.
+    public Sprite plantedGrass; // the sprite for planted tiles
+    public static Sprite plantedGrassStatic; // a static version of plantedGrass sprite, to be used for static methods in GridScript.
+    public Sprite unplantedGrass; // the sprite for unplanted tiles
+    public static Sprite unplantedGrassStatic; // a static version of unplantedGrass sprite, to be used for static methods in GridScript.
+    public static float offset = -0.13f; // offset needed to instantiate prefab at the right location
+
+    public Transform grassParent;
+    public static Transform grassParentStatic;
+    public Transform plantParent;
+    public static Transform plantParentStatic;
 
     // Set the dimension of the grid and spawn in a new grid. Important. Called between level transitions.
     public static void SpawnGrid(Vector2 levelDim, LevelData saveLevelData)
@@ -54,6 +77,12 @@ public class GridScript : MonoBehaviour
             var mapGrid = GridConfigs.levelGridConfigs[LevelManager.currentLevelID](); // only need to flip for default. 
             GridConfigs.FlipRows(ref mapGrid, rows, columns);
             levelData.mapGrid = GridConfigs.Convert2DArrayTo1D(ref mapGrid, rows, columns);
+
+            var plantableGrid = GridConfigs.levelPlantableConfigs[LevelManager.currentLevelID](); // only need to flip for default. 
+            Debug.Log(plantableGrid);
+            GridConfigs.FlipRows(ref plantableGrid, rows, columns);
+            levelData.plantableGrid = GridConfigs.Convert2DArrayTo1D(ref plantableGrid, rows, columns);
+            Debug.Log(plantableGrid);
         }
 
         mapGrid = new TileState[rows, columns]; // reset the map. All default to available state.
@@ -63,7 +92,12 @@ public class GridScript : MonoBehaviour
             for (int col = 0; col < columns; col++)
             {
                 mapGrid[row, col] = (TileState)levelData.mapGrid[GridConfigs.TwoDIndexToOneD(row, col, columns)];
-                mapSquare[row, col] = new GridSquare(new Vector2(row, col));
+                mapSquare[row, col] = new GridSquare(new Vector2(row, col), levelData.plantableGrid[GridConfigs.TwoDIndexToOneD(row, col, columns)]);
+                Vector2 grassCoords = GridToCoordinates(new Vector2(col, row)) + new Vector3(0, offset, 0);
+                if (mapSquare[row, col].plantable){
+                    GameObject newGrass = Instantiate(grassStatic, grassCoords, Quaternion.identity, grassParentStatic);
+                    mapSquare[row, col].AddGrassObject(newGrass);
+                }
             }
         }
     }
@@ -152,11 +186,11 @@ public class GridScript : MonoBehaviour
         return true;
     }
 
-    // encapsulates here, returns the instantiated object to the user.
+    // encapsulates here, returns the instantiated object to the user. Should only be called whenever planting a new plant, not when plant is about grow up in life stage.
     public static GameObject SpawnObjectAtGrid(Vector2 centerGridPos, GameObject prefab, float offset, Vector2[] additionRelativeGrids = null)
     {
         // Check if the grid tiles satisfy the current spacing availabilities. 
-        if(!CheckCenterTileAvailability(centerGridPos, prefab) || !CheckOtherTilesAvailability(centerGridPos, prefab, additionRelativeGrids)) return null; // need to make sure enough space.
+        if(!CheckCenterTileAvailability(centerGridPos, prefab) || !CheckOtherTilesAvailability(centerGridPos, prefab, additionRelativeGrids) || !GetGridSquare(centerGridPos).plantable) return null; // need to make sure enough space.
 
         // Have space! Time to add it in. 
         if(prefab.TryGetComponent<PlantScript>(out PlantScript plantScript)){
@@ -168,7 +202,7 @@ public class GridScript : MonoBehaviour
             }
         }
         GetGridSquare(centerGridPos).plantsOnTop.Add(prefab.GetComponent<PlantScript>());
-        return Instantiate(prefab, GridToCoordinates(centerGridPos, offset), prefab.transform.rotation);
+        return Instantiate(prefab, GridToCoordinates(centerGridPos, offset), prefab.transform.rotation, plantParentStatic);
     }
 
     public static bool PlaceObjectAtGrid(Vector2 centerGridPos, GameObject gameObject, float offset, Vector2[] additionRelativeGrids = null)
@@ -193,12 +227,19 @@ public class GridScript : MonoBehaviour
     public static void SetTileStates(Vector2 centerGridPos, TileState state, Vector2[] additionRelativeGrids = null)
     {
         mapGrid[(int)centerGridPos.y, (int)centerGridPos.x] = state;
+        GridSquare gridSquare = mapSquare[(int)centerGridPos.y, (int)centerGridPos.x];
+        if (state == TileState.AVAILABLE_STATE && gridSquare.plantable) gridSquare.grassObject.GetComponent<SpriteRenderer>().sprite = unplantedGrassStatic;
+        if (state == TileState.OCCUPIED_STATE && gridSquare.plantable) gridSquare.grassObject.GetComponent<SpriteRenderer>().sprite = plantedGrassStatic;
+
         levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)centerGridPos.y, (int)centerGridPos.x, columns)] = (int)state;
         if (additionRelativeGrids != null){
             foreach (Vector2 gridPos in additionRelativeGrids)
             {
                 Vector2 tile = centerGridPos + gridPos;
                 mapGrid[(int)tile.y, (int)tile.x] = state;
+                GridSquare additionGridSquare = mapSquare[(int)tile.y, (int)tile.x];
+                if (state == TileState.AVAILABLE_STATE && additionGridSquare.plantable) additionGridSquare.grassObject.GetComponent<SpriteRenderer>().sprite = unplantedGrassStatic;
+                if (state == TileState.OCCUPIED_STATE && additionGridSquare.plantable) additionGridSquare.grassObject.GetComponent<SpriteRenderer>().sprite = plantedGrassStatic;
                 levelData.mapGrid[GridConfigs.TwoDIndexToOneD((int)tile.y, (int)tile.x, columns)] = (int)state;
             }
         }
@@ -230,7 +271,7 @@ public class GridScript : MonoBehaviour
             for (int col = 0; col < columns; col++)
             {
                 Vector3 worldLoc = GridToCoordinates(new Vector2(col, row)); // col is x, row is y
-                var sprObj = Instantiate(square, worldLoc, Quaternion.identity);
+                var sprObj = Instantiate(square, worldLoc, Quaternion.identity, squareParent);
                 sprObj.transform.localScale = new Vector3(0.1f, 0.1f, 1);
                 // Blue is available, red is occupied, green is water. 
                 if (mapGrid[row, col] == TileState.AVAILABLE_STATE) sprObj.GetComponent<SpriteRenderer>().color = Color.blue;
@@ -242,6 +283,11 @@ public class GridScript : MonoBehaviour
     
     void Awake(){
         squareStatic = square;
+        grassStatic = grass;
+        plantedGrassStatic = plantedGrass;
+        unplantedGrassStatic = unplantedGrass;
+        grassParentStatic = grassParent;
+        plantParentStatic = plantParent;
     }
     
     // Delete the below when ready. Understand its application. 
@@ -277,7 +323,13 @@ public class GridConfigs
     public static Func<int[,]>[] levelGridConfigs =
     {
         // Level 0 (The current sample scene rn)
-        generateLevel00MapGrid
+        generateLevel00MapGrid,
+        // Insert level 1 function below.
+    };
+
+    public static Func<bool[,]>[] levelPlantableConfigs = {
+        // Level 0 (The current sample scene rn)
+        generateLevel00PlantableGrid,
     };
 
     // x is width (num columns), y is height (num rows)
@@ -301,7 +353,7 @@ public class GridConfigs
             { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
         }; */
-        int[,] gridMapDefault = // this is a 16 x 16 grid tild map
+        int[,] gridMapDefault = // this is a 16 x 16 grid tile map
         {
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -323,6 +375,30 @@ public class GridConfigs
         return gridMapDefault;
     }
 
+    static bool[,] generateLevel00PlantableGrid()
+    {
+        bool[,] gridPlantableDefault = // this is a 16 x 16 grid tile map. True represents plantable and false represents unplantable
+        {
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+            { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true },
+        };
+        return gridPlantableDefault;
+    }
+
     // this is a reason why multidimension is inconvenient... can't just simply cycle through rows...
     // need to flip rows because y indices are flipped visually in default vs in game. Not that much run time w/e.
     public static void FlipRows(ref int[,] upsideDownRepresentation, int rows, int cols)
@@ -338,9 +414,35 @@ public class GridConfigs
         }
     }
 
+    public static void FlipRows(ref bool[,] upsideDownRepresentation, int rows, int cols)
+    {
+        for(int row = 0; row < rows / 2; row++)
+        {
+            for(int col = 0; col < cols; col++)
+            {
+                bool temp = upsideDownRepresentation[row, col];
+                upsideDownRepresentation[row, col] = upsideDownRepresentation[rows - 1 - row, col];
+                upsideDownRepresentation[rows - 1 - row, col] = temp;
+            }
+        }
+    }
+
     public static int[] Convert2DArrayTo1D(ref int[,] twoDArray, int rows, int cols)
     {
         int[] converted = new int[rows * cols];
+        for(int row = 0; row < rows; row++)
+        {
+            for(int col = 0; col < cols; col++)
+            {
+                converted[TwoDIndexToOneD(row, col, cols)] = twoDArray[row, col];
+            }
+        }
+        return converted;
+    }
+
+    public static bool[] Convert2DArrayTo1D(ref bool[,] twoDArray, int rows, int cols)
+    {
+        bool[] converted = new bool[rows * cols];
         for(int row = 0; row < rows; row++)
         {
             for(int col = 0; col < cols; col++)

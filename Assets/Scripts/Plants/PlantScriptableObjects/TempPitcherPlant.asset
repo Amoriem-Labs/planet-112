@@ -65,10 +65,10 @@ MonoBehaviour:
   - 30
   aoeDamageAmount:
   - 0
-  - 100
+  - 50
   aoeDamageRangeRadius:
   - 0
-  - 7
+  - 2
   aoeMaxPestsTargetable: 0000000005000000
   tauntRangeRadius: []
   fruitProductionBoostDecimal: []
