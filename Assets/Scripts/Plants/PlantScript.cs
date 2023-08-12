@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Linq;
 using MEC;
@@ -20,6 +21,7 @@ public abstract class PlantScript : MonoBehaviour
     // this needs to be here, because each instance has its own sprite renderer
     protected SpriteRenderer spriteRenderer;
     protected Animator animator; // Due to time constraints, not every plant has an animation, so that's why we have both sprite renderers and animators
+    protected Slider slider; // the UI slider element that controls health bar of plant
 
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/
@@ -101,6 +103,10 @@ public abstract class PlantScript : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        slider = GetComponent<Slider>();
+        slider.maxValue = plantSO.maxHealth[plantData.currStageOfLife];
+        slider.value = slider.maxValue;
+        transform.GetChild(0).gameObject.SetActive(false); // hide the health bar when instantiated since seeds aren't meant to be attacked by pests
     }
 
     public void InitializePlantData(Vector2 location)
@@ -176,12 +182,14 @@ public abstract class PlantScript : MonoBehaviour
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * plantData.currentHealth, plantSO.maxHealth[plantData.currStageOfLife]);
                 break;
         }
+        slider.value = plantData.currentHealth;
     }
 
     // called by the attacker upon attacking this plant. Also, notice how taking negative damage HEALS the plant!
     public void TakeDamage(int damage)
     {
         plantData.currentHealth -= damage;
+        slider.value = plantData.currentHealth;
         AudioManager.GetSFX("takeDamageSFX").Play();
 
         // check if plant dies.
@@ -305,6 +313,13 @@ public abstract class PlantScript : MonoBehaviour
 
         // plays sound for when plant grows
         AudioManager.GetSFX("growingSFX").Play();
+
+        // updates health bar for slider
+        slider.maxValue = plantSO.maxHealth[plantData.currStageOfLife];
+        if (plantData.currStageOfLife == 1){
+            transform.GetChild(0).gameObject.SetActive(true); // make health bar visible when plant has grown up to stage 1
+            slider.value = slider.maxValue;
+        }
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {

@@ -436,7 +436,7 @@ public static class PlantModuleArr
                 else // damage the pests. (or launch proj etc etc)
                 {
                     if (i < moduleData.maxPestsTargetable){
-                        pestsInRange[i].pestData.currentHealth -= moduleData.damageAmount;
+                        pestsInRange[i].TakeDamage(moduleData.damageAmount);
                         Debug.Log("Attacking pest " + pestsInRange[i].name);
                     }
                 }
