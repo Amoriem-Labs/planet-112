@@ -37,10 +37,6 @@ public class PlayerScript : MonoBehaviour
     public GameObject shopCanvas;
     public GameObject shopPopupButton;
 
-    public GameObject playerPopupCanvas;
-    private bool canMoveNextLevel;
-    private bool canMovePreviousLevel;
-
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -62,10 +58,7 @@ public class PlayerScript : MonoBehaviour
         settingsCanvas.SetActive(false);
         shopCanvas.SetActive(true);
         shopCanvas.SetActive(false);
-
-        // Set the popups to be invisible when initializing scene.
         shopPopupButton.SetActive(false);
-        playerPopupCanvas.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -335,28 +328,12 @@ public class PlayerScript : MonoBehaviour
             canOpenShop = true;
             shopPopupButton.SetActive(true);
         }
-        if (collision.gameObject.tag == "NearLeftWall" && LevelManager.currentLevelID != 0){
-            canMovePreviousLevel = true;
-            playerPopupCanvas.SetActive(true);
-        }
-        if (collision.gameObject.tag == "NearRightWall" && LevelManager.currentOxygenLevel >= LevelManager.currentFirstTargetOxygenLevel){
-            canMoveNextLevel = true;
-            playerPopupCanvas.SetActive(true);
-        }
     }
 
     private void OnRegularTriggerExit2D(Collider2D collision){
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = false;
             shopPopupButton.SetActive(false);
-        }
-        if (collision.gameObject.tag == "NearLeftWall"){
-            canMovePreviousLevel = false;
-            playerPopupCanvas.SetActive(false);
-        }
-        if (collision.gameObject.tag == "NearRightWall"){
-            canMoveNextLevel = false;
-            playerPopupCanvas.SetActive(false);
         }
     }
     #endregion

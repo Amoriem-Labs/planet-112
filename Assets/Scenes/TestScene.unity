@@ -21459,10 +21459,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 77755698}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
-      propertyPath: playerPopupCanvas
-      value: 
-      objectReference: {fileID: 692165884}
-    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: regularDetectionRange
       value: 
       objectReference: {fileID: 547410664}

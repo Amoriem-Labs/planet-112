@@ -43,12 +43,4 @@ public class LevelManager : MonoBehaviour
         currentFirstTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).firstTargetOxygenLevel;
         currentSecondTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).secondTargetOxygenLevel;
     }
-
-    public static void LoadLevelScene(int sceneID){
-        currentLevelID = sceneID;
-        SceneManager.LoadScene(levelScenes[sceneID]);
-        currentOxygenLevel = PersistentData.GetLevelData(currentLevelID).oxygenLevel;
-        currentFirstTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).firstTargetOxygenLevel;
-        currentSecondTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).secondTargetOxygenLevel;
-    }
 }
