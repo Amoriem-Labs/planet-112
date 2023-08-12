@@ -61,7 +61,6 @@ MonoBehaviour:
   healRangeRadius: []
   aoeAttackRate:
   - 0
-  - 0
   - 30
   aoeDamageAmount:
   - 0

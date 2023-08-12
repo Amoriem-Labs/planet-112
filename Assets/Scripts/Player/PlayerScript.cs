@@ -35,6 +35,7 @@ public class PlayerScript : MonoBehaviour
     public bool canOpenShop;
     public bool shopIsLoaded;
     public GameObject shopCanvas;
+    public GameObject shopPopupButton;
 
     private void Awake()
     {
@@ -54,6 +55,7 @@ public class PlayerScript : MonoBehaviour
         settingsCanvas.SetActive(false);
         shopCanvas.SetActive(true);
         shopCanvas.SetActive(false);
+        shopPopupButton.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -299,14 +301,14 @@ public class PlayerScript : MonoBehaviour
         }
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = true;
-            print("can open shop now! Press E.");
+            shopPopupButton.SetActive(true);
         }
     }
 
     private void OnRegularTriggerExit2D(Collider2D collision){
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = false;
-            print("cannot open shop anymore.");
+            shopPopupButton.SetActive(false);
         }
     }
     #endregion
