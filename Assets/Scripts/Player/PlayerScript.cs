@@ -178,7 +178,6 @@ public class PlayerScript : MonoBehaviour
             if (canMoveNextLevel){
                 canMoveNextLevel = false;
                 SceneManager.LoadScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
-                //LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
                 transform.position = new Vector2(0.25f, transform.position.y);
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
@@ -192,7 +191,6 @@ public class PlayerScript : MonoBehaviour
                     return;
                 }
                 SceneManager.LoadScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
-                //LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
                     PersistentData.GetLevelData(LevelManager.currentLevelID));
