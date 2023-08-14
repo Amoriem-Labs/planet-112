@@ -19,6 +19,11 @@ TagManager:
   - buyStackText
   - sellStackText
   - gridSquare
+  - NearRightWall
+  - NearLeftWall
+  - grassParent
+  - plantParent
+  - squareParent
   layers:
   - Default
   - TransparentFX

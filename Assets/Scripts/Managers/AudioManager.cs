@@ -29,6 +29,7 @@ public class AudioManager : MonoBehaviour
 
     void Awake() 
     {
+        DontDestroyOnLoad(gameObject);
         soundtracks = new Dictionary<string, AudioSource>();
         SFXs = new Dictionary<string, AudioSource>();
         

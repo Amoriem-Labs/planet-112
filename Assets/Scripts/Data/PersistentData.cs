@@ -18,6 +18,10 @@ public class PersistentData : MonoBehaviour
     // Level id is not necessarily the same as list index in currSaveData.levelDatas, so we store references to each LevelData in a dictionary. If you need level data, get it from currLevelDatas, not from currSaveData.levelDatas - note that any changes to currLevelDatas entries will be reflected in currSaveData because the dictionary contains references, not copies, BUT if you want to add a new LevelData object to the list, you MUST use AddLevelData.
     static Dictionary<int, LevelData> currLevelDatas;
 
+    void Awake(){
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Save index 0 is always auto save; Save >= 1 (up to max) is manual save. 
     public void LoadSave(int saveIndex)
     {

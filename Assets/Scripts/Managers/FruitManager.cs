@@ -20,6 +20,7 @@ public class FruitManager : MonoBehaviour
     private static GameObject[] fruitPrefabs; 
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
         fruitPrefabs = fruitPrefabsInit;
     }
 

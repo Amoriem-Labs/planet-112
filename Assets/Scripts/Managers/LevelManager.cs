@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -10,6 +11,14 @@ public class LevelManager : MonoBehaviour
     public static int currentFirstTargetOxygenLevel = 50; // change when level changes. Each level has its own first target level for amount of oxygen.
     public static int currentSecondTargetOxygenLevel = 70; // change when level changes. Each level has its own second target level for amount of oxygen.
     public static Dictionary<int, int> plantOxygenContributions = new Dictionary<int, int>();
+    public static Dictionary<int, string> levelScenes = new Dictionary<int, string>(){
+        {0, "TestScene"},
+        {1, "Level2Scene"},
+    };
+
+    void Awake(){
+        LoadLevelScene(currentLevelID);
+    }
 
     public static int UpdateOxygenLevel(int plantID, int oxygenLevel){
         currentOxygenLevel = 0;
@@ -24,5 +33,13 @@ public class LevelManager : MonoBehaviour
         }
         Debug.Log("Current oxygen level: " + currentOxygenLevel);
         return currentOxygenLevel;
+    }
+
+    public static void LoadLevelScene(int sceneID){
+        currentLevelID = sceneID;
+        SceneManager.LoadScene(levelScenes[sceneID]);
+        currentOxygenLevel = PersistentData.GetLevelData(currentLevelID).oxygenLevel;
+        currentFirstTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).firstTargetOxygenLevel;
+        currentSecondTargetOxygenLevel = PersistentData.GetLevelData(currentLevelID).secondTargetOxygenLevel;
     }
 }

@@ -30,6 +30,7 @@ public class Settings : MonoBehaviour
     public Sprite currentYraSprite; // If we are continuing to develop Planet 112 and making clothing sets feature a reality, will need to find some way to make this referencing to a sprite dynamic. Currently, it is only set to the yra-idle sprite.
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
         Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
         fullScreen = true;
         settingsStartingScale = transform.localScale;

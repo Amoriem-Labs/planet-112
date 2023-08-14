@@ -7,6 +7,10 @@ public class HotbarCanvas : MonoBehaviour
     public GameObject player;
     public float y_offset;
 
+    void Awake(){
+        DontDestroyOnLoad(gameObject);
+    }
+
     // This script is to update hotbar position so that it moves along with the camera in the game.
     void Update()
     {

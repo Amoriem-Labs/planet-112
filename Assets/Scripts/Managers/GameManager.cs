@@ -7,8 +7,15 @@ public class GameManager : MonoBehaviour
     public PersistentData persistentData;
     public Settings settings;
     public static int plantID;
+    public GameObject eventSystem;
+    public GameObject cameraObj;
+    public GameObject cinemaMachineCamera;
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(eventSystem);
+        DontDestroyOnLoad(cameraObj);
+        DontDestroyOnLoad(cinemaMachineCamera);
         plantID = 0; // Replace later when loading in save system.
     }
 
@@ -25,8 +32,6 @@ public class GameManager : MonoBehaviour
     // Spawns in a new plant
     public static GameObject SpawnPlant(PlantName plantName, Vector2 location) // location has to be mapGrid int coords!
     {
-        Debug.Log("x coord: "+location.x);
-        Debug.Log("y coord: "+location.y);
         GameObject plantPrefab = PlantStorage.GetPlantPrefab(plantName);
         GameObject plantObj = GridScript.SpawnObjectAtGrid(location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.offset[0],
             plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied[0].vec2Array); // when a new plant is spawned, currStageOfLife is 0

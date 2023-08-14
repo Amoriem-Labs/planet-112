@@ -60,6 +60,7 @@ public class ShopManager : MonoBehaviour
     public bool isBuySlotSelected;
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
         shopSlots = GetComponentsInChildren<ShopSlot>(true);
         playerScript = player.GetComponent<PlayerScript>();
         selectUI.SetActive(true);
