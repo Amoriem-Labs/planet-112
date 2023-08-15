@@ -11,6 +11,12 @@ public class TimeManager : MonoBehaviour
     public CoroutineHandle timerHandle;
 
     public PersistentData persistentData;
+    public GameObject autosaveCanvas; // Canvas that contains the autosave animation and text
+
+    void Awake(){
+        DontDestroyOnLoad(autosaveCanvas);
+        autosaveCanvas.SetActive(false);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -57,8 +63,14 @@ public class TimeManager : MonoBehaviour
     void Autosave(){
         if (gameStateData.timePassedSeconds % 60 == 0){
             persistentData.CreateNewSave(0);
+            autosaveCanvas.SetActive(true);
+            Invoke("HideAutosaveCanvas",2f);
             print("autosaving");
         }
+    }
+
+    void HideAutosaveCanvas(){
+        autosaveCanvas.SetActive(false);
     }
 
     public static void PauseGame() // this method might be called by pause menu or other stuff, just in case static.
