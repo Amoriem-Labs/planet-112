@@ -44,7 +44,7 @@ public class PlantData
     //public List<int> plantModules; // OLD VERSION modules that this plant currently has
     public Dictionary<PlantModuleEnum, String> plantModuleData;
     // Status effects' durations?
-}
+} 
 
 // Contains the dynamic data of a pest
 [Serializable]

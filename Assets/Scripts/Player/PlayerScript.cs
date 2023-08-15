@@ -177,7 +177,8 @@ public class PlayerScript : MonoBehaviour
             // If can move onto next level
             if (canMoveNextLevel){
                 canMoveNextLevel = false;
-                LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
+                SceneManager.LoadScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
+                //LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
                 transform.position = new Vector2(0.25f, transform.position.y);
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
@@ -190,7 +191,8 @@ public class PlayerScript : MonoBehaviour
                     Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
                     return;
                 }
-                LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
+                SceneManager.LoadScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
+                //LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
                     PersistentData.GetLevelData(LevelManager.currentLevelID));
