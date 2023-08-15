@@ -1531,9 +1531,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   square: {fileID: 702774887531869047, guid: 97eeb00a2c5eb8b4fb9c592aa2f7b991, type: 3}
   visualizeGrid: 1
-  grass: {fileID: 3800850162196041702, guid: 7345d2f652559154f9475cfb73d8822d, type: 3}
+  grassPrefab: {fileID: 3800850162196041702, guid: 7345d2f652559154f9475cfb73d8822d, type: 3}
   plantedGrass: {fileID: 21300000, guid: 9d9ff7998a75f9241837383a3918dacd, type: 3}
   unplantedGrass: {fileID: 21300000, guid: 79f976ba1070ad04696082b1040e3223, type: 3}
+  unplantableTile: {fileID: 21300000, guid: e5db4cfe16fdfcf46b60236971d6afd4, type: 3}
 --- !u!212 &1102216728
 SpriteRenderer:
   m_ObjectHideFlags: 0

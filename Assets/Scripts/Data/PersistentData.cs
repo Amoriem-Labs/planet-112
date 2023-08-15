@@ -49,9 +49,11 @@ public class PersistentData : MonoBehaviour
         LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
         LevelManager.currentLevelID = currLevel.levelID;
         LevelManager.currentBiome = currLevel.biome;
-        LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
-        LevelManager.currentFirstTargetOxygenLevel = currLevel.firstTargetOxygenLevel;
-        LevelManager.currentSecondTargetOxygenLevel = currLevel.secondTargetOxygenLevel;
+        // TODO: load in plant in hand
+        ////player.GetComponent<PlayerScript>().plantInHand = currLevel.plantInHand;
+        // TODO: load in plant and pest datas
+        //LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
+        LevelManager.LoadLevel(currSaveData.currLevelIndex);
 
         // Initialize player position from player position in currSaveData
         var pos = player.transform.position;
@@ -114,13 +116,25 @@ public class PersistentData : MonoBehaviour
 
         // deal with level datas
         newSave.levelDatas = new List<LevelData>();
-        LevelData firstLevel = new LevelData(); // will need to change this later as we add more levels so that we can also save second level, not just first level
-        firstLevel.levelID = LevelManager.currentLevelID;
-        firstLevel.biome = LevelManager.currentBiome;
-        firstLevel.oxygenLevel = LevelManager.currentOxygenLevel;
-        firstLevel.firstTargetOxygenLevel = LevelManager.currentFirstTargetOxygenLevel;
-        firstLevel.secondTargetOxygenLevel = LevelManager.currentSecondTargetOxygenLevel;
-        newSave.levelDatas.Add(firstLevel);
+        foreach (Level levelSO in LevelManager.levelSOsStatic){
+            LevelData levelData = new LevelData();
+            levelData.levelID = levelSO.levelID;
+            levelData.biome = levelSO.biome;
+            GameObject[] plants = GameObject.FindGameObjectsWithTag("plant");
+            foreach (GameObject plant in plants){
+                levelData.plantDatas.Add(plant.GetComponent<PlantScript>().plantData);
+            }
+            GameObject[] pests = GameObject.FindGameObjectsWithTag("pest");
+            foreach (GameObject pest in pests){
+                levelData.pestDatas.Add(pest.GetComponent<PestScript>().pestData);
+            }
+            levelData.oxygenLevel = levelSO.oxygenLevel;
+            levelData.plantInHand = player.GetComponent<PlayerScript>().plantInHand.plantData;
+            newSave.levelDatas.Add(levelData);
+        }
+
+        // deal with current level index
+        newSave.currLevelIndex = LevelManager.currentLevelID; 
 
         // deal with player data
         PlayerData initPlayerData = new PlayerData();

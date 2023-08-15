@@ -161,8 +161,8 @@ public class Settings : MonoBehaviour
             saveFileBiomeTexts[saveIndex - 1].color = caveColor;
         }
 
-        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.currentOxygenLevel / LevelManager.currentSecondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format("Oxygen: {0}%", LevelManager.currentOxygenLevel * 100 / LevelManager.currentFirstTargetOxygenLevel);
+        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel / LevelManager.levelSOsStatic[LevelManager.currentLevelID].secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
+        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format("Oxygen: {0}%", LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel * 100 / LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel);
         saveFileOxygenLevelTexts[saveIndex - 1].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
     }
 

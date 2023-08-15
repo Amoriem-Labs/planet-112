@@ -37,6 +37,10 @@ public class PlayerScript : MonoBehaviour
     public GameObject shopCanvas;
     public GameObject shopPopupButton;
 
+    public GameObject playerPopupCanvas;
+    public bool canMoveNextLevel;
+    public bool canMovePreviousLevel;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -49,6 +53,7 @@ public class PlayerScript : MonoBehaviour
         shopIsLoaded = false;
         canMoveNextLevel = false;
         canMovePreviousLevel = false;
+        playerPopupCanvas.SetActive(false);
 
         // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
         //    or not when Game is played.
@@ -163,14 +168,14 @@ public class PlayerScript : MonoBehaviour
         return closestPlant; // null if empty, or closest plant is outside
     }
 
-    PlantScript plantInHand = null;
+    public PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
         if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
             // If can move onto next level
             if (canMoveNextLevel){
                 canMoveNextLevel = false;
-                SceneManager.LoadScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
+                LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
                 transform.position = new Vector2(0.25f, transform.position.y);
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
@@ -183,7 +188,7 @@ public class PlayerScript : MonoBehaviour
                     Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
                     return;
                 }
-                SceneManager.LoadScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
+                LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
                     PersistentData.GetLevelData(LevelManager.currentLevelID));
@@ -328,12 +333,28 @@ public class PlayerScript : MonoBehaviour
             canOpenShop = true;
             shopPopupButton.SetActive(true);
         }
+        if (collision.gameObject.tag == "NearLeftWall" && LevelManager.currentLevelID != 0){
+            canMovePreviousLevel = true;
+            playerPopupCanvas.SetActive(true);
+        }
+        if (collision.gameObject.tag == "NearRightWall" && LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel >= LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
+            canMoveNextLevel = true;
+            playerPopupCanvas.SetActive(true);
+        }
     }
 
     private void OnRegularTriggerExit2D(Collider2D collision){
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = false;
             shopPopupButton.SetActive(false);
+        }
+        if (collision.gameObject.tag == "NearLeftWall"){
+            canMovePreviousLevel = false;
+            playerPopupCanvas.SetActive(false);
+        }
+        if (collision.gameObject.tag == "NearRightWall"){
+            canMoveNextLevel = false;
+            playerPopupCanvas.SetActive(false);
         }
     }
     #endregion

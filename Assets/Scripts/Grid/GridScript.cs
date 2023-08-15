@@ -74,7 +74,6 @@ public class GridScript : MonoBehaviour
     void Awake(){
         grassParent = GameObject.FindGameObjectWithTag("grassParent").transform;
         plantParent = GameObject.FindGameObjectWithTag("plantParent").transform;
-        Debug.Log(plantParent);
         squareParent = GameObject.FindGameObjectWithTag("squareParent").transform;
         squareStatic = square;
         grassPrefabStatic = grassPrefab;
