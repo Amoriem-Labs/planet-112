@@ -50,7 +50,7 @@ public class InventoryManager : MonoBehaviour
     // Searches if item already exists in inventory, and if so, add to that item's stackSize.
     //   If item doesn't exist, then add item to first empty InventorySlot and shop SellSlot.
     //   This method is triggered whenever player picks up a new item.
-    void UpdateInventory(GameObject inventoryItemPrefab){
+    public void UpdateInventory(GameObject inventoryItemPrefab){
         HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
 
         // Searches if item already exists in inventory, and add to that item's stacksize if so.

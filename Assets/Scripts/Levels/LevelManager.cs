@@ -32,22 +32,18 @@ public class LevelManager : MonoBehaviour
         firstOxygenLevelTextStatic = firstOxygenLevelText;
         secondOxygenLevelTextStatic = secondOxygenLevelText;
         firstOxygenLevelMarkStatic = firstOxygenLevelMark;
-        //oxygenLevelSliderStatic.value = 0;
-        //oxygenLevelSliderStatic.maxValue = levelSOs[0].;
-        //float sliderWidth = oxygenLevelSlider.GetComponent<RectTransform>().rect.width; // is based off the width from RectTransform component of oxygenLevelSlider. Since oxygenLevelSlider is anchored in the middle of a Canvas object whose Camera is set to Screen Space - Camera Overlay, the position of the RectTransform is 0 and the actual width is twice what is displayed in RectTransform.
-        //float xPos = (currentFirstTargetOxygenLevel - (currentSecondTargetOxygenLevel / 2f)) * 0.01f * sliderWidth; // places firstLevelOxygenMark in proper position relative to oxygenLevelSlider
-        //firstOxygenLevelMarkStatic.transform.localPosition = new Vector3(xPos, 455, 0);
-        //firstOxygenLevelTextStatic.text = $"0/{currentFirstTargetOxygenLevel}";
-        //secondOxygenLevelTextStatic.text = $"0/{currentSecondTargetOxygenLevel}";
+        foreach (Level levelSO in levelSOsStatic){
+            levelSO.oxygenLevel = 0;
+        }
     }
 
     public static int UpdateOxygenLevel(int plantID, int oxygenLevel){
-        int currentOxygenLevel = 0;
+        int totalOxygenLevel = 0;
         plantOxygenContributions[plantID] = oxygenLevel;
         foreach (KeyValuePair<int, int> entry in plantOxygenContributions){
-            currentOxygenLevel += entry.Value;
+            totalOxygenLevel += entry.Value;
         }
-        levelSOsStatic[currentLevelID].oxygenLevel = currentOxygenLevel;
+        levelSOsStatic[currentLevelID].oxygenLevel = totalOxygenLevel;
         oxygenLevelSliderStatic.value = levelSOsStatic[currentLevelID].oxygenLevel;
         firstOxygenLevelTextStatic.text = $"{levelSOsStatic[currentLevelID].oxygenLevel}/{levelSOsStatic[currentLevelID].firstTargetOxygenLevel}";
         secondOxygenLevelTextStatic.text = $"{levelSOsStatic[currentLevelID].oxygenLevel}/{levelSOsStatic[currentLevelID].secondTargetOxygenLevel}";
@@ -65,8 +61,8 @@ public class LevelManager : MonoBehaviour
     }
 
     public static void LoadLevelScene(int levelID){
-        currentLevelID = levelID;
         SceneManager.LoadScene(levelSOsStatic[levelID].sceneName);
         LoadLevel(levelID);
+        currentLevelID = levelID;
     }
 }

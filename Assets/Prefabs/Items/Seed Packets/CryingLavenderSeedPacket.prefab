@@ -139,3 +139,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantName: 8
+  linkedInventoryItem: {fileID: 5475830003357801135, guid: 5f874a23a17c7db4e840643d5693aa5e, type: 3}

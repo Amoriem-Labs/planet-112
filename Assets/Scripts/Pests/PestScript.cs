@@ -20,7 +20,7 @@ public class PestScript : MonoBehaviour
     public Pest pestSO;
 
     // The slider that controls the pest's health bar.
-    public Slider slider;
+    private Slider slider;
 
     // Pest module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     protected Dictionary<PestModuleEnum, IPestModule> pestModules = new Dictionary<PestModuleEnum, IPestModule>();

@@ -132,7 +132,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     // Deletes the shop sell UI item and corresponding inventory item. Is triggered when an item is sold in the shop.
-    public void DeleteFromSelling(GameObject inventoryItemObject){
+    public void Delete(GameObject inventoryItemObject){
         Destroy(gameObject); // Destroys the shop sell UI item...
         Destroy(inventoryItemObject); // ... and also destroys the item in the shop sell UI's main panel
     }
@@ -140,7 +140,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     // Deletes numSell amount of this inventory item. Is triggered when selling items to Mav.
     public void Sell(int numSell, GameObject inventoryItemObject){
         if (numSell == stackSize){
-            DeleteFromSelling(inventoryItemObject);
+            Delete(inventoryItemObject);
         } else {
             stackSize -= numSell;
             stackSizeText.text = stackSize.ToString();
@@ -148,6 +148,19 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             inventoryItemObject.GetComponent<InventoryItem>().stackSizeText.text = stackSize.ToString();
         }
         hotbar.UpdateFruitText();
+        hotbar.Invoke("UpdateHotbar",0); // delays updating hotbar until next frame, after the gameobjects are destroyed
+    }
+
+    public void Use(int numUse, GameObject inventoryItemObject){
+        hotbar = GameObject.FindGameObjectWithTag("hotbar").GetComponent<HotbarManagerScript>();
+        if (numUse == stackSize){
+            Delete(inventoryItemObject);
+        } else {
+            stackSize -= numUse;
+            stackSizeText.text = stackSize.ToString();
+            inventoryItemObject.GetComponent<InventoryItem>().stackSize = stackSize;
+            inventoryItemObject.GetComponent<InventoryItem>().stackSizeText.text = stackSize.ToString();
+        }
         hotbar.Invoke("UpdateHotbar",0); // delays updating hotbar until next frame, after the gameobjects are destroyed
     }
 }

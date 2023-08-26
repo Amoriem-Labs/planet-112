@@ -6,6 +6,7 @@ public class SeedPacket : MonoBehaviour, ICollectible
 {    
     private GameObject player;
     public PlantName plantName;
+    public GameObject linkedInventoryItem;
 
     public void Collect(){
         // seed is not meant to be collected off the ground, so this method is just here to avoid compile error from not implementing Collect() from the interface
@@ -14,7 +15,12 @@ public class SeedPacket : MonoBehaviour, ICollectible
     // Is triggered whenever player uses seed in hotbar.
     public void Use(){
         player = GameObject.FindGameObjectWithTag("Player");
-        GameManager.SpawnPlant(plantName, GridScript.CoordinatesToGrid(player.transform.position));
-        AudioManager.GetSFX("plantSFX").Play();
+        GameObject plantPrefab = GameManager.SpawnPlant(plantName, GridScript.CoordinatesToGrid(player.transform.position));
+        if (plantPrefab != null){
+            InventoryItem inventoryItem = linkedInventoryItem.GetComponent<InventoryItem>();
+            if (inventoryItem.stackable){
+                inventoryItem.Use(1, inventoryItem.gameObject);
+            }
+        }
     }
 }
