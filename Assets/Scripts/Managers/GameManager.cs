@@ -6,6 +6,18 @@ public class GameManager : MonoBehaviour
 {
     public PersistentData persistentData;
     public Settings settings;
+    public static int plantID;
+    public GameObject eventSystem;
+    public GameObject cameraObj;
+    public GameObject cinemaMachineCamera;
+
+    void Awake(){
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(eventSystem);
+        DontDestroyOnLoad(cameraObj);
+        DontDestroyOnLoad(cinemaMachineCamera);
+        plantID = 0; // Replace later when loading in save system.
+    }
 
     private void Start()
     {
@@ -21,14 +33,15 @@ public class GameManager : MonoBehaviour
     public static GameObject SpawnPlant(PlantName plantName, Vector2 location) // location has to be mapGrid int coords!
     {
         GameObject plantPrefab = PlantStorage.GetPlantPrefab(plantName);
-        GameObject plantObj = GridScript.SpawnObjectAtGrid(location, plantPrefab,
+        GameObject plantObj = GridScript.SpawnObjectAtGrid(location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.offset[0],
             plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied[0].vec2Array); // when a new plant is spawned, currStageOfLife is 0
 
         if (plantObj != null)
         {
-            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-            audioManager.plantSFX.Play();
+            AudioManager.GetSFX("plantSFX").Play();
             PlantScript plantScript = plantObj.GetComponent<PlantScript>();
+            plantScript.ID = plantID; 
+            plantID += 1;
             plantScript.InitializePlantData(location);
 
             plantScript.SetMainCollider();
@@ -43,15 +56,14 @@ public class GameManager : MonoBehaviour
     public static GameObject SpawnPlant(PlantData plantData)
     {
         GameObject plantPrefab = PlantStorage.GetPlantPrefab((PlantName)plantData.plantName);
-        GameObject plantObj = GridScript.SpawnObjectAtGrid(plantData.location, plantPrefab,
-            plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
+        PlantScript plantScript = plantPrefab.GetComponent<PlantScript>();
+        GameObject plantObj = GridScript.SpawnObjectAtGrid(plantData.location, plantPrefab, plantScript.plantSO.offset[plantData.currStageOfLife],
+            plantScript.plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
 
         if (plantObj != null)
         {
-            AudioManager audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-            audioManager.plantSFX.Play();
+            AudioManager.GetSFX("plantSFX").Play();
 
-            PlantScript plantScript = plantObj.GetComponent<PlantScript>();
             plantScript.plantData = plantData;
 
             plantScript.SetMainCollider();
@@ -67,7 +79,7 @@ public class GameManager : MonoBehaviour
         if (plantScript != null) // could be null, if multiple sources kill one plant in the same frame.
         {
             // Free up the space if not picked up. If dies while in hand then no need to free since already freed when picked up
-            if(!plantScript.pickedUp) GridScript.RemoveObjectFromGrid(plantScript.plantData.location,
+            if(!plantScript.pickedUp) GridScript.RemoveObjectFromGrid(plantScript.plantData.location, plantScript,
                 plantScript.plantSO.relativeGridsOccupied[plantScript.plantData.currStageOfLife].vec2Array);
             // Call some internal matters plant deals with
             plantScript.OnPlantDeath();

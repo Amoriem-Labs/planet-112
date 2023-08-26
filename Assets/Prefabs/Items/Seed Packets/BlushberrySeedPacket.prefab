@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2909517497726723505}
   - component: {fileID: 8907948064318694776}
   - component: {fileID: -4679724322747899711}
+  - component: {fileID: -6724732693877748748}
   m_Layer: 0
   m_Name: BlushberrySeedPacket
   m_TagString: collectible
@@ -138,4 +139,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioManager: {fileID: 0}
+  plantName: 2
+  linkedInventoryItem: {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
+--- !u!114 &-6724732693877748748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2909517497726723509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantName: 2
+  linkedInventoryItem: {fileID: 0}

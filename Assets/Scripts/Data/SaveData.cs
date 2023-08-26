@@ -28,6 +28,7 @@ public class LevelData
     public int firstTargetOxygenLevel; // first target oxygen level of the level, once player reaches this oxygen level, they can move onto the next level
     public int secondTargetOxygenLevel; // second target oxygen level of the level, once player reaches this oxygen level, they get a 2% attack damage boost
     public int[] mapGrid; // the current distribution of this level's map's grids. Use 1D array math thingy to represent 2D array.
+    public int[] plantableGrid; // a 2D array of which tiles are plantable. Must have same dim as mapGrid.
     public PlantData plantInHand; // if any, the plant the player picked up. Can move it to personal data for cross level or make it into a list. 
 }
 
@@ -43,7 +44,7 @@ public class PlantData
     //public List<int> plantModules; // OLD VERSION modules that this plant currently has
     public Dictionary<PlantModuleEnum, String> plantModuleData;
     // Status effects' durations?
-}
+} 
 
 // Contains the dynamic data of a pest
 [Serializable]

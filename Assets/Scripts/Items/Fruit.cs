@@ -8,15 +8,10 @@ public class Fruit : MonoBehaviour, ICollectible
     public delegate void HandleFruitCollected(GameObject fruitInventoryPrefab);
     public static event HandleFruitCollected OnFruitCollected;
     public GameObject fruitInventoryPrefab;
-    public AudioManager audioManager;
     public string fruitType;
 
-    void Awake(){
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
-    }
-
     public void Collect(){
-        audioManager.collectFruitSFX.Play();
+        AudioManager.GetSFX("collectFruitSFX").Play();
         Destroy(gameObject);
         OnFruitCollected?.Invoke(fruitInventoryPrefab);
     }

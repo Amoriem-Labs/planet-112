@@ -30,6 +30,7 @@ public class Settings : MonoBehaviour
     public Sprite currentYraSprite; // If we are continuing to develop Planet 112 and making clothing sets feature a reality, will need to find some way to make this referencing to a sprite dynamic. Currently, it is only set to the yra-idle sprite.
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
         Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
         fullScreen = true;
         settingsStartingScale = transform.localScale;
@@ -160,8 +161,8 @@ public class Settings : MonoBehaviour
             saveFileBiomeTexts[saveIndex - 1].color = caveColor;
         }
 
-        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.currentOxygenLevel / LevelManager.currentSecondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format("Oxygen: {0}%", LevelManager.currentOxygenLevel * 100 / LevelManager.currentFirstTargetOxygenLevel);
+        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel / LevelManager.levelSOsStatic[LevelManager.currentLevelID].secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
+        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format("Oxygen: {0}%", LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel * 100 / LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel);
         saveFileOxygenLevelTexts[saveIndex - 1].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
     }
 

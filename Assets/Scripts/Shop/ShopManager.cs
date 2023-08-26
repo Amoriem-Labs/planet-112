@@ -55,12 +55,12 @@ public class ShopManager : MonoBehaviour
 
     public FruitManager fruitManager;
     public InventoryManager inventoryManager;
-    public AudioManager audioManager;
 
     public ShopSlot[] shopSlots;
     public bool isBuySlotSelected;
 
     void Awake(){
+        DontDestroyOnLoad(gameObject);
         shopSlots = GetComponentsInChildren<ShopSlot>(true);
         playerScript = player.GetComponent<PlayerScript>();
         selectUI.SetActive(true);
@@ -347,7 +347,7 @@ public class ShopManager : MonoBehaviour
     public void Buy(){
         if (!TimeManager.IsGamePaused()){
             if (fruitManager.nSeafoam >= totalSeafoamCost && fruitManager.nSunset >= totalSunsetCost && fruitManager.nAmethyst >= totalAmethystCost && fruitManager.nCrystalline >= totalCrystallineCost && currentlySelectedBuySlot.buyStackSize > 0){
-                audioManager.buySFX.Play();
+                AudioManager.GetSFX("buySFX").Play();
                 
                 fruitManager.nSeafoam -= totalSeafoamCost;
                 fruitManager.nSunset -= totalSunsetCost;
@@ -378,7 +378,7 @@ public class ShopManager : MonoBehaviour
 
     public void Sell(){
         if (!TimeManager.IsGamePaused()){
-            audioManager.sellSFX.Play();
+            AudioManager.GetSFX("sellSFX").Play();
             fruitManager.nSeafoam += totalSeafoamCost;
             fruitManager.nSunset += totalSunsetCost;
             fruitManager.nAmethyst += totalAmethystCost;

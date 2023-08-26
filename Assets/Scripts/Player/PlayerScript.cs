@@ -35,9 +35,15 @@ public class PlayerScript : MonoBehaviour
     public bool canOpenShop;
     public bool shopIsLoaded;
     public GameObject shopCanvas;
+    public GameObject shopPopupButton;
+
+    public GameObject playerPopupCanvas;
+    public bool canMoveNextLevel;
+    public bool canMovePreviousLevel;
 
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         controls = new Controls();
         playerInput = GetComponent<PlayerInput>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -45,6 +51,9 @@ public class PlayerScript : MonoBehaviour
         settingsAreLoaded = false;
         canOpenShop = false;
         shopIsLoaded = false;
+        canMoveNextLevel = false;
+        canMovePreviousLevel = false;
+        playerPopupCanvas.SetActive(false);
 
         // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
         //    or not when Game is played.
@@ -54,6 +63,7 @@ public class PlayerScript : MonoBehaviour
         settingsCanvas.SetActive(false);
         shopCanvas.SetActive(true);
         shopCanvas.SetActive(false);
+        shopPopupButton.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
@@ -148,20 +158,47 @@ public class PlayerScript : MonoBehaviour
                 closestPlantDist = currentPlantDist;
                 closestPlant = plant;
             }
+            // Below if statement makes sure that when there is both lilypad and 
+            //      another plant planted on top of the lilypad, the player ALWAYS picks up the plant on top of the lilypad first
+            if (currentPlantDist == closestPlantDist && !plant.plantSO.unlockPlantability){
+                closestPlantDist = currentPlantDist;
+                closestPlant = plant;
+            }
         }
         return closestPlant; // null if empty, or closest plant is outside
     }
 
-    PlantScript plantInHand = null;
+    public PlantScript plantInHand = null;
     public void OnInteract(InputAction.CallbackContext context) // testing rn: press E to pick up & place plants
     {
         if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
+            // If can move onto next level
+            if (canMoveNextLevel){
+                canMoveNextLevel = false;
+                LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
+                transform.position = new Vector2(0.25f, transform.position.y);
+                GridScript.ClearGrid();
+                GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
+                    PersistentData.GetLevelData(LevelManager.currentLevelID));
+                return;
+            }
+            if (canMovePreviousLevel){
+                canMovePreviousLevel = false;
+                if (LevelManager.currentLevelID == 0){
+                    Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
+                    return;
+                }
+                LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
+                GridScript.ClearGrid();
+                GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
+                    PersistentData.GetLevelData(LevelManager.currentLevelID));
+                return;
+            }
+
             if (!shopIsLoaded){
-                //closestPlant.TakeDamage(50);
-                //Debug.Log("Closest Plant: ow! My current hp is: " + closestPlant.plantData.currentHealth);
                 if (plantInHand) // has a plant in hand
                 {
-                    if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position)))
+                    if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position, plantInHand.plantSO.offset[plantInHand.plantData.currStageOfLife])))
                     {
                         plantInHand = null;
                     }
@@ -180,6 +217,7 @@ public class PlayerScript : MonoBehaviour
                     }
                 }
             }
+
             // If in front of Mav
             if (canOpenShop && !shopIsLoaded){
                 shopCanvas.SetActive(true);
@@ -199,9 +237,8 @@ public class PlayerScript : MonoBehaviour
 
     public void GeneratePlant(InputAction.CallbackContext context)
     {
-        if (!inventoryIsLoaded && !shopIsLoaded && !TimeManager.IsGamePaused()){
+        if (!(inventoryIsLoaded || TimeManager.IsGamePaused())){
             GameObject plant = GameManager.SpawnPlant(PlantName.Bob, GridScript.CoordinatesToGrid(transform.position));
-            
             //if(plant != null) plant.GetComponent<PlantScript>().RunPlantModules(new List<PlantModuleEnum>() { PlantModuleEnum.Test });
         }
     }
@@ -250,10 +287,10 @@ public class PlayerScript : MonoBehaviour
             int index = Array.IndexOf(hotbarKeys, pressedKey);
             if (index != -1){
                 HotbarManagerScript hotbarManager = hotbarPanel.GetComponent<HotbarManagerScript>();
-                Transform linkedSlotTransform = hotbarManager.linkedSlotTransforms[index]; // need index-1 for zero-based indexing
+                Transform linkedSlotTransform = hotbarManager.linkedSlotTransforms[index];
                 if (linkedSlotTransform.childCount > 0){
-                    InventoryItem linkedInventoryItem = linkedSlotTransform.GetComponentInChildren<InventoryItem>();
-                    linkedInventoryItem.Use();
+                    ICollectible linkedItemPrefab = linkedSlotTransform.GetComponentInChildren<InventoryItem>().linkedItemPrefab.GetComponent<ICollectible>();
+                    linkedItemPrefab.Use();
                 }
             }
         }
@@ -294,14 +331,30 @@ public class PlayerScript : MonoBehaviour
         }
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = true;
-            print("can open shop now! Press E.");
+            shopPopupButton.SetActive(true);
+        }
+        if (collision.gameObject.tag == "NearLeftWall" && LevelManager.currentLevelID != 0){
+            canMovePreviousLevel = true;
+            playerPopupCanvas.SetActive(true);
+        }
+        if (collision.gameObject.tag == "NearRightWall" && LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel >= LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
+            canMoveNextLevel = true;
+            playerPopupCanvas.SetActive(true);
         }
     }
 
     private void OnRegularTriggerExit2D(Collider2D collision){
         if (collision.gameObject.tag == "Mav"){
             canOpenShop = false;
-            print("cannot open shop anymore.");
+            shopPopupButton.SetActive(false);
+        }
+        if (collision.gameObject.tag == "NearLeftWall"){
+            canMovePreviousLevel = false;
+            playerPopupCanvas.SetActive(false);
+        }
+        if (collision.gameObject.tag == "NearRightWall"){
+            canMoveNextLevel = false;
+            playerPopupCanvas.SetActive(false);
         }
     }
     #endregion

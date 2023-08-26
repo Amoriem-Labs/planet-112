@@ -28,4 +28,12 @@ public class UtilPrefabStorage : MonoBehaviour
     {
         return Instantiate(prefab, position, rotation, parent);
     }
+    
+    // Only use this method if you are instantiating a prefab with a RigidBody2D component (like the icura)
+    public GameObject InstantiatePrefab(GameObject prefab, Vector2 position, Quaternion rotation, Transform parent, Vector2 velocity)
+    {
+        GameObject newPrefab = Instantiate(prefab, position, rotation, parent);
+        newPrefab.GetComponent<Rigidbody2D>().velocity = velocity;
+        return newPrefab;
+    }
 }

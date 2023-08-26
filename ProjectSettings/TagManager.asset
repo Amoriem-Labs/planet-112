@@ -18,6 +18,12 @@ TagManager:
   - Mav
   - buyStackText
   - sellStackText
+  - gridSquare
+  - NearRightWall
+  - NearLeftWall
+  - grassParent
+  - plantParent
+  - squareParent
   layers:
   - Default
   - TransparentFX
@@ -31,8 +37,8 @@ TagManager:
   - Player
   - Plant
   - Pest
-  - 
-  - 
+  - Collectible
+  - Mav
   - 
   - 
   - 

@@ -14,6 +14,8 @@ public class Plant : ScriptableObject
     
     // currStageOfLife is the accessing index to everything below. Stage 0 is a seed, everything builds on this.
     public Sprite[] spriteArray; // Array of sprites per each growth stage
+    public RuntimeAnimatorController[] animatorArray; // Animations for each growth stage. Due to time constraints, not all stages will have an animation.
+    public float[] offset; // offset used to spawn in plants in world coords so that plant doesn't look embedded on ground.
     public float[] stageTimeMax; // Time spent in each growth stage
     public float[] maxHealth; // Max HP for each stage
 
@@ -24,18 +26,17 @@ public class Plant : ScriptableObject
     public Vector2[] hitboxSize; // dimension of the 2D box physical collider of this plant
     public Vector2[] hitboxOffset; // offset of the 2D box physical collider of this plant from bottom center
 
-    // Produce:
-    public int[] oxygenProductionLevels; // TODO: oxygen-consuming plants could have negative levels in certain stages?
-
     // Modules can subscribe to these delegates to react to changes when called. 
     public delegate void OnPlantStageUpdateDelegate();
     public OnPlantStageUpdateDelegate plantStageUpdateDelegate;
 
     // Module data
     // For FruitProductionModule:
-    public float[] productionRate; // numSeconds for a production cycle to happen
-    public int[] productionQuantity; // number of fruits per cycle of production
+    public float[] fruitProductionRate; // numSeconds for a production cycle to happen
+    public int[] fruitProductionQuantity; // number of fruits per cycle of production
     public FruitType fruitType; // icura type enum
+    // For OxygenProductionModule:
+    public int[] oxygenProductionQuantity; // number of oxygen this plant gives to atmosphere
     // For HealingModule:
     public float[] healRate; // numSeconds for a healing cycle to happen
     public float[] healAmount; // healing amt, either flat, max hp percentage, curr hp percentage, or curr missing hp %
@@ -45,6 +46,17 @@ public class Plant : ScriptableObject
     public float[] aoeAttackRate;
     public float[] aoeDamageAmount;
     public float[] aoeDamageRangeRadius;
+    public int[] aoeMaxPestsTargetable;
+    // For TauntModule:
+    public float[] tauntRangeRadius;
+    // For FruitProductionBoostModule:
+    public float[] fruitProductionBoostDecimal;
+    public float[] fruitProductionBoostRangeRadius;
+    // For OxygenProductionBoostModule:
+    public float[] oxygenProductionBoostDecimal;
+    public float[] oxygenProductionBoostRangeRadius;
+    // For UnlockPlantability (not a module):
+    public bool unlockPlantability;
 }
 
 [System.Serializable]

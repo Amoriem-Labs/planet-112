@@ -11962,6 +11962,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1678808355}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: audioManager
+      value: 
+      objectReference: {fileID: 333394615}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: inventoryPanel
       value: 
       objectReference: {fileID: 0}

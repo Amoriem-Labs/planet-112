@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe278a8699cded4595e4f6fed5f2022, type: 3}
+  m_Name: TempCryingLavender
+  m_EditorClassIdentifier: 
+  pName: 8
+  maxStage: 0
+  maxAttackers: 3
+  pestAttackPriority: 3
+  spriteArray:
+  - {fileID: 0}
+  animatorArray:
+  - {fileID: 9100000, guid: 450408fa40c9fd147ab7247350cfc107, type: 2}
+  offset:
+  - 0.25
+  stageTimeMax: []
+  maxHealth:
+  - 50
+  defaultModules: 0200000001000000
+  relativeGridsOccupied:
+  - vec2Array: []
+  targetRectParameters:
+  - vec2Array:
+    - {x: 0, y: 0.1}
+    - {x: 0.6, y: 0.5}
+  hitboxSize:
+  - {x: 0.6, y: 0.5}
+  hitboxOffset:
+  - {x: 0, y: 0.1}
+  fruitProductionRate: []
+  fruitProductionQuantity: 
+  fruitType: 0
+  oxygenProductionQuantity: 02000000
+  healRate:
+  - 60
+  healAmount:
+  - 10
+  healMode: 00000000
+  healRangeRadius:
+  - 5
+  aoeAttackRate: []
+  aoeDamageAmount: []
+  aoeDamageRangeRadius: []
+  aoeMaxPestsTargetable: 
+  tauntRangeRadius: []
+  fruitProductionBoostDecimal: []
+  fruitProductionBoostRangeRadius: []
+  oxygenProductionBoostDecimal: []
+  oxygenProductionBoostRangeRadius: []
+  unlockPlantability: 0

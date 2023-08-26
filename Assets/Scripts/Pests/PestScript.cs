@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Pathfinding;
 using System.Linq;
 using System;
@@ -17,6 +18,9 @@ public class PestScript : MonoBehaviour
 {
     // The scriptable oxject that contains fixed (non-dynamic) data about this pest.
     public Pest pestSO;
+
+    // The slider that controls the pest's health bar.
+    private Slider slider;
 
     // Pest module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
     protected Dictionary<PestModuleEnum, IPestModule> pestModules = new Dictionary<PestModuleEnum, IPestModule>();
@@ -39,6 +43,9 @@ public class PestScript : MonoBehaviour
     private void Awake()
     {
         currentState = State.STATE_SEARCHING;
+        slider = GetComponent<Slider>();
+        slider.maxValue = pestSO.maxHealth[pestData.currStageOfLife];
+        slider.value = slider.maxValue;
     }
 
     // Update is called once per frame
@@ -61,6 +68,9 @@ public class PestScript : MonoBehaviour
         }
 
         UpdateAllModules();
+        if (pestData.currentHealth <= 0){
+            OnDeath();
+        }
     }
 
     #region StateMachine
@@ -120,6 +130,21 @@ public class PestScript : MonoBehaviour
         queryCount++; // curr query finished, move onto next one in queue
         // if queue not empty, then next. This ensures no pather overlap.
         if (coroutineQueue.Count != 0) StartCoroutine(coroutineQueue.Dequeue());
+    }
+
+    public void switchTargetPlant(PlantScript plantScript){
+        if (plantScript.plantData.currStageOfLife != 0){
+            targetPlantScript = plantScript;
+            ResumePestModule(currAttackModule);
+        }
+    }
+
+    public void TakeDamage(float damageAmount){
+        // update internal health
+        pestData.currentHealth -= damageAmount;
+
+        // update health bar for slider
+        slider.value = pestData.currentHealth;
     }
 
     Queue<IEnumerator> coroutineQueue = new Queue<IEnumerator>();
@@ -301,8 +326,8 @@ public class PestScript : MonoBehaviour
 
     void DuringMove()
     {
-        // if max pest or target plant dies
-        if (targetPlantScript == null || targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers)
+        // if target plant dies or max pest or the plant is still a seed
+        if (targetPlantScript == null || targetPlantScript.attackers >= targetPlantScript.plantSO.maxAttackers || targetPlantScript.plantData.currStageOfLife == 0)
         {
             // handle a weird case where the pest is in state moving and movement script disabled, when the target is destroyed/missing.
             // if (GetComponent<PestMovement>().enabled != false)
@@ -333,7 +358,7 @@ public class PestScript : MonoBehaviour
         }
     }
 
-    // this is to deal with the case where a staionary plant already being attacked is being moved
+    // this is to deal with the case where a stationary plant already being attacked is being moved
     public void ChaseAfterPlant()
     {
         //Debug.Log("CHASE AFTER PLANT ACTIVATED");

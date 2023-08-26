@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe278a8699cded4595e4f6fed5f2022, type: 3}
+  m_Name: TempPitcherPlant
+  m_EditorClassIdentifier: 
+  pName: 6
+  maxStage: 1
+  maxAttackers: 3
+  pestAttackPriority: 3
+  spriteArray:
+  - {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
+  - {fileID: 0}
+  animatorArray:
+  - {fileID: 0}
+  - {fileID: 9100000, guid: fc4ea7ee5566f6746ac227e80d7d054d, type: 2}
+  offset:
+  - 0.1
+  - 0.5
+  stageTimeMax:
+  - 5
+  maxHealth:
+  - 0
+  - 100
+  defaultModules: 03000000
+  relativeGridsOccupied:
+  - vec2Array:
+    - {x: 1, y: 0}
+  - vec2Array:
+    - {x: 1, y: 0}
+    - {x: 0, y: 1}
+    - {x: 1, y: 1}
+  targetRectParameters:
+  - vec2Array:
+    - {x: 0, y: 0.1}
+    - {x: 0.2, y: 0.2}
+  - vec2Array:
+    - {x: 0, y: 0.5}
+    - {x: 0.5, y: 0.5}
+  hitboxSize:
+  - {x: 0.2, y: 0.2}
+  - {x: 0.5, y: 0.5}
+  hitboxOffset:
+  - {x: 0, y: 0.1}
+  - {x: 0, y: 0.5}
+  fruitProductionRate: []
+  fruitProductionQuantity: 
+  fruitType: 0
+  oxygenProductionQuantity: 
+  healRate: []
+  healAmount: []
+  healMode: 
+  healRangeRadius: []
+  aoeAttackRate:
+  - 0
+  - 30
+  aoeDamageAmount:
+  - 0
+  - 50
+  aoeDamageRangeRadius:
+  - 0
+  - 2
+  aoeMaxPestsTargetable: 0000000005000000
+  tauntRangeRadius: []
+  fruitProductionBoostDecimal: []
+  fruitProductionBoostRangeRadius: []
+  oxygenProductionBoostDecimal: []
+  oxygenProductionBoostRangeRadius: []
+  unlockPlantability: 0

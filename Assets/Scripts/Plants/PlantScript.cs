@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Linq;
 using MEC;
@@ -11,14 +12,16 @@ public abstract class PlantScript : MonoBehaviour
     // The scriptable object that contains fixed (non-dynamic) data about this plant.
     public Plant plantSO;
 
+    // Plant ID. Is used to track how much oxygen each plant is contributing to the level. ID = 0 means this is the first plant.
+    public int ID;
+
     // Plant module Dict. They are separated by function. They are not in the scriptable object because that can't have runtime-changeable data.
-    protected Dictionary<PlantModuleEnum, IPlantModule> plantModules = new Dictionary<PlantModuleEnum, IPlantModule>();
+    public Dictionary<PlantModuleEnum, IPlantModule> plantModules = new Dictionary<PlantModuleEnum, IPlantModule>();
 
     // this needs to be here, because each instance has its own sprite renderer
-    protected SpriteRenderer spriteRenderer; // our plants might use animations for idle instead of sprites, so a parameter from animator would replace.
-
-    // this is the audio manager
-    private AudioManager audioManager;
+    protected SpriteRenderer spriteRenderer;
+    protected Animator animator; // Due to time constraints, not every plant has an animation, so that's why we have both sprite renderers and animators
+    protected Slider slider; // the UI slider element that controls health bar of plant
 
     // no need to hideininspector for now. Use for demo.
     /*[HideInInspector]*/
@@ -99,7 +102,11 @@ public abstract class PlantScript : MonoBehaviour
     public virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+        animator = GetComponent<Animator>();
+        slider = GetComponent<Slider>();
+        slider.maxValue = plantSO.maxHealth[plantData.currStageOfLife];
+        slider.value = slider.maxValue;
+        transform.GetChild(0).gameObject.SetActive(false); // hide the health bar when instantiated since seeds aren't meant to be attacked by pests
     }
 
     public void InitializePlantData(Vector2 location)
@@ -138,8 +145,9 @@ public abstract class PlantScript : MonoBehaviour
     // This step is called after plant object has been initialized. This function places the plant in the world and schedules the first growth events.
     public void VisualizePlant() // for now, assume spawn function is only used in the level where player's present
     {
-        // Set sprite
+        // Set sprite and animations
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+        animator.runtimeAnimatorController = plantSO.animatorArray[plantData.currStageOfLife];
 
         if (plantData.currStageOfLife != plantSO.maxStage) // if they are equal then no need to keep growing.
         {
@@ -165,7 +173,7 @@ public abstract class PlantScript : MonoBehaviour
                 float maxHealth = plantSO.maxHealth[plantData.currStageOfLife];
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * maxHealth, maxHealth);
                 break;
-            case HealMode.missing: // less hp, more healing; more hp, less healing. Sett passive.
+            case HealMode.missing: // less hp, more healing; more hp, less healing. Set passive.
                 float maxHP = plantSO.maxHealth[plantData.currStageOfLife];
                 float missingHealth = maxHP - plantData.currentHealth;
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * missingHealth, maxHP);
@@ -174,13 +182,15 @@ public abstract class PlantScript : MonoBehaviour
                 plantData.currentHealth = Math.Min(plantData.currentHealth + healAmt * plantData.currentHealth, plantSO.maxHealth[plantData.currStageOfLife]);
                 break;
         }
+        slider.value = plantData.currentHealth;
     }
 
     // called by the attacker upon attacking this plant. Also, notice how taking negative damage HEALS the plant!
     public void TakeDamage(int damage)
     {
         plantData.currentHealth -= damage;
-        audioManager.takeDamageSFX.Play();
+        slider.value = plantData.currentHealth;
+        AudioManager.GetSFX("takeDamageSFX").Play();
 
         // check if plant dies.
         CheckPlantHealth();
@@ -201,6 +211,16 @@ public abstract class PlantScript : MonoBehaviour
             // sadly, plant dies.
             Debug.Log("PLANT KILLED GG");
             GameManager.KillPlant(this);
+
+            // If this plant is a lilypad and there's other plants on the same square, also kill the other plants
+            List<PlantScript> plantsOnTopThisSquare = GridScript.GetGridSquare(transform.position).plantsOnTop;
+            if (plantSO.unlockPlantability && plantsOnTopThisSquare.Count > 1){
+                foreach (PlantScript plantScript in plantsOnTopThisSquare){
+                    if (plantScript != this) GameManager.KillPlant(plantScript);
+                }
+            }
+
+            LevelManager.UpdateOxygenLevel(ID, 0);
         }
     }
 
@@ -259,7 +279,7 @@ public abstract class PlantScript : MonoBehaviour
         // we can do this knowing plantstageupdate will be called with currStage at least 1
         Vector2[] newSpaceNeeded = (plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array).Except(
             plantSO.relativeGridsOccupied[plantData.currStageOfLife - 1].vec2Array).ToArray();
-        if (!GridScript.CheckOtherTilesAvailability(plantData.location, newSpaceNeeded)) // if the spaces are not available, pause the growth.
+        if (!GridScript.CheckOtherTilesAvailability(plantData.location, gameObject, newSpaceNeeded)) // if the spaces are not available, pause the growth.
         {
             // TODO: what's a way to resume the growth later on?
             Debug.Log("Plant growth is paused. Need more space.");
@@ -273,6 +293,8 @@ public abstract class PlantScript : MonoBehaviour
 
         // update visuals
         spriteRenderer.sprite = plantSO.spriteArray[plantData.currStageOfLife];
+        animator.runtimeAnimatorController = plantSO.animatorArray[plantData.currStageOfLife];
+        transform.position = GridScript.GridToCoordinates(plantData.location, plantSO.offset[plantData.currStageOfLife]);
 
         // update hitbox
         SetMainCollider();
@@ -290,7 +312,14 @@ public abstract class PlantScript : MonoBehaviour
         if (freedUpSpaceFromPrev.Length > 0) GridScript.SetTileStates(plantData.location, TileState.AVAILABLE_STATE, freedUpSpaceFromPrev);
 
         // plays sound for when plant grows
-        audioManager.growingSFX.Play();
+        AudioManager.GetSFX("growingSFX").Play();
+
+        // updates health bar for slider
+        slider.maxValue = plantSO.maxHealth[plantData.currStageOfLife];
+        if (plantData.currStageOfLife == 1){
+            transform.GetChild(0).gameObject.SetActive(true); // make health bar visible when plant has grown up to stage 1
+            slider.value = slider.maxValue;
+        }
 
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {
@@ -315,7 +344,7 @@ public abstract class PlantScript : MonoBehaviour
         // pause modules accordingly
         foreach (var module in plantModules.Values) module.OnPlantGrowthPause();
         // Free up the space
-        GridScript.RemoveObjectFromGrid(plantData.location,
+        GridScript.RemoveObjectFromGrid(plantData.location, this,
             plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
         // Pause the growth
         StopPlantGrowth(); // aware of potential bug? like coroutine generated after pausing? do we need a bool + if in coroutine?
@@ -329,12 +358,13 @@ public abstract class PlantScript : MonoBehaviour
         transform.localPosition = Vector3.zero;
 
         Debug.Log("Plant has been lifted, and growth paused at " + plantData.stageTimeLeft + " seconds");
+        Debug.Log(GridScript.GetTileState(GridScript.CoordinatesToGrid(transform.position)));
     }
 
     public bool PlacePlant(Vector2 location)
     {
         // Check grid and place
-        if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
+        if (GridScript.PlaceObjectAtGrid(location, gameObject, plantSO.offset[plantData.currStageOfLife], plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array))
         {
             pickedUp = false;
             // resume modules accordingly
@@ -377,5 +407,17 @@ public abstract class PlantScript : MonoBehaviour
     {
         // Modules shouldn't work when the plants is picked up? unless...
         if (pickedUp == false) UpdateAllModules();
+
+        // If this plant is lilypad and there is another plant on top of lilypad and if pest aggro is on lilypad, switches the pest aggro to the plant on top of lilypad.
+        List<PlantScript> plantsInGridSquare = GridScript.GetGridSquare(GridScript.CoordinatesToGrid(transform.position)).plantsOnTop;
+        if (plantsInGridSquare.Count > 1){
+            foreach (PestScript pestScript in pestScripts){
+                foreach (PlantScript plantScript in plantsInGridSquare){
+                    if (!plantScript.plantSO.unlockPlantability){
+                        pestScript.switchTargetPlant(plantScript);
+                    }
+                }
+            }
+        }
     }
 }
