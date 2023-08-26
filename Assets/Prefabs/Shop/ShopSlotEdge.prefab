@@ -142,7 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Blushberry Seed
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 955172e39a0be85478180abf746eb291, type: 2}
   m_sharedMaterial: {fileID: -7009963781345518562, guid: 955172e39a0be85478180abf746eb291, type: 2}
@@ -573,13 +573,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dfbdb84cb378a548a908d570d0e6903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shopItemSO: {fileID: 11400000, guid: faa5a999021837240aee691ce6750852, type: 2}
+  shopItemSO: {fileID: 0}
   buyStackSize: 0
-  buyStackText: {fileID: 0}
   priceText: {fileID: 4456878490616131224}
   unlocked: 1
   lockedImage: {fileID: 4456878490695864799}
   shopManager: {fileID: 0}
+  outOfStock: 0
   isAdding: 0
   isRemoving: 0
   timeElapsedSinceButtonDown: 0

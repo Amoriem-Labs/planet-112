@@ -24,6 +24,7 @@ public class LevelManager : MonoBehaviour
     public static TextMeshProUGUI firstOxygenLevelTextStatic;
     public TextMeshProUGUI secondOxygenLevelText;
     public static TextMeshProUGUI secondOxygenLevelTextStatic;
+    public bool leveledUp;
 
     void Awake(){
         DontDestroyOnLoad(oxygenLevelCanvas);
@@ -32,8 +33,17 @@ public class LevelManager : MonoBehaviour
         firstOxygenLevelTextStatic = firstOxygenLevelText;
         secondOxygenLevelTextStatic = secondOxygenLevelText;
         firstOxygenLevelMarkStatic = firstOxygenLevelMark;
+        leveledUp = false;
         foreach (Level levelSO in levelSOsStatic){
             levelSO.oxygenLevel = 0;
+        }
+    }
+
+    void Update(){
+        if (levelSOsStatic[currentLevelID].oxygenLevel >= levelSOsStatic[currentLevelID].firstTargetOxygenLevel && !levelSOs[currentLevelID].completed){
+            AudioManager.GetSFX("levelSFX").Play();
+            AudioManager.GetSFX("swooshSFX").Play();
+            levelSOs[currentLevelID].completed = true;
         }
     }
 

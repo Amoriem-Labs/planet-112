@@ -25,7 +25,7 @@ MonoBehaviour:
   stageTimeMax: []
   maxHealth:
   - 50
-  defaultModules: 0200000001000000
+  defaultModules: 020000000100000007000000
   relativeGridsOccupied:
   - vec2Array: []
   targetRectParameters:
@@ -40,6 +40,12 @@ MonoBehaviour:
   fruitProductionQuantity: 
   fruitType: 0
   oxygenProductionQuantity: 02000000
+  healSelfRate:
+  - 0
+  - 5
+  healSelfAmount:
+  - 0
+  - 5
   healRate:
   - 60
   healAmount:

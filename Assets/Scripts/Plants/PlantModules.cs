@@ -15,6 +15,7 @@ public enum PlantModuleEnum // serialized names of each of the modules
     FruitProductionBoost,
     OxygenProductionBoost,
     Taunt,
+    SelfHealing,
 }
 
 // Plant module interfaces (can be customized to include new functions)
@@ -39,6 +40,7 @@ public static class PlantModuleArr
       // {PlantModuleEnum.InstaKillPests, (plantScript) => new InstaKillPestsModule(plantScript)},
       {PlantModuleEnum.FruitProduction, (plantScript) => new FruitProductionModule(plantScript)},
       {PlantModuleEnum.OxygenProduction, (plantScript) => new OxygenProductionModule(plantScript)},
+      {PlantModuleEnum.SelfHealing, (plantScript) => new HealSelfModule(plantScript)},
       {PlantModuleEnum.Healing, (plantScript) => new HealingModule(plantScript)},
       {PlantModuleEnum.AoeDamage, (plantScript) => new AoeDamageModule(plantScript)},
       {PlantModuleEnum.FruitProductionBoost, (plantScript) => new FruitProductionBoostModule(plantScript)},
@@ -247,6 +249,36 @@ public static class PlantModuleArr
                     plantScript.transform.position, Quaternion.identity, null, randomVelocity);
             }
             Debug.Log("Producing " + moduleData.fruitProductionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
+
+            // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
+            float randfloat = Random.Range(0,1);
+            if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
+                float velocityMag = 3.0f;
+                float xComp = Random.Range(-1,1);
+                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                Vector2 randomVelocity = new Vector2(xComp, yComp);
+                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                Debug.Log("Producing 1 of type Crystalline fruit.");
+            }
+            if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
+                float velocityMag = 3.0f;
+                float xComp = Random.Range(-1,1);
+                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                Vector2 randomVelocity = new Vector2(xComp, yComp);
+                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                Debug.Log("Producing 1 of type Crystalline fruit.");
+            }
+            if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
+                float velocityMag = 3.0f;
+                float xComp = Random.Range(-1,1);
+                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                Vector2 randomVelocity = new Vector2(xComp, yComp);
+                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                Debug.Log("Producing 1 of type Crystalline fruit.");
+            }
         }
 
         public override void OnPlantStageGrowth()
@@ -291,7 +323,52 @@ public static class PlantModuleArr
         }
     }
 
+    // Heal self module
+    [System.Serializable]
+    public class HealSelfModuleData : TimerModuleData
+    {
+        public float healSelfRate;
+        public float healSelfAmount; 
+    }
+    public class HealSelfModule : TimerModule<HealSelfModuleData>
+    {
+        public HealSelfModule(PlantScript plantScript) : base(plantScript)
+        {
+            // load from default, presumably assume that this happens before retrieving from data.
+            moduleData = new HealSelfModuleData
+            {
+                timeInCurrentCycleSoFar = 0f,
+                timePerCycle = plantScript.plantSO.healSelfRate[plantScript.plantData.currStageOfLife], // healSelfRate
+                healSelfAmount = plantScript.plantSO.healSelfAmount[plantScript.plantData.currStageOfLife], // healSelfAmount
+            };
+        }
 
+        public override void OnModuleAdd()
+        {
+            base.OnModuleAdd();
+        }
+
+        public override void OnCycleComplete()
+        {
+            if (plantScript.plantData.currentHealth + moduleData.healSelfAmount > plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
+                plantScript.plantData.currentHealth = plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife];
+            } else {
+                plantScript.plantData.currentHealth += moduleData.healSelfAmount;
+            }
+            AudioManager.GetSFX("healSFX").Play();
+        }
+
+        public override void OnPlantStageGrowth()
+        {
+            // by now, stage should be inc'ed alrdy
+            moduleData.healSelfRate = plantScript.plantSO.healSelfRate[plantScript.plantData.currStageOfLife];
+            moduleData.healSelfAmount = plantScript.plantSO.healSelfAmount[plantScript.plantData.currStageOfLife];
+        }
+    }
+
+
+
+    // Heal other plants module
     [System.Serializable]
     public class HealingModuleData : TriggerAndTimerModuleData
     {
@@ -349,6 +426,7 @@ public static class PlantModuleArr
                     plantsInRange[i].GetHealed(moduleData.healAmount, moduleData.healMode);
                 }
             }
+            AudioManager.GetSFX("healSFX").Play();
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)
@@ -439,6 +517,7 @@ public static class PlantModuleArr
                         pestsInRange[i].TakeDamage(moduleData.damageAmount);
                         Debug.Log("Attacking pest " + pestsInRange[i].name);
                     }
+                    AudioManager.GetSFX("chompSFX").Play();
                 }
             }
         }

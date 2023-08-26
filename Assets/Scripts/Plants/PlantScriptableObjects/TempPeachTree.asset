@@ -30,7 +30,7 @@ MonoBehaviour:
   maxHealth:
   - 0
   - 100
-  defaultModules: 000000000100000006000000
+  defaultModules: 00000000010000000600000007000000
   relativeGridsOccupied:
   - vec2Array:
     - {x: 1, y: 0}
@@ -75,6 +75,12 @@ MonoBehaviour:
   fruitProductionQuantity: 000000000a000000
   fruitType: 0
   oxygenProductionQuantity: 0000000005000000
+  healSelfRate:
+  - 0
+  - 5
+  healSelfAmount:
+  - 0
+  - 5
   healRate: []
   healAmount: []
   healMode: 

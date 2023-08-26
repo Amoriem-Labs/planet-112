@@ -12,4 +12,5 @@ public class Level : ScriptableObject
     public int oxygenLevel; 
     public int firstTargetOxygenLevel;
     public int secondTargetOxygenLevel;
+    public bool completed;
 }

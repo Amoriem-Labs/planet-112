@@ -37,6 +37,10 @@ public class Plant : ScriptableObject
     public FruitType fruitType; // icura type enum
     // For OxygenProductionModule:
     public int[] oxygenProductionQuantity; // number of oxygen this plant gives to atmosphere
+    // For HealSelfModule:
+    public float[] healSelfRate; // healing rate for self
+    public float[] healSelfAmount; // healing amount for self
+    
     // For HealingModule:
     public float[] healRate; // numSeconds for a healing cycle to happen
     public float[] healAmount; // healing amt, either flat, max hp percentage, curr hp percentage, or curr missing hp %

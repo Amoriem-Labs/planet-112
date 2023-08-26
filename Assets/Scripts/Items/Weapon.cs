@@ -8,6 +8,7 @@ public class Weapon : MonoBehaviour, ICollectible
     public delegate void HandleWeaponCollected(GameObject weaponInventoryPrefab);
     public static event HandleWeaponCollected OnWeaponCollected;
     public GameObject weaponInventoryPrefab;
+    public string weaponName;
 
     // Is triggered whenever player picks up stick off ground.
     public void Collect(){
@@ -18,6 +19,11 @@ public class Weapon : MonoBehaviour, ICollectible
 
     // Is triggered whenever player uses stick to attack.
     public void Use(){
-        print("using stick");
+        if (weaponName.Equals("Stick")){
+            AudioManager.GetSFX("thudSFX").Play();
+        }
+        if (weaponName.Equals("Bow")){
+            AudioManager.GetSFX("arrowSFX").Play();
+        }
     }
 }

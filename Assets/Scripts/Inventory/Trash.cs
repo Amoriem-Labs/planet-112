@@ -11,6 +11,7 @@ public class Trash : MonoBehaviour, IDropHandler
             GameObject dropped = eventData.pointerDrag;
             InventoryItem droppedInventoryItem = dropped.GetComponent<InventoryItem>();
             droppedInventoryItem.DeleteFromTrashing();
+            AudioManager.GetSFX("trashSFX").Play();
         }
     }
 }

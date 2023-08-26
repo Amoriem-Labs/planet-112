@@ -124,6 +124,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         }
         hotbar.UpdateFruitText();
         Destroy(gameObject); // Destroys the item in the inventory...
+        AudioManager.GetSFX("trashSFX").Play();
         InventoryManager inventoryManager = rootInventorySlot.GetComponentInParent<InventoryManager>();
         int slotIndex = rootInventorySlot.GetComponent<InventorySlot>().inventorySlotIndex;
         GameObject sellShopUIgameObject = inventoryManager.linkedSellSlots[slotIndex].transform.GetChild(0).gameObject;

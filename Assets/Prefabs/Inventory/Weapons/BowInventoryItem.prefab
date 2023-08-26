@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0baa34d5dc746464783ea13496f585cc, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d0dda4638f8843141826aa91d25d0fd8, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -274,7 +274,7 @@ MonoBehaviour:
   linkedShopItemSO: {fileID: 11400000, guid: b66a3b76b33a2724e99364324ec1f7b4, type: 2}
   displayName: sampleBow
   image: {fileID: 1509001374528278176}
-  sprite: {fileID: 21300000, guid: 0baa34d5dc746464783ea13496f585cc, type: 3}
+  sprite: {fileID: 21300000, guid: d0dda4638f8843141826aa91d25d0fd8, type: 3}
   stackable: 0
   stackSize: 0
   stackSizeText: {fileID: 2730380375212283429}
@@ -286,4 +286,3 @@ MonoBehaviour:
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
   playerScript: {fileID: 0}
-  type: 

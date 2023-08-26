@@ -41,6 +41,8 @@ public class PlayerScript : MonoBehaviour
     public bool canMoveNextLevel;
     public bool canMovePreviousLevel;
 
+    public bool magicPotActivated;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -53,6 +55,7 @@ public class PlayerScript : MonoBehaviour
         shopIsLoaded = false;
         canMoveNextLevel = false;
         canMovePreviousLevel = false;
+        magicPotActivated = false;
         playerPopupCanvas.SetActive(false);
 
         // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
@@ -195,12 +198,13 @@ public class PlayerScript : MonoBehaviour
                 return;
             }
 
-            if (!shopIsLoaded){
+            if (!shopIsLoaded && magicPotActivated){
                 if (plantInHand) // has a plant in hand
                 {
                     if (plantInHand.PlacePlant(GridScript.CoordinatesToGrid(transform.position, plantInHand.plantSO.offset[plantInHand.plantData.currStageOfLife])))
                     {
                         plantInHand = null;
+                        magicPotActivated = false;
                     }
                     else
                     {
