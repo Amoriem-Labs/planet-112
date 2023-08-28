@@ -6,10 +6,16 @@ public class GameManager : MonoBehaviour
 {
     public PersistentData persistentData;
     public static int plantID;
+    public Settings settings;
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
         plantID = 0; // Replace later when loading in save system.
+    }
+
+    void Start()
+    {
+        settings.LoadSaveFileUIs(); // This loads in the text UI for the save files in the savePanel of the Settings menu
     }
 
     #region PlantFunctions

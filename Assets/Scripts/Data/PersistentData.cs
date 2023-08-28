@@ -156,6 +156,8 @@ public class PersistentData : MonoBehaviour
                 }
             }
             levelData.oxygenLevel = levelSO.oxygenLevel;
+            levelData.firstTargetOxygenLevel = levelSO.firstTargetOxygenLevel;
+            levelData.secondTargetOxygenLevel = levelSO.secondTargetOxygenLevel;
             PlantScript plantInHand = player.GetComponent<PlayerScript>().plantInHand;
             if (plantInHand != null) levelData.plantInHand = plantInHand.plantData;
             newSave.levelDatas.Add(levelData);
