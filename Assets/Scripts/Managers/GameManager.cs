@@ -43,6 +43,27 @@ public class GameManager : MonoBehaviour
         return plantObj;
     }
 
+    /* public static GameObject LoadPlant(PlantData plantData) // location has to be mapGrid int coords!
+    {
+        GameObject plantPrefab = PlantStorage.GetPlantPrefab((PlantName)plantData.plantName);
+        GameObject plantObj = GridScript.SpawnObjectAtGrid(plantData.location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.offset[plantData.currStageOfLife],
+            plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied[plantData.currStageOfLife].vec2Array);
+
+        if (plantObj != null)
+        {
+            PlantScript plantScript = plantObj.GetComponent<PlantScript>();
+            plantScript.ID = plantID; 
+            plantID += 1;
+            plantScript.LoadPlantData(plantData);
+
+            plantScript.SetMainCollider();
+            plantScript.SpawnInModules();
+            plantScript.VisualizePlant();
+        }
+
+        return plantObj;
+    } */
+
     // Spawns in an existing plant
     public static GameObject SpawnPlant(PlantData plantData)
     {

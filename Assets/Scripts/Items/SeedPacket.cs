@@ -5,8 +5,14 @@ using UnityEngine;
 public class SeedPacket : MonoBehaviour, ICollectible
 {    
     private GameObject player;
+    public string displayName;
     public PlantName plantName;
-    public GameObject linkedInventoryItem;
+
+    [HideInInspector]public InventoryItem linkedInventoryItem;
+
+    public void LinkInventoryItem(InventoryItem inventoryItem){
+        linkedInventoryItem = inventoryItem;
+    }
 
     public void Collect(){
         // seed is not meant to be collected off the ground, so this method is just here to avoid compile error from not implementing Collect() from the interface
@@ -17,10 +23,11 @@ public class SeedPacket : MonoBehaviour, ICollectible
         player = GameObject.FindGameObjectWithTag("Player");
         GameObject plantPrefab = GameManager.SpawnPlant(plantName, GridScript.CoordinatesToGrid(player.transform.position));
         if (plantPrefab != null){
-            InventoryItem inventoryItem = linkedInventoryItem.GetComponent<InventoryItem>();
-            if (inventoryItem.stackable){
-                inventoryItem.Use(1, inventoryItem.gameObject);
+            if (linkedInventoryItem != null){
+                if (linkedInventoryItem.stackable) linkedInventoryItem.Use(1, linkedInventoryItem.gameObject);
+            } else {
+                Debug.Log("Didn't find the matching seed packet in inventory!");
             }
-        }
+        }        
     }
 }

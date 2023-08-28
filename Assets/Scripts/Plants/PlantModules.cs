@@ -252,6 +252,7 @@ public static class PlantModuleArr
 
             // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
             float randfloat = Random.Range(0,1);
+            Debug.Log($"randfloat: {randfloat}, fruitType: {moduleData.fruitType}");
             if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
                 float velocityMag = 3.0f;
                 float xComp = Random.Range(-1,1);

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 4507682701519388671}
   - component: {fileID: 7886168698563378998}
   - component: {fileID: 3017526867007617679}
-  - component: {fileID: -8528118679773284844}
   m_Layer: 0
   m_Name: LilypadSeedPacket
   m_TagString: collectible
@@ -139,19 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Lilypad Seed Packet
   plantName: 4
-  linkedInventoryItem: {fileID: 2290849425908696756, guid: b21958e858e2d0442bd4ac7de913f6b2, type: 3}
---- !u!114 &-8528118679773284844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4507682701519388667}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plantName: 4
-  linkedInventoryItem: {fileID: 0}

@@ -6,4 +6,5 @@ public interface ICollectible
 {
     public void Collect();
     public void Use();
+    public void LinkInventoryItem(InventoryItem inventoryItem);
 }

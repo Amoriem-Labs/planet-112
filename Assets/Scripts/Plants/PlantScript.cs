@@ -121,6 +121,10 @@ public abstract class PlantScript : MonoBehaviour
         PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData); // add this plant into save. 
     }
 
+    /* public void LoadPlantData(PlantData plantData){
+
+    } */
+
     // If a plant is new, no modules. if it exists, then load em in!
     public void SpawnInModules()
     {

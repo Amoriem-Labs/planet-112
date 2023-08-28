@@ -79,6 +79,7 @@ public class InventoryManager : MonoBehaviour
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
             if (slotTransform.childCount == 0){
                 InventoryItem newInventoryItem = inventorySlot.DrawSlot(inventoryItemPrefab, 1);
+                newInventoryItem.LinkInventoryItem();
                 linkedSellSlots[i].DrawSlot(inventoryItemPrefab, 1, newInventoryItem);
                 linkedSellSlots[i].linkedShopItem.parentAfterDrag = linkedSellSlots[i].transform;
                 linkedSellSlots[i].linkedInventoryItem.parentAfterDrag = inventorySlots[i].transform.GetChild(0).transform;
@@ -108,6 +109,7 @@ public class InventoryManager : MonoBehaviour
                     if (inventoryItemData.itemName.Equals(itemPrefab.GetComponent<InventoryItem>().displayName)){
                         // Once we find the prefab that matches the inventory item, instantiate the prefab in the correct slots
                         InventoryItem newInventoryItem = inventorySlot.DrawSlot(itemPrefab, inventoryItemData.count);
+                        newInventoryItem.LinkInventoryItem();
                         linkedSellSlots[i].DrawSlot(itemPrefab, inventoryItemData.count, newInventoryItem);
                         linkedSellSlots[i].linkedShopItem.parentAfterDrag = linkedSellSlots[i].transform;
                         linkedSellSlots[i].linkedInventoryItem.parentAfterDrag = inventorySlots[i].transform.GetChild(0).transform;
@@ -185,6 +187,7 @@ public class InventoryManager : MonoBehaviour
             Transform slotTransform = inventorySlot.transform.GetChild(0); 
             if (slotTransform.childCount == 0 || justDestroyed){
                 InventoryItem newInventoryItem = inventorySlot.DrawSlot(inventoryItemPrefab, numBought);
+                newInventoryItem.LinkInventoryItem();
                 linkedSellSlots[i].DrawSlot(inventoryItemPrefab, numBought, newInventoryItem);
                 linkedSellSlots[i].linkedShopItem.parentAfterDrag = linkedSellSlots[i].transform;
                 linkedSellSlots[i].linkedInventoryItem.parentAfterDrag = inventorySlots[i].transform.GetChild(0).transform;

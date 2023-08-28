@@ -9,6 +9,11 @@ public class Fruit : MonoBehaviour, ICollectible
     public static event HandleFruitCollected OnFruitCollected;
     public GameObject fruitInventoryPrefab;
     public string fruitType;
+    [HideInInspector]public InventoryItem linkedInventoryItem;
+
+    public void LinkInventoryItem(InventoryItem inventoryItem){
+        linkedInventoryItem = inventoryItem;
+    }
 
     public void Collect(){
         AudioManager.GetSFX("collectFruitSFX").Play();

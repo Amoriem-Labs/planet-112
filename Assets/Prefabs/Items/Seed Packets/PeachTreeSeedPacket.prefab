@@ -138,5 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Peach Tree Seed Packet
   plantName: 5
-  linkedInventoryItem: {fileID: 438510925259122769, guid: a129220371b177a438214c4de40c9249, type: 3}

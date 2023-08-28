@@ -6,6 +6,11 @@ public class MagicPot : MonoBehaviour, ICollectible
 {
     //public AudioManager audioManager;
     public PlayerScript player;
+    [HideInInspector]public InventoryItem linkedInventoryItem;
+
+    public void LinkInventoryItem(InventoryItem inventoryItem){
+        linkedInventoryItem = inventoryItem;
+    }
 
     void Awake()
     {

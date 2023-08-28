@@ -5,10 +5,15 @@ using UnityEngine;
 public class FillerItem : MonoBehaviour, ICollectible
 {
     public AudioManager audioManager;
+    [HideInInspector]public InventoryItem linkedInventoryItem;
 
     void Awake()
     {
         audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
+    public void LinkInventoryItem(InventoryItem inventoryItem){
+        linkedInventoryItem = inventoryItem;
     }
 
     public void Collect(){

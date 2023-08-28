@@ -9,8 +9,13 @@ public class Weapon : MonoBehaviour, ICollectible
     public static event HandleWeaponCollected OnWeaponCollected;
     public GameObject weaponInventoryPrefab;
     public string weaponName;
+    [HideInInspector]public InventoryItem linkedInventoryItem;
 
-    // Is triggered whenever player picks up stick off ground.
+    public void LinkInventoryItem(InventoryItem inventoryItem){
+        linkedInventoryItem = inventoryItem;
+    }
+
+    // Is triggered whenever player picks up weapon off ground.
     public void Collect(){
         AudioManager.GetSFX("collectGenericSFX").Play();
         Destroy(gameObject);

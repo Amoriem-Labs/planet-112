@@ -40,6 +40,10 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         parentAfterDrag = transform.parent;
     }
 
+    public void LinkInventoryItem(){
+        linkedItemPrefab.GetComponent<ICollectible>().LinkInventoryItem(this);
+    }
+
     #region Adding and Removing from Stack.
     public void AddToStack(int numAdd){
         if (stackable){

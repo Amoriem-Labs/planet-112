@@ -138,5 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Goliath Sunflower Seed Packet
   plantName: 7
-  linkedInventoryItem: {fileID: 812395155182503007, guid: 36ff469af96c4e84a940c43c42e0f29b, type: 3}

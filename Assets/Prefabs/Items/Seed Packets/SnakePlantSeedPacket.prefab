@@ -138,5 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f51cf6dd94c7c8041815927ae3ba19e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  displayName: Snake Plant Seed Packet
   plantName: 3
-  linkedInventoryItem: {fileID: 4921657913025983270, guid: 007c735406100f54291b8c27720c8bf2, type: 3}

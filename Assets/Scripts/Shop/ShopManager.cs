@@ -373,7 +373,6 @@ public class ShopManager : MonoBehaviour
                 Reset();
             } else {
                 AudioManager.GetSFX("errorSFX").Play();
-                print("Not enough funds!");
             }
         }
     }
