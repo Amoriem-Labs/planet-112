@@ -16,6 +16,7 @@ public class LevelManager : MonoBehaviour
     public Level[] levelSOs; // list of level scriptable objects
     public static Level[] levelSOsStatic; // list of level scriptable objects
     public GameObject oxygenLevelCanvas;
+    public static GameObject oxygenLevelCanvasStatic;
     public Slider oxygenLevelSlider;
     public static Slider oxygenLevelSliderStatic;
     public GameObject firstOxygenLevelMark;
@@ -28,6 +29,8 @@ public class LevelManager : MonoBehaviour
 
     void Awake(){
         DontDestroyOnLoad(oxygenLevelCanvas);
+        oxygenLevelCanvas.SetActive(false);
+        oxygenLevelCanvasStatic = oxygenLevelCanvas;
         oxygenLevelSliderStatic = oxygenLevelSlider;
         levelSOsStatic = levelSOs;
         firstOxygenLevelTextStatic = firstOxygenLevelText;
@@ -61,6 +64,7 @@ public class LevelManager : MonoBehaviour
     }
 
     public static void LoadLevel(int levelID){
+        oxygenLevelCanvasStatic.SetActive(true);
         oxygenLevelSliderStatic.value = levelSOsStatic[levelID].oxygenLevel;
         oxygenLevelSliderStatic.maxValue = levelSOsStatic[levelID].secondTargetOxygenLevel;
         float sliderWidth = oxygenLevelSliderStatic.GetComponent<RectTransform>().rect.width; // is based off the width from RectTransform component of oxygenLevelSlider. Since oxygenLevelSlider is anchored in the middle of a Canvas object whose Camera is set to Screen Space - Camera Overlay, the position of the RectTransform is 0 and the actual width is twice what is displayed in RectTransform.

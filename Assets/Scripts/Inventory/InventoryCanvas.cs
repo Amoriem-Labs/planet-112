@@ -9,6 +9,7 @@ public class InventoryCanvas : MonoBehaviour
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
+        gameObject.SetActive(false);
     }
 
     // This script is to update the position of InventoryCanvas to match camera position every time inventory is loaded.

@@ -57,15 +57,6 @@ public class PlayerScript : MonoBehaviour
         canMovePreviousLevel = false;
         magicPotActivated = false;
         playerPopupCanvas.SetActive(false);
-
-        // Quickly loads inventory and settings in and out so it doesn't matter whether they are awake in Scene editor
-        //    or not when Game is played.
-        inventoryCanvas.SetActive(true);
-        inventoryCanvas.SetActive(false);
-        settingsCanvas.SetActive(true);
-        settingsCanvas.SetActive(false);
-        shopCanvas.SetActive(true);
-        shopCanvas.SetActive(false);
         shopPopupButton.SetActive(false);
 
         rb = GetComponent<Rigidbody2D>();
@@ -276,7 +267,7 @@ public class PlayerScript : MonoBehaviour
                 settingsCanvas.SetActive(true);
                 settingsCanvas.GetComponent<Settings>().setPosition();
                 TimeManager.PauseGame();
-            }
+        }
         else {
             settingsCanvas.SetActive(false);
             TimeManager.ResumeGame();

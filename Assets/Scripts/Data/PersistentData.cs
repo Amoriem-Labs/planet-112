@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-// Make this a static class? MonoBehaviours cannot be static classes
-// This is a global, essentially static class accessible by its name
 public class PersistentData : MonoBehaviour
 {
     public GameObject player;
+    public GameObject Mav;
+    public GameObject hotbarCanvas;
     public InventoryManager inventory;
     public AudioManager audioManager;
     public Settings settings;
@@ -17,9 +17,19 @@ public class PersistentData : MonoBehaviour
     static SaveData currSaveData;
     // Level id is not necessarily the same as list index in currSaveData.levelDatas, so we store references to each LevelData in a dictionary. If you need level data, get it from currLevelDatas, not from currSaveData.levelDatas - note that any changes to currLevelDatas entries will be reflected in currSaveData because the dictionary contains references, not copies, BUT if you want to add a new LevelData object to the list, you MUST use AddLevelData.
     static Dictionary<int, LevelData> currLevelDatas;
+    public GameObject eventSystem;
+    public GameObject cameraObj;
+    public GameObject cinemaMachineCamera;
+    public TimeManager timeManager;
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(eventSystem);
+        DontDestroyOnLoad(cameraObj);
+        DontDestroyOnLoad(cinemaMachineCamera);
+        DontDestroyOnLoad(Mav);
+        player.SetActive(false);
+        Mav.SetActive(false);
     }
 
     // Save index 0 is always auto save; Save >= 1 (up to max) is manual save. 
@@ -42,6 +52,15 @@ public class PersistentData : MonoBehaviour
             Debug.LogError("ERROR: failed to load save " + saveIndex + ".");
         }
 
+        // Load in the scene
+        LevelManager.LoadLevelScene(currSaveData.currLevelIndex);
+        player.SetActive(true);
+        Mav.SetActive(true);
+        hotbarCanvas.SetActive(true);
+        cameraObj.SetActive(true);
+        cinemaMachineCamera.SetActive(true);
+        timeManager.StartGameTimer();
+
         //Here is where I insert my code to link backend to frontend.
         // need to implement levelData, and eventData to frontend.
 
@@ -53,7 +72,6 @@ public class PersistentData : MonoBehaviour
         ////player.GetComponent<PlayerScript>().plantInHand = currLevel.plantInHand;
         // TODO: load in plant and pest datas
         //LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
-        LevelManager.LoadLevel(currSaveData.currLevelIndex);
 
         // Initialize player position from player position in currSaveData
         var pos = player.transform.position;
@@ -74,6 +92,9 @@ public class PersistentData : MonoBehaviour
         settings.loadVolumeSliders(audioManager.volumeBGM, audioManager.volumeSFX);
         settings.uiScaleIndex = currSaveData.gameStateData.settingsData.uiScaleIndex;
         settings.scaleUI(settings.uiScaleIndex);
+
+        // Play audio specific to whichever biome was loaded in
+        if (LevelManager.currentBiome.Equals("plains")) AudioManager.GetSoundtrack("plainsSoundtrack").Play();
     }
 
     public static void WriteToSave(int saveIndex)
@@ -120,16 +141,23 @@ public class PersistentData : MonoBehaviour
             LevelData levelData = new LevelData();
             levelData.levelID = levelSO.levelID;
             levelData.biome = levelSO.biome;
+            levelData.plantDatas = new List<PlantData>();
             GameObject[] plants = GameObject.FindGameObjectsWithTag("plant");
-            foreach (GameObject plant in plants){
-                levelData.plantDatas.Add(plant.GetComponent<PlantScript>().plantData);
+            if (plants.Length != 0){
+                foreach (GameObject plant in plants){
+                    levelData.plantDatas.Add(plant.GetComponent<PlantScript>().plantData);
+                }
             }
+            levelData.pestDatas = new List<PestData>();
             GameObject[] pests = GameObject.FindGameObjectsWithTag("pest");
-            foreach (GameObject pest in pests){
-                levelData.pestDatas.Add(pest.GetComponent<PestScript>().pestData);
+            if (pests.Length != 0){
+                foreach (GameObject pest in pests){
+                    levelData.pestDatas.Add(pest.GetComponent<PestScript>().pestData);
+                }
             }
             levelData.oxygenLevel = levelSO.oxygenLevel;
-            levelData.plantInHand = player.GetComponent<PlayerScript>().plantInHand.plantData;
+            PlantScript plantInHand = player.GetComponent<PlayerScript>().plantInHand;
+            if (plantInHand != null) levelData.plantInHand = plantInHand.plantData;
             newSave.levelDatas.Add(levelData);
         }
 

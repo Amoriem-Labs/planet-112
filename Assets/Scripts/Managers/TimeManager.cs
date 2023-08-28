@@ -18,11 +18,11 @@ public class TimeManager : MonoBehaviour
         autosaveCanvas.SetActive(false);
     }
 
-    // Start is called before the first frame update
+    /* // Start is called before the first frame update
     void Start()
     {
         StartGameTimer();
-    }
+    } */
 
     // This function should ONLY be called after save data has been retrieved. 
     // These methods don't need to be static. Can just reference in between not-changing managers.

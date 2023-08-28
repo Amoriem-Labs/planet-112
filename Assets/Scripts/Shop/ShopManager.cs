@@ -87,6 +87,7 @@ public class ShopManager : MonoBehaviour
         caveScrollView.SetActive(false);
         weaponScrollView.SetActive(false);
         isBuySlotSelected = false;
+        gameObject.SetActive(false);
     }
 
     void Start(){

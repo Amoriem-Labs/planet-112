@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Settings : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public class Settings : MonoBehaviour
         shopStartingScale = shopCanvas.transform.localScale;
         uiScaleIndex = 2; // initial UI scale index
         GetComponentInChildren<Dropdown>().value = uiScaleIndex;
+        gameObject.SetActive(false);
     }
 
     // This script is to update the position of SettingsCanvas to match camera position when settings are loaded.
@@ -101,21 +103,24 @@ public class Settings : MonoBehaviour
         exitSaveScreen();
         updateSaveFileUI(1);
         persistentData.CreateNewSave(1);
-        Application.Quit();
+        SceneManager.LoadScene("TitleScene");
+        //Application.Quit();
     }
 
     public void saveGame_2(){
         exitSaveScreen();
         updateSaveFileUI(2);
         persistentData.CreateNewSave(2);
-        Application.Quit();
+        SceneManager.LoadScene("TitleScene");
+        //Application.Quit();
     }
 
     public void saveGame_3(){
         exitSaveScreen();
         updateSaveFileUI(3);
         persistentData.CreateNewSave(3);
-        Application.Quit();
+        SceneManager.LoadScene("TitleScene");
+        //Application.Quit();
     }
 
     public void goToQuitScreen(){
@@ -175,8 +180,7 @@ public class Settings : MonoBehaviour
         saveFileOxygenLevelTexts[saveIndex - 1].text = "";
     }
 
-    // Loads in all save file UIs in the savePanel of the Settings menu
-    public void LoadSaveFileUIs(){
+    public void LoadSaveFileUIsForTitleScreen(){
         SaveData currSaveData;
 
         // Initializing colors with alpha = 1, and alpha = 0, respectively.
@@ -194,7 +198,7 @@ public class Settings : MonoBehaviour
         float startingOxygenTextColor = 0.6320754f;
         float endingOxygenTextColor = 0.0f;
 
-        for (int i = 1; i < 4; i++){
+        for (int i = 0; i < 4; i++){
             currSaveData = null;
 
             DataManager.readFile(ref currSaveData, i);
@@ -204,28 +208,28 @@ public class Settings : MonoBehaviour
                 // Store references to each LevelData in a dictionary. Level id is not necessarily the same as list index in currSaveData.levelDatas, so we store references to each LevelData in a dictionary. If you need level data, get it from currLevelDatas, not from currSaveData.levelDatas - note that any changes to currLevelDatas entries will be reflected in currSaveData because the dictionary contains references, not copies, BUT if you want to add a new LevelData object to the list, you MUST use AddLevelData.
                 Dictionary<int, LevelData> currLevelDatas = currSaveData.levelDatas.ToDictionary(keySelector: ld => ld.levelID, elementSelector: ld => ld);
                 LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
-                saveFileYraSprites[i - 1].sprite = currentYraSprite;
-                saveFileYraSprites[i - 1].color = full;
+                saveFileYraSprites[i].sprite = currentYraSprite;
+                saveFileYraSprites[i].color = full;
 
-                saveFileBiomeTexts[i - 1].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID);
+                saveFileBiomeTexts[i].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID);
                 if (currLevel.biome.Equals("plains")){
-                    saveFileBiomeTexts[i - 1].color = plainsColor;
+                    saveFileBiomeTexts[i].color = plainsColor;
                 } else if (currLevel.biome.Equals("city")){
-                    saveFileBiomeTexts[i - 1].color = cityColor;
+                    saveFileBiomeTexts[i].color = cityColor;
                 } else if (currLevel.biome.Equals("cave")){
-                    saveFileBiomeTexts[i - 1].color = caveColor;
+                    saveFileBiomeTexts[i].color = caveColor;
                 }
 
                 float oxygenTextColor = startingOxygenTextColor - ((float)currLevel.oxygenLevel / currLevel.secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-                saveFileOxygenLevelTexts[i - 1].text = String.Format("Oxygen: {0}%", currLevel.oxygenLevel * 100 / currLevel.firstTargetOxygenLevel);
-                saveFileOxygenLevelTexts[i - 1].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
+                saveFileOxygenLevelTexts[i].text = String.Format("Oxygen: {0}%", currLevel.oxygenLevel * 100 / currLevel.firstTargetOxygenLevel);
+                saveFileOxygenLevelTexts[i].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
             }
             else // Triggers if save file does not yet exist for that save index (i.e. the player hasn't written a save file to that index yet)
             {
-                saveFileYraSprites[i - 1].sprite = null;
-                saveFileYraSprites[i - 1].color = empty;
-                saveFileBiomeTexts[i - 1].text = "";
-                saveFileOxygenLevelTexts[i - 1].text = "";
+                saveFileYraSprites[i].sprite = null;
+                saveFileYraSprites[i].color = empty;
+                saveFileBiomeTexts[i].text = "";
+                saveFileOxygenLevelTexts[i].text = "";
             }
         }
     }

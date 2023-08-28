@@ -5,26 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public PersistentData persistentData;
-    public Settings settings;
     public static int plantID;
-    public GameObject eventSystem;
-    public GameObject cameraObj;
-    public GameObject cinemaMachineCamera;
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
-        DontDestroyOnLoad(eventSystem);
-        DontDestroyOnLoad(cameraObj);
-        DontDestroyOnLoad(cinemaMachineCamera);
         plantID = 0; // Replace later when loading in save system.
-    }
-
-    private void Start()
-    {
-        // need to replace when we have a title screen
-        // persistentData.CreateNewSave(0); // Should only run CreateNewSave(0) when creating a new game file for the first time... otherwise just load in the autosaved file
-        persistentData.LoadSave(0);
-        settings.LoadSaveFileUIs(); // This loads in the text UI for the save files in the savePanel of the Settings menu
     }
 
     #region PlantFunctions
