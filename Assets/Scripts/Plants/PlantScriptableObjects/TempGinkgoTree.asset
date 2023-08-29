@@ -56,7 +56,7 @@ MonoBehaviour:
   oxygenProductionQuantity: 0000000000000000
   healSelfRate:
   - 0
-  - 5
+  - 25
   healSelfAmount:
   - 0
   - 5

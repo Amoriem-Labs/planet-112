@@ -13,45 +13,59 @@ MonoBehaviour:
   m_Name: TempCryingLavender
   m_EditorClassIdentifier: 
   pName: 8
-  maxStage: 0
+  maxStage: 1
   maxAttackers: 3
   pestAttackPriority: 3
   spriteArray:
+  - {fileID: 21300000, guid: d1baa6827075ff74b93302da29182927, type: 3}
   - {fileID: 0}
   animatorArray:
+  - {fileID: 0}
   - {fileID: 9100000, guid: 450408fa40c9fd147ab7247350cfc107, type: 2}
   offset:
+  - 0.3
   - 0.25
-  stageTimeMax: []
+  stageTimeMax:
+  - 0
   maxHealth:
+  - 0
   - 50
   defaultModules: 020000000100000007000000
   relativeGridsOccupied:
+  - vec2Array: []
   - vec2Array: []
   targetRectParameters:
   - vec2Array:
     - {x: 0, y: 0.1}
     - {x: 0.6, y: 0.5}
+  - vec2Array:
+    - {x: 0, y: 0.1}
+    - {x: 0.6, y: 0.5}
   hitboxSize:
   - {x: 0.6, y: 0.5}
+  - {x: 0.6, y: 0.5}
   hitboxOffset:
+  - {x: 0, y: 0.1}
   - {x: 0, y: 0.1}
   fruitProductionRate: []
   fruitProductionQuantity: 
   fruitType: 0
-  oxygenProductionQuantity: 02000000
+  oxygenProductionQuantity: 0000000002000000
   healSelfRate:
   - 0
-  - 5
+  - 25
   healSelfAmount:
   - 0
   - 5
   healRate:
+  - 0
   - 60
   healAmount:
+  - 0
   - 10
-  healMode: 00000000
+  healMode: 0000000000000000
   healRangeRadius:
+  - 0
   - 5
   aoeAttackRate: []
   aoeDamageAmount: []

@@ -49,7 +49,8 @@ public class PersistentData : MonoBehaviour
         }
         else
         {
-            Debug.LogError("ERROR: failed to load save " + saveIndex + ".");
+            Debug.Log("Failed to load save " + saveIndex + ".");
+            return;
         }
 
         // Load in the scene

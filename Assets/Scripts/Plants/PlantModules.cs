@@ -242,7 +242,7 @@ public static class PlantModuleArr
         {
             for (int i = 0; i < moduleData.fruitProductionQuantity; i++){
                 float velocityMag = 3.0f;
-                float xComp = Random.Range(-1,1);
+                float xComp = Random.Range(-1.0f,1.0f);
                 float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
                 Vector2 randomVelocity = new Vector2(xComp, yComp);
                 UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(moduleData.fruitType), 
@@ -250,35 +250,37 @@ public static class PlantModuleArr
             }
             Debug.Log("Producing " + moduleData.fruitProductionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
 
-            // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
-            float randfloat = Random.Range(0,1);
-            Debug.Log($"randfloat: {randfloat}, fruitType: {moduleData.fruitType}");
-            if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
-                float velocityMag = 3.0f;
-                float xComp = Random.Range(-1,1);
-                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                Vector2 randomVelocity = new Vector2(xComp, yComp);
-                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                Debug.Log("Producing 1 of type Crystalline fruit.");
-            }
-            if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
-                float velocityMag = 3.0f;
-                float xComp = Random.Range(-1,1);
-                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                Vector2 randomVelocity = new Vector2(xComp, yComp);
-                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                Debug.Log("Producing 1 of type Crystalline fruit.");
-            }
-            if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
-                float velocityMag = 3.0f;
-                float xComp = Random.Range(-1,1);
-                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                Vector2 randomVelocity = new Vector2(xComp, yComp);
-                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                Debug.Log("Producing 1 of type Crystalline fruit.");
+            if (moduleData.fruitProductionQuantity != 0){
+                // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
+                float randfloat = Random.Range(0f,1f);
+                Debug.Log($"randfloat: {randfloat}, fruitType: {moduleData.fruitType}");
+                if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
+                    float velocityMag = 3.0f;
+                    float xComp = Random.Range(-1f,1f);
+                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                    Vector2 randomVelocity = new Vector2(xComp, yComp);
+                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    Debug.Log("Producing 1 of type Crystalline fruit.");
+                }
+                if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
+                    float velocityMag = 3.0f;
+                    float xComp = Random.Range(-1f,1f);
+                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                    Vector2 randomVelocity = new Vector2(xComp, yComp);
+                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    Debug.Log("Producing 1 of type Crystalline fruit.");
+                }
+                if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
+                    float velocityMag = 3.0f;
+                    float xComp = Random.Range(-1f,1f);
+                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                    Vector2 randomVelocity = new Vector2(xComp, yComp);
+                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    Debug.Log("Producing 1 of type Crystalline fruit.");
+                }
             }
         }
 
@@ -351,18 +353,21 @@ public static class PlantModuleArr
 
         public override void OnCycleComplete()
         {
-            if (plantScript.plantData.currentHealth + moduleData.healSelfAmount > plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
-                plantScript.plantData.currentHealth = plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife];
-            } else {
-                plantScript.plantData.currentHealth += moduleData.healSelfAmount;
+            if (plantScript.plantData.currStageOfLife != 0){
+                Debug.Log(moduleData.timePerCycle);
+                if (plantScript.plantData.currentHealth + moduleData.healSelfAmount > plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
+                    plantScript.plantData.currentHealth = plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife];
+                } else {
+                    plantScript.plantData.currentHealth += moduleData.healSelfAmount;
+                }
+                AudioManager.GetSFX("healSFX").Play();
             }
-            AudioManager.GetSFX("healSFX").Play();
         }
 
         public override void OnPlantStageGrowth()
         {
             // by now, stage should be inc'ed alrdy
-            moduleData.healSelfRate = plantScript.plantSO.healSelfRate[plantScript.plantData.currStageOfLife];
+            moduleData.timePerCycle = plantScript.plantSO.healSelfRate[plantScript.plantData.currStageOfLife];
             moduleData.healSelfAmount = plantScript.plantSO.healSelfAmount[plantScript.plantData.currStageOfLife];
         }
     }
