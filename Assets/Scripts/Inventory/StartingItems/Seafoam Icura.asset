@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Seafoam Icura
   m_EditorClassIdentifier: 
   itemName: SeafoamIcura
-  inventorySlotIndex: 19
+  inventorySlotIndex: 18
   itemPrefab: {fileID: 3386227779947726772, guid: a6b0eda9699f28e4f8080281719b7fc6, type: 3}
   count: 25
