@@ -11,6 +11,7 @@ public class Pest : ScriptableObject
 
     // currStageOfLife is the accessing index to everything below. Stage 0 is default, everything builds on this.
     public Sprite[] spriteArray; // Array of sprites per each growth stage
+    public RuntimeAnimatorController[] animatorArray; // Array of animators per each growth stage
     public float[] maxHealth; // Max HP for each stage
 
     public PestModuleEnum[] defaultModules; // default modules to this class of pests

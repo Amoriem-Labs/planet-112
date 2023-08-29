@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711ed6db7f59ac049b427e97b75d2ef7, type: 3}
+  m_Name: Fireball Bee
+  m_EditorClassIdentifier: 
+  pName: 2
+  spriteArray:
+  - {fileID: 0}
+  animatorArray:
+  - {fileID: 9100000, guid: 8db2221f040dfab4b81cca49b1a58d84, type: 2}
+  maxHealth:
+  - 25
+  defaultModules: 0000000001000000
+  hitboxSize: []
+  hitboxOffset: []
+  bezierMoveSpeed:
+  - 7
+  singleTargetProjectileAttackRate:
+  - 2
+  singleTargetProjectileDamageAmount:
+  - 4
+  singleTargetProjectileSpeed:
+  - 7.5
+  singleTargetProjectileAttackRangeRadius:
+  - 5

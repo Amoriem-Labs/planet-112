@@ -5,6 +5,8 @@ using UnityEngine;
 public enum PestName // Actual names of the pests! 
 {
     EvilRoach, // 0
+    ArmoredSkeeto,
+    FireballBee,
 }
 
 // Data is predefined and non-dynamic, but ideally this script is only spawned once at beginning and sticks to persistent managers. 

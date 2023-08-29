@@ -293,7 +293,8 @@ public class PlayerScript : MonoBehaviour
 
     // Resets inventory. Is triggered by pressing R. Temporary keybinding. Will remove this feature in final game.
     public void OnResetInventory(InputAction.CallbackContext context){
-        inventoryCanvas.GetComponentInChildren<InventoryManager>().ResetInventory();
+        // Uncomment below only for debugging purposes.
+        //inventoryCanvas.GetComponentInChildren<InventoryManager>().ResetInventory();
     }
 
     #region Collider methods.
