@@ -15,6 +15,7 @@ MonoBehaviour:
   levelID: 0
   sceneName: TestScene
   biome: plains
-  oxygenLevel: 50
+  oxygenLevel: 0
   firstTargetOxygenLevel: 50
   secondTargetOxygenLevel: 70
+  completed: 1

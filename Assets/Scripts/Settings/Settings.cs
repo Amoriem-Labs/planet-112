@@ -154,7 +154,7 @@ public class Settings : MonoBehaviour
         saveFileYraSprites[saveIndex - 1].sprite = currentYraSprite;
         saveFileYraSprites[saveIndex - 1].color = full;
 
-        saveFileBiomeTexts[saveIndex - 1].text = String.Format("{0} Level {1}", LevelManager.currentBiome, LevelManager.currentLevelID);
+        saveFileBiomeTexts[saveIndex - 1].text = String.Format("{0} Level {1}", LevelManager.currentBiome, LevelManager.currentLevelID + 1);
         if (LevelManager.currentBiome.Equals("plains")){
             saveFileBiomeTexts[saveIndex - 1].color = plainsColor;
         } else if (LevelManager.currentBiome.Equals("city")){
@@ -209,7 +209,7 @@ public class Settings : MonoBehaviour
                 saveFileYraSprites[i - 1].sprite = currentYraSprite;
                 saveFileYraSprites[i - 1].color = full;
 
-                saveFileBiomeTexts[i - 1].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID);
+                saveFileBiomeTexts[i - 1].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID + 1);
                 if (currLevel.biome.Equals("plains")){
                     saveFileBiomeTexts[i - 1].color = plainsColor;
                 } else if (currLevel.biome.Equals("city")){
@@ -263,7 +263,7 @@ public class Settings : MonoBehaviour
                 saveFileYraSprites[i].sprite = currentYraSprite;
                 saveFileYraSprites[i].color = full;
 
-                saveFileBiomeTexts[i].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID);
+                saveFileBiomeTexts[i].text = String.Format("{0} Level {1}", currLevel.biome, currLevel.levelID + 1);
                 if (currLevel.biome.Equals("plains")){
                     saveFileBiomeTexts[i].color = plainsColor;
                 } else if (currLevel.biome.Equals("city")){

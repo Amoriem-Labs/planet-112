@@ -53,13 +53,13 @@ MonoBehaviour:
   - {x: 0, y: 0.45}
   fruitProductionRate:
   - 0
-  - 120
+  - 10
   fruitProductionQuantity: 0000000014000000
   fruitType: 0
   oxygenProductionQuantity: 000000000a000000
   healSelfRate:
   - 0
-  - 25
+  - 5
   healSelfAmount:
   - 0
   - 5

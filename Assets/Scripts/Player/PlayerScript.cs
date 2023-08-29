@@ -20,6 +20,8 @@ public class PlayerScript : MonoBehaviour
 
     Rigidbody2D rb;
     SpriteRenderer spriteRenderer;
+    Animator animator;
+    public RuntimeAnimatorController yraMovementAnimator;
     [SerializeField] float groundRay; // serialized to 0.5f
     [SerializeField] float diagonalRay; // serialized to 0.56f
 
@@ -49,6 +51,7 @@ public class PlayerScript : MonoBehaviour
         controls = new Controls();
         playerInput = GetComponent<PlayerInput>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         inventoryIsLoaded = false;
         settingsAreLoaded = false;
         canOpenShop = false;
@@ -115,16 +118,22 @@ public class PlayerScript : MonoBehaviour
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
                 
+            Debug.Log($"moveInput.x: {moveInput.x}, speed: {speed}");
             velocity.x = moveInput.x * speed;
 
             // First condition only triggers jump if player is pressing Up or W on keyboard, second condition and third condition prevents you from double jumping
             if (moveInput.y > 0 && isGrounded() && velocity.y == 0)
             {
                 velocity.y = moveInput.y * jumpSpeed;
-            } 
+            } else if (moveInput.x != 0){
+                animator.runtimeAnimatorController = yraMovementAnimator;
+            } else {
+                animator.runtimeAnimatorController = null;
+            }
         } else {
             velocity.x = 0;
         }
+        Debug.Log($"velocity.x: {velocity.x}, velocity.y: {velocity.y}");
         rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
     }
 
@@ -167,8 +176,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
             // If can move onto next level
-            if (canMoveNextLevel){
+            if (canMoveNextLevel && LevelManager.currentLevelID != LevelManager.levelSOsStatic.Length - 1){
                 canMoveNextLevel = false;
+                playerPopupCanvas.SetActive(false);
                 LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
                 transform.position = new Vector2(0.25f, transform.position.y);
                 GridScript.ClearGrid();
@@ -178,6 +188,7 @@ public class PlayerScript : MonoBehaviour
             }
             if (canMovePreviousLevel){
                 canMovePreviousLevel = false;
+                playerPopupCanvas.SetActive(false);
                 if (LevelManager.currentLevelID == 0){
                     Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
                     return;
@@ -329,10 +340,11 @@ public class PlayerScript : MonoBehaviour
             canOpenShop = true;
             shopPopupButton.SetActive(true);
         }
-        if (collision.gameObject.tag == "NearLeftWall" && LevelManager.currentLevelID != 0){
-            canMovePreviousLevel = true;
-            playerPopupCanvas.SetActive(true);
-        }
+        // COMMENTING OUT THE BELOW LINES OF CODE BECAUSE LOADING IN A PREVIOUS LEVEL IS EXTREMELY BUGGY RN
+        // if (collision.gameObject.tag == "NearLeftWall" && LevelManager.currentLevelID != 0){
+        //     canMovePreviousLevel = true;
+        //     playerPopupCanvas.SetActive(true);
+        // }
         if (collision.gameObject.tag == "NearRightWall" && LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel >= LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
             canMoveNextLevel = true;
             playerPopupCanvas.SetActive(true);
@@ -344,10 +356,11 @@ public class PlayerScript : MonoBehaviour
             canOpenShop = false;
             shopPopupButton.SetActive(false);
         }
-        if (collision.gameObject.tag == "NearLeftWall"){
-            canMovePreviousLevel = false;
-            playerPopupCanvas.SetActive(false);
-        }
+        // COMMENTING OUT THE BELOW LINES OF CODE BECAUSE LOADING IN A PREVIOUS LEVEL IS EXTREMELY BUGGY RN
+        // if (collision.gameObject.tag == "NearLeftWall"){
+        //     canMovePreviousLevel = false;
+        //     playerPopupCanvas.SetActive(false);
+        // }
         if (collision.gameObject.tag == "NearRightWall"){
             canMoveNextLevel = false;
             playerPopupCanvas.SetActive(false);

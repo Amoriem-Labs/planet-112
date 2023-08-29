@@ -15,6 +15,7 @@ MonoBehaviour:
   levelID: 1
   sceneName: Level2Scene
   biome: plains
-  oxygenLevel: 50
-  firstTargetOxygenLevel: 70
-  secondTargetOxygenLevel: 90
+  oxygenLevel: 0
+  firstTargetOxygenLevel: 140
+  secondTargetOxygenLevel: 160
+  completed: 0

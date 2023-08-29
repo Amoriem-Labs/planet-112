@@ -27763,7 +27763,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.79
+      value: 7.44
       objectReference: {fileID: 0}
     - target: {fileID: 3281728262971971042, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: m_LocalPosition.y
@@ -27826,6 +27826,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1678808355}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: plantObject
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: inventoryPanel
       value: 
       objectReference: {fileID: 0}
@@ -27846,9 +27850,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 692165884}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: yraMovementAnimator
+      value: 
+      objectReference: {fileID: 9100000, guid: bea43fbe9dc1407489de5ba52afcafd3, type: 2}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: regularDetectionRange
       value: 
       objectReference: {fileID: 547410664}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: yraMovementLeftAnimator
+      value: 
+      objectReference: {fileID: 9100000, guid: bea43fbe9dc1407489de5ba52afcafd3, type: 2}
+    - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
+      propertyPath: yraMovementRightAnimator
+      value: 
+      objectReference: {fileID: 9100000, guid: 4fe835a7940befe4e9a7e8015a4bb34a, type: 2}
     - target: {fileID: 4721409493239636386, guid: c6474a22ef28e42e28add30dcfb27790, type: 3}
       propertyPath: nearbyPlantDetectionRange
       value: 
@@ -27914,6 +27930,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b79ef18efd54985bc3645ae5a84600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &1256713460
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256713453}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4fe835a7940befe4e9a7e8015a4bb34a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1259217410
 PrefabInstance:
   m_ObjectHideFlags: 0
