@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,7 @@ public class TitleManager : MonoBehaviour
     public GameObject askIfWantToDeleteSaveCanvas;
     public PersistentData persistentData;
     public int deleteSaveIndex;
+    public AudioSource titleSoundtrack;
 
     void Awake(){
         playCanvas.SetActive(false);
@@ -27,7 +29,8 @@ public class TitleManager : MonoBehaviour
             "RevelationSoundtrack"
         };
         int soundtrackIndex = Random.Range(0,5);
-        AudioManager.GetSoundtrack(soundtrackNames[soundtrackIndex]).Play();
+        titleSoundtrack = AudioManager.GetSoundtrack(soundtrackNames[soundtrackIndex]);
+        titleSoundtrack.Play();
         titleScreenSettingsCanvas.GetComponent<Settings>().LoadSaveFileUIsForTitleScreen(); // This loads in the text UI for the save files in the savePanel of the Settings menu
     }
 
@@ -44,19 +47,25 @@ public class TitleManager : MonoBehaviour
     }
 
     public void playAutosave(){
-        persistentData.LoadSave(0);
+        if (File.Exists(DataManager.getSaveFilePath(0))){
+            persistentData.LoadSave(0);
+            titleSoundtrack.Stop();
+        }
     }
 
     public void playFile1(){
         persistentData.LoadSave(1);
+        titleSoundtrack.Stop();
     }
 
     public void playFile2(){
         persistentData.LoadSave(2);
+        titleSoundtrack.Stop();
     }
 
     public void playFile3(){
         persistentData.LoadSave(3);
+        titleSoundtrack.Stop();
     }
 
     public void ClosePlayCanvas(){

@@ -248,12 +248,10 @@ public static class PlantModuleArr
                 UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(moduleData.fruitType), 
                     plantScript.transform.position, Quaternion.identity, null, randomVelocity);
             }
-            Debug.Log("Producing " + moduleData.fruitProductionQuantity + " of type " + moduleData.fruitType.ToString() + " fruit.");
 
             if (moduleData.fruitProductionQuantity != 0){
                 // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
                 float randfloat = Random.Range(0f,1f);
-                Debug.Log($"randfloat: {randfloat}, fruitType: {moduleData.fruitType}");
                 if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
                     float velocityMag = 3.0f;
                     float xComp = Random.Range(-1f,1f);
@@ -261,7 +259,6 @@ public static class PlantModuleArr
                     Vector2 randomVelocity = new Vector2(xComp, yComp);
                     UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
                         plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                    Debug.Log("Producing 1 of type Crystalline fruit.");
                 }
                 if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
                     float velocityMag = 3.0f;
@@ -270,7 +267,6 @@ public static class PlantModuleArr
                     Vector2 randomVelocity = new Vector2(xComp, yComp);
                     UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
                         plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                    Debug.Log("Producing 1 of type Crystalline fruit.");
                 }
                 if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
                     float velocityMag = 3.0f;
@@ -279,7 +275,6 @@ public static class PlantModuleArr
                     Vector2 randomVelocity = new Vector2(xComp, yComp);
                     UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
                         plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                    Debug.Log("Producing 1 of type Crystalline fruit.");
                 }
             }
         }

@@ -46,15 +46,65 @@ public class PersistentData : MonoBehaviour
         {
             // Store references to each LevelData in a dictionary
             currLevelDatas = currSaveData.levelDatas.ToDictionary(keySelector: ld => ld.levelID, elementSelector: ld => ld);
+            
+            // Load in the scene
+            LevelManager.LoadLevelScene(currSaveData.currLevelIndex);
+
+            //Here is where I insert my code to link backend to frontend.
+            // need to implement levelData, and eventData to frontend.
+
+            // Load in current level
+            LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
+            LevelManager.currentLevelID = currLevel.levelID;
+            LevelManager.currentBiome = currLevel.biome;
+            // TODO: load in plant in hand
+            ////player.GetComponent<PlayerScript>().plantInHand = currLevel.plantInHand;
+            // TODO: load in plant and pest datas
+            //LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
+
+            // Initialize player position from player position in currSaveData
+            var pos = player.transform.position;
+            pos.x = currSaveData.playerData.location.x;
+            pos.y = currSaveData.playerData.location.y;
+            player.transform.position = pos;
+
+            // Load in inventory from inventory in currSaveData
+            inventory.LoadInventory(currSaveData.playerData);
+
+            // Initialize settings from settings in currSaveData
+            settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
+            settings.loadScreen(settings.fullScreen);
+            audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
+            audioManager.OnMusicVolumeChanged(audioManager.volumeBGM);
+            audioManager.volumeSFX = currSaveData.gameStateData.settingsData.volumeSFX;
+            audioManager.OnSFXVolumeChanged(audioManager.volumeSFX);
+            settings.loadVolumeSliders(audioManager.volumeBGM, audioManager.volumeSFX);
+            settings.uiScaleIndex = currSaveData.gameStateData.settingsData.uiScaleIndex;
+            settings.scaleUI(settings.uiScaleIndex);
         }
         else
         {
-            Debug.Log("Failed to load save " + saveIndex + ".");
-            return;
+            // Load in the scene and create new save data
+            LevelManager.LoadLevelScene(0);
+            currSaveData = new SaveData();
+            currSaveData.gameStateData = new GameStateData();
+            currSaveData.gameStateData.timePassedSeconds = 0;
+            currSaveData.gameStateData.timePassedMinutes = 0;
+            currSaveData.gameStateData.timePassedHours = 0;
+            currSaveData.gameStateData.timePassedDays = 0;
+            currSaveData.gameStateData.settingsData = new SettingsData();
+            LevelData firstLevelData = new LevelData();
+            firstLevelData.levelID = 0;
+            firstLevelData.biome = "plains"; // biome that level is in. 
+            firstLevelData.plantDatas = new List<PlantData>(); // a list of all the existing, planted plants in a level. 
+            // TODO: should this be an "agentsData" list containing pests, neutrals, NPCs, etc (non-player agents)
+            firstLevelData.pestDatas = new List<PestData>();
+            currLevelDatas = new Dictionary<int, LevelData>(){
+                {0, firstLevelData},
+            };
+            inventory.LoadNewInventory();
         }
 
-        // Load in the scene
-        LevelManager.LoadLevelScene(currSaveData.currLevelIndex);
         player.SetActive(true);
         Mav.SetActive(true);
         hotbarCanvas.SetActive(true);
@@ -62,40 +112,8 @@ public class PersistentData : MonoBehaviour
         cinemaMachineCamera.SetActive(true);
         timeManager.StartGameTimer();
 
-        //Here is where I insert my code to link backend to frontend.
-        // need to implement levelData, and eventData to frontend.
-
-        // Load in current level
-        LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
-        LevelManager.currentLevelID = currLevel.levelID;
-        LevelManager.currentBiome = currLevel.biome;
-        // TODO: load in plant in hand
-        ////player.GetComponent<PlayerScript>().plantInHand = currLevel.plantInHand;
-        // TODO: load in plant and pest datas
-        //LevelManager.currentOxygenLevel = currLevel.oxygenLevel;
-
-        // Initialize player position from player position in currSaveData
-        var pos = player.transform.position;
-        pos.x = currSaveData.playerData.location.x;
-        pos.y = currSaveData.playerData.location.y;
-        player.transform.position = pos;
-
-        // Load in inventory from inventory in currSaveData
-        inventory.LoadInventory(currSaveData.playerData);
-
-        // Initialize settings from settings in currSaveData
-        settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
-        settings.loadScreen(settings.fullScreen);
-        audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
-        audioManager.OnMusicVolumeChanged(audioManager.volumeBGM);
-        audioManager.volumeSFX = currSaveData.gameStateData.settingsData.volumeSFX;
-        audioManager.OnSFXVolumeChanged(audioManager.volumeSFX);
-        settings.loadVolumeSliders(audioManager.volumeBGM, audioManager.volumeSFX);
-        settings.uiScaleIndex = currSaveData.gameStateData.settingsData.uiScaleIndex;
-        settings.scaleUI(settings.uiScaleIndex);
-
         // Play audio specific to whichever biome was loaded in
-        if (LevelManager.currentBiome.Equals("plains")) AudioManager.GetSoundtrack("plainsSoundtrack").Play();
+            if (LevelManager.currentBiome.Equals("plains")) AudioManager.GetSoundtrack("plainsSoundtrack").Play();
     }
 
     public static void WriteToSave(int saveIndex)

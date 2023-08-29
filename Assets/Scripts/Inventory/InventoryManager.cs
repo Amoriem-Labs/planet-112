@@ -15,6 +15,7 @@ public class InventoryManager : MonoBehaviour
     public FruitManager fruitManager;
     public ShopManager shopManager;
     public List<GameObject> possibleItemPrefabs; // Reference the possible prefabs that can be items in the inspector
+    public List<StartingItemSO> startingItems; // a list of scriptable objects containing the starting items that a player will have when creating a new save file
 
     // Initializing inventory and shop sell UI's main panel.
     void Awake(){
@@ -121,6 +122,28 @@ public class InventoryManager : MonoBehaviour
         fruitManager.nSunset = playerData.nSunset;
         fruitManager.nAmethyst = playerData.nAmethyst;
         fruitManager.nCrystalline = playerData.nCrystalline;
+        hotbarManager.UpdateHotbar();
+        hotbarManager.UpdateFruitText();
+        shopManager.UpdateFruitStockText();
+    }
+
+    public void LoadNewInventory(){
+        HotbarManagerScript hotbarManager = hotbar.GetComponent<HotbarManagerScript>();
+
+        foreach (StartingItemSO startingItem in startingItems){
+            InventorySlot inventorySlot = inventorySlots[startingItem.inventorySlotIndex];
+            Transform slotTransform = inventorySlot.transform.GetChild(0); 
+            InventoryItem newInventoryItem = inventorySlot.DrawSlot(startingItem.itemPrefab, startingItem.count);
+            newInventoryItem.LinkInventoryItem();
+            linkedSellSlots[startingItem.inventorySlotIndex].DrawSlot(startingItem.itemPrefab, startingItem.count, newInventoryItem);
+            linkedSellSlots[startingItem.inventorySlotIndex].linkedShopItem.parentAfterDrag = linkedSellSlots[startingItem.inventorySlotIndex].transform;
+            linkedSellSlots[startingItem.inventorySlotIndex].linkedInventoryItem.parentAfterDrag = inventorySlots[startingItem.inventorySlotIndex].transform.GetChild(0).transform;
+
+            if (startingItem.itemName.Equals("SeafoamIcura")) fruitManager.nSeafoam = startingItem.count;
+            if (startingItem.itemName.Equals("SunsetIcura")) fruitManager.nSunset = startingItem.count;
+            if (startingItem.itemName.Equals("AmethystIcura")) fruitManager.nAmethyst = startingItem.count;
+            if (startingItem.itemName.Equals("CrystallineIcura")) fruitManager.nCrystalline = startingItem.count;
+        }
         hotbarManager.UpdateHotbar();
         hotbarManager.UpdateFruitText();
         shopManager.UpdateFruitStockText();

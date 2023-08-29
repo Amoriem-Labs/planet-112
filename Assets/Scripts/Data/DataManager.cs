@@ -11,7 +11,6 @@ public class DataManager : MonoBehaviour
         // Generate the pathway to get the data
         string saveFile = getSaveFilePath(saveIndex);
         // Does the file exist?
-        Debug.Log($"Does file {saveIndex} exist? {File.Exists(saveFile)}");
         if (File.Exists(saveFile))
         {
             // Read the entire file and save its contents.
@@ -80,7 +79,7 @@ public class DataManager : MonoBehaviour
     }
 
     // Get the filepath for this saveIndex
-    private static string getSaveFilePath(int saveIndex)
+    public static string getSaveFilePath(int saveIndex)
     {
         // saveIndex 0 is autosave
         return Application.persistentDataPath + "/save" + saveIndex + "data.json";
