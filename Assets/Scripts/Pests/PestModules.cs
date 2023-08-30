@@ -628,12 +628,22 @@ public static class PestModuleArr
             if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
             {
                 Debug.Log("Projectile being generated...");
-                AudioManager.GetSFX("bugProjectileSFX").Play();
-                TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
-                    pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();
-                bullet.gameObject.name = "bullet";
-                var direction = (pestScript.targetPlantScript.transform.position + pestScript.currMovementModule.coreOffsetCache) - pestScript.transform.position;
-                bullet.SetProjectileStats(2, direction, OnBulletHit2D, OnBulletExit2D);
+                if (pestScript.pestSO.pName == PestName.EvilRoach){
+                    AudioManager.GetSFX("bugProjectileSFX").Play();
+                    TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
+                        pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();
+                    bullet.gameObject.name = "bullet";
+                    var direction = (pestScript.targetPlantScript.transform.position + pestScript.currMovementModule.coreOffsetCache) - pestScript.transform.position;
+                    bullet.SetProjectileStats(2, direction, OnBulletHit2D, OnBulletExit2D);
+                }
+                if (pestScript.pestSO.pName == PestName.FireballBee){
+                    AudioManager.GetSFX("fireballSFX").Play();
+                    TriggerProjectile fireball = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.fireballProjectile,
+                        pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();
+                    fireball.gameObject.name = "fireball";
+                    var direction = (pestScript.targetPlantScript.transform.position + pestScript.currMovementModule.coreOffsetCache) - pestScript.transform.position;
+                    fireball.SetProjectileStats(2, direction, OnBulletHit2D, OnBulletExit2D);
+                }
             }
             // else
             // {

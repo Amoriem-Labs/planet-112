@@ -10,6 +10,7 @@ public class UtilPrefabStorage : MonoBehaviour
     public GameObject boxDetector; // Assign this in the inspector
     public GameObject circleDetector;
     public GameObject boxProjectile;
+    public GameObject fireballProjectile;
 
     void Awake()
     {

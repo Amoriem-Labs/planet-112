@@ -349,13 +349,14 @@ public static class PlantModuleArr
         public override void OnCycleComplete()
         {
             if (plantScript.plantData.currStageOfLife != 0){
-                Debug.Log(moduleData.timePerCycle);
-                if (plantScript.plantData.currentHealth + moduleData.healSelfAmount > plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
-                    plantScript.plantData.currentHealth = plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife];
-                } else {
-                    plantScript.plantData.currentHealth += moduleData.healSelfAmount;
+                if (plantScript.plantData.currentHealth != plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
+                    if (plantScript.plantData.currentHealth + moduleData.healSelfAmount > plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife]){
+                        plantScript.plantData.currentHealth = plantScript.plantSO.maxHealth[plantScript.plantData.currStageOfLife];
+                    } else {
+                        plantScript.plantData.currentHealth += moduleData.healSelfAmount;
+                    }
+                    AudioManager.GetSFX("healSFX").Play();
                 }
-                AudioManager.GetSFX("healSFX").Play();
             }
         }
 
