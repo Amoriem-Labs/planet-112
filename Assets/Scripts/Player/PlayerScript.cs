@@ -276,7 +276,6 @@ public class PlayerScript : MonoBehaviour
     public void OnSettings(InputAction.CallbackContext context){
         if (!TimeManager.IsGamePaused()){
                 settingsCanvas.SetActive(true);
-                settingsCanvas.GetComponent<Settings>().setPosition();
                 TimeManager.PauseGame();
         }
         else {

@@ -8,6 +8,7 @@ public class PersistentData : MonoBehaviour
     public GameObject player;
     public GameObject Mav;
     public GameObject hotbarCanvas;
+    public GameObject inventoryCanvas;
     public InventoryManager inventory;
     public AudioManager audioManager;
     public Settings settings;
@@ -20,14 +21,19 @@ public class PersistentData : MonoBehaviour
     public GameObject eventSystem;
     public GameObject cameraObj;
     public GameObject cinemaMachineCamera;
+    public GameObject cinemaMachineConfineBounds;
     public TimeManager timeManager;
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(eventSystem);
+        DontDestroyOnLoad(hotbarCanvas);
+        DontDestroyOnLoad(inventoryCanvas);
         DontDestroyOnLoad(cameraObj);
         DontDestroyOnLoad(cinemaMachineCamera);
+        DontDestroyOnLoad(cinemaMachineConfineBounds);
         DontDestroyOnLoad(Mav);
+        inventoryCanvas.SetActive(false);
         player.SetActive(false);
         Mav.SetActive(false);
     }

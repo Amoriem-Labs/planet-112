@@ -43,15 +43,6 @@ public class Settings : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // This script is to update the position of SettingsCanvas to match camera position when settings are loaded.
-    public void setPosition()
-    {
-        var pos = transform.position;
-        pos.x = cam.transform.position.x;
-        pos.y = cam.transform.position.y;
-        transform.position = pos;
-    }
-
     public void loadScreen(bool settingsFullScreen){
         fullScreenToggleCheckbox.isOn = settingsFullScreen;
         if (settingsFullScreen){

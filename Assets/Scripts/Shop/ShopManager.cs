@@ -6,8 +6,7 @@ using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
-    public GameObject player;
-    private PlayerScript playerScript;
+    public PlayerScript playerScript;
     public float y_offset;
 
     public GameObject selectUI;
@@ -62,7 +61,6 @@ public class ShopManager : MonoBehaviour
     void Awake(){
         DontDestroyOnLoad(gameObject);
         shopSlots = GetComponentsInChildren<ShopSlot>(true);
-        playerScript = player.GetComponent<PlayerScript>();
         selectUI.SetActive(true);
         buyUI.SetActive(false);
         sellUI.SetActive(false);
@@ -104,11 +102,6 @@ public class ShopManager : MonoBehaviour
     void Update()
     {
         if (playerScript.shopIsLoaded){
-            var pos = transform.position;
-            pos.x = player.transform.position.x;
-            pos.y = player.transform.position.y + y_offset;
-            transform.position = pos;
-
             if (isBuySlotSelected){
                 Vector2 newBuyUIselectionArrowPosition = buyUIselectionArrow.transform.position;
                 newBuyUIselectionArrowPosition.y = currentlySelectedBuySlot.transform.position.y;
