@@ -118,7 +118,6 @@ public class PlayerScript : MonoBehaviour
             // Flip sprite according to movement
             if (moveInput.x != 0) { spriteRenderer.flipX = moveInput.x > 0; }
                 
-            Debug.Log($"moveInput.x: {moveInput.x}, speed: {speed}");
             velocity.x = moveInput.x * speed;
 
             // First condition only triggers jump if player is pressing Up or W on keyboard, second condition and third condition prevents you from double jumping
@@ -133,7 +132,6 @@ public class PlayerScript : MonoBehaviour
         } else {
             velocity.x = 0;
         }
-        Debug.Log($"velocity.x: {velocity.x}, velocity.y: {velocity.y}");
         rb.velocity = velocity; // needed to ensure the changes we make go back to the rb
     }
 
