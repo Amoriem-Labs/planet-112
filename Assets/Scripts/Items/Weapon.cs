@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour, ICollectible
     // Is triggered whenever player uses stick to attack.
     public void Use(){
         if (weaponName.Equals("Stick")){
-            AudioManager.GetSFX("thudSFX").Play();
+            Combat.StickAttack();
         }
         if (weaponName.Equals("Bow")){
             AudioManager.GetSFX("arrowSFX").Play();

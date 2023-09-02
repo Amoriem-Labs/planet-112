@@ -13,4 +13,7 @@ public class Level : ScriptableObject
     public int firstTargetOxygenLevel;
     public int secondTargetOxygenLevel;
     public bool completed;
+    public PestName[] pestWavePestNames; // name of pest for that pest wave
+    public int[] pestWaveNumPests; // number of pests for that pest wave
+    public float[] pestWaveDelays; // time until next pest wave
 }

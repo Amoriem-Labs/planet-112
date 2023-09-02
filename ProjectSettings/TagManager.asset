@@ -24,6 +24,7 @@ TagManager:
   - grassParent
   - plantParent
   - squareParent
+  - pestParent
   layers:
   - Default
   - TransparentFX

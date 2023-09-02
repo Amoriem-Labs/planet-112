@@ -46,6 +46,7 @@ public class PestScript : MonoBehaviour
         slider = GetComponent<Slider>();
         slider.maxValue = pestSO.maxHealth[pestData.currStageOfLife];
         slider.value = slider.maxValue;
+        transform.GetChild(0).GetComponent<Canvas>().worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>(); // Sets the Event Camera for the Canvas component in the Healthbar object so that the healthbar can show up for pests.
     }
 
     // Update is called once per frame

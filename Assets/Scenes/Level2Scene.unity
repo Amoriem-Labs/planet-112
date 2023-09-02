@@ -2272,7 +2272,7 @@ GameObject:
   - component: {fileID: 1379875422}
   m_Layer: 0
   m_Name: Pests (1)
-  m_TagString: Untagged
+  m_TagString: pestParent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

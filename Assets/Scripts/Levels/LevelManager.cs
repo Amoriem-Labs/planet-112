@@ -78,5 +78,9 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene(levelSOsStatic[levelID].sceneName);
         LoadLevel(levelID);
         currentLevelID = levelID;
+        //StopCoroutine(GameManager.StartPestWaves);
+        MonoBehaviour instance = GameObject.FindObjectOfType<LevelManager>();
+        instance.StopAllCoroutines(); // TODO: make a better system for stopping previous level's start pest waves coroutine.
+        Coroutine pestWaves = instance.StartCoroutine(GameManager.StartPestWaves(levelSOsStatic[levelID]));
     }
 }

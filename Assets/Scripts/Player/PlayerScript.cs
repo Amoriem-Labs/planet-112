@@ -44,7 +44,7 @@ public class PlayerScript : MonoBehaviour
     public bool canMovePreviousLevel;
 
     public bool magicPotActivated;
-
+    
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
