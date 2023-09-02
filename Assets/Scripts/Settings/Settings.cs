@@ -39,7 +39,8 @@ public class Settings : MonoBehaviour
         inventoryStartingScale = inventoryCanvas.transform.localScale;
         shopStartingScale = shopCanvas.transform.localScale;
         uiScaleIndex = 2; // initial UI scale index
-        GetComponentInChildren<Dropdown>().value = uiScaleIndex;
+        Dropdown dropdown = GetComponentInChildren<Dropdown>();
+        if (dropdown) dropdown.value = uiScaleIndex;
         gameObject.SetActive(false);
     }
 

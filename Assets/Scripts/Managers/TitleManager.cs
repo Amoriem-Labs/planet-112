@@ -8,7 +8,10 @@ public class TitleManager : MonoBehaviour
 {
     public GameObject titleScreenSettingsCanvas;
     public GameObject gameScreenSettingsCanvas;
+    public GameObject controlsCanvas;
     public GameObject playCanvas;
+    public GameObject creditsCanvas;
+    public GameObject publicDomainSFXCanvas;
     public GameObject askIfWantToDeleteSaveCanvas;
     public PersistentData persistentData;
     public int deleteSaveIndex;
@@ -17,6 +20,9 @@ public class TitleManager : MonoBehaviour
     void Awake(){
         playCanvas.SetActive(false);
         askIfWantToDeleteSaveCanvas.SetActive(false);
+        controlsCanvas.SetActive(false);
+        creditsCanvas.SetActive(false);
+        publicDomainSFXCanvas.SetActive(false);
         deleteSaveIndex = -1;
     }
 
@@ -40,6 +46,19 @@ public class TitleManager : MonoBehaviour
 
     public void OpenSettings(){
         titleScreenSettingsCanvas.SetActive(true);
+    }
+
+    public void OpenControls(){
+        controlsCanvas.SetActive(true);
+    }
+
+    public void OpenCredits(){
+        creditsCanvas.SetActive(true);
+    }
+
+    public void OpenPublicDomainSFXCanvas(){
+        creditsCanvas.SetActive(false);
+        publicDomainSFXCanvas.SetActive(true);
     }
 
     public void QuitGame(){
@@ -70,6 +89,19 @@ public class TitleManager : MonoBehaviour
 
     public void ClosePlayCanvas(){
         playCanvas.SetActive(false);
+    }
+
+    public void CloseControls(){
+        controlsCanvas.SetActive(false);
+    }
+
+    public void CloseCreditCanvas(){
+        creditsCanvas.SetActive(false);
+    }
+
+    public void ClosePublicDomainSFXCreditCanvas(){
+        creditsCanvas.SetActive(true);
+        publicDomainSFXCanvas.SetActive(false);
     }
 
     public void deleteAutosave(){
@@ -105,5 +137,9 @@ public class TitleManager : MonoBehaviour
     public void closeAskIfWantToDeleteSaveCanvas(){
         askIfWantToDeleteSaveCanvas.SetActive(false);
         deleteSaveIndex = -1;
+    }
+
+    public void OpenURL(string link){
+        Application.OpenURL(link);
     }
 }

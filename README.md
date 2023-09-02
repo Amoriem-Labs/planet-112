@@ -2,10 +2,9 @@
 
 ## Player Controls
 Player movement is with both WASD and arrow keys.  
-Press E by a plant to pick up the plant.  
+Press E by a plant to pick up and place down plants.  
 Press E when in front of Mav to open up her shop.  
-Press R to reset the inventory (use only for testing purposes). This keybinding will be disabled in the final product of the game.  
-Press G to spawn a new plant.  
+Press R to reset the inventory (use only for testing purposes). This keybinding has been disabled in the final product of the game.  
 Press I to open the inventory.  
 Press Esc to open the settings.  
 Press 1 through 9 to use the items in the hotbar.
