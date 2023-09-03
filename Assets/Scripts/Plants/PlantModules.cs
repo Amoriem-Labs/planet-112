@@ -240,41 +240,43 @@ public static class PlantModuleArr
 
         public override void OnCycleComplete()
         {
-            for (int i = 0; i < moduleData.fruitProductionQuantity; i++){
-                float velocityMag = 3.0f;
-                float xComp = Random.Range(-1.0f,1.0f);
-                float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                Vector2 randomVelocity = new Vector2(xComp, yComp);
-                UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(moduleData.fruitType), 
-                    plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-            }
+            if (LevelManager.currentOxygenLevel < LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
+                for (int i = 0; i < moduleData.fruitProductionQuantity; i++){
+                    float velocityMag = 3.0f;
+                    float xComp = Random.Range(-1.0f,1.0f);
+                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                    Vector2 randomVelocity = new Vector2(xComp, yComp);
+                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(moduleData.fruitType), 
+                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                }
 
-            if (moduleData.fruitProductionQuantity != 0){
-                // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
-                float randfloat = Random.Range(0f,1f);
-                if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
-                    float velocityMag = 3.0f;
-                    float xComp = Random.Range(-1f,1f);
-                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                    Vector2 randomVelocity = new Vector2(xComp, yComp);
-                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                }
-                if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
-                    float velocityMag = 3.0f;
-                    float xComp = Random.Range(-1f,1f);
-                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                    Vector2 randomVelocity = new Vector2(xComp, yComp);
-                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
-                }
-                if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
-                    float velocityMag = 3.0f;
-                    float xComp = Random.Range(-1f,1f);
-                    float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
-                    Vector2 randomVelocity = new Vector2(xComp, yComp);
-                    UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
-                        plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                if (moduleData.fruitProductionQuantity != 0){
+                    // Random chance of producing 1 crystalline icura based on what type of fruit this plant mainly produces
+                    float randfloat = Random.Range(0f,1f);
+                    if (moduleData.fruitType == FruitType.Seafoam && randfloat < 0.1f){
+                        float velocityMag = 3.0f;
+                        float xComp = Random.Range(-1f,1f);
+                        float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                        Vector2 randomVelocity = new Vector2(xComp, yComp);
+                        UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                            plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    }
+                    if (moduleData.fruitType == FruitType.Sunset && randfloat < 0.2f){
+                        float velocityMag = 3.0f;
+                        float xComp = Random.Range(-1f,1f);
+                        float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                        Vector2 randomVelocity = new Vector2(xComp, yComp);
+                        UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                            plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    }
+                    if (moduleData.fruitType == FruitType.Amethyst && randfloat < 0.3f){
+                        float velocityMag = 3.0f;
+                        float xComp = Random.Range(-1f,1f);
+                        float yComp = (float)Math.Sqrt((velocityMag)*(velocityMag) - (xComp)*(xComp));
+                        Vector2 randomVelocity = new Vector2(xComp, yComp);
+                        UtilPrefabStorage.Instance.InstantiatePrefab(FruitManager.GetFruitPrefab(FruitType.Crystalline), 
+                            plantScript.transform.position, Quaternion.identity, null, randomVelocity);
+                    }
                 }
             }
         }

@@ -174,7 +174,7 @@ public class PlayerScript : MonoBehaviour
     {
         if (!inventoryIsLoaded && !TimeManager.IsGamePaused()){
             // If can move onto next level
-            if (canMoveNextLevel && LevelManager.currentLevelID != LevelManager.levelSOsStatic.Length - 1){
+            if (canMoveNextLevel){
                 canMoveNextLevel = false;
                 playerPopupCanvas.SetActive(false);
                 LevelManager.LoadLevelScene(LevelManager.currentLevelID + 1); // this automatically increments LevelManager's currentLevelID
@@ -192,6 +192,7 @@ public class PlayerScript : MonoBehaviour
                     return;
                 }
                 LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
+                transform.position = new Vector2(29.75f, transform.position.y);
                 GridScript.ClearGrid();
                 GridScript.SpawnGrid(GridConfigs.levelGridDimensions[LevelManager.currentLevelID], 
                     PersistentData.GetLevelData(LevelManager.currentLevelID));
@@ -342,7 +343,7 @@ public class PlayerScript : MonoBehaviour
         //     canMovePreviousLevel = true;
         //     playerPopupCanvas.SetActive(true);
         // }
-        if (collision.gameObject.tag == "NearRightWall" && LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel >= LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
+        if (collision.gameObject.tag == "NearRightWall" && LevelManager.currentOxygenLevel >= LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel){
             canMoveNextLevel = true;
             playerPopupCanvas.SetActive(true);
         }

@@ -212,6 +212,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205397737}
     m_Modifications:
+    - target: {fileID: 1191357890116048073, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2901702923916478406, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
       propertyPath: m_Name
       value: Fireball Bee Attack
@@ -1118,6 +1122,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205397737}
     m_Modifications:
+    - target: {fileID: 1191357890116048073, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2901702923916478406, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
       propertyPath: m_Name
       value: Armored Skeeto
@@ -1660,6 +1668,10 @@ PrefabInstance:
     - target: {fileID: 4571040240204182238, guid: 39d93507ae4823f46932f185943b1145, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5424731889212056280, guid: 39d93507ae4823f46932f185943b1145, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8324026734945972695, guid: 39d93507ae4823f46932f185943b1145, type: 3}
       propertyPath: m_Name
@@ -3075,6 +3087,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205397737}
     m_Modifications:
+    - target: {fileID: 1191357890116048073, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2901702923916478406, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
       propertyPath: m_Name
       value: Dirt Roach
@@ -3425,6 +3441,10 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5424731889212056280, guid: 39d93507ae4823f46932f185943b1145, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8324026734945972695, guid: 39d93507ae4823f46932f185943b1145, type: 3}
       propertyPath: m_Name
       value: Locust Moving
@@ -3559,6 +3579,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1205397737}
     m_Modifications:
+    - target: {fileID: 1191357890116048073, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2901702923916478406, guid: ab2c7d676687c7a47872b88166c70057, type: 3}
       propertyPath: m_Name
       value: Fireball Bee Move
@@ -3800,6 +3824,10 @@ PrefabInstance:
     - target: {fileID: 1031329750215003995, guid: eb98a53332365674593c321cf6568407, type: 3}
       propertyPath: m_Name
       value: Titan Beetle Throw
+      objectReference: {fileID: 0}
+    - target: {fileID: 3935128126683831380, guid: eb98a53332365674593c321cf6568407, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4808575731941919826, guid: eb98a53332365674593c321cf6568407, type: 3}
       propertyPath: m_Size.x
@@ -5319,6 +5347,10 @@ PrefabInstance:
     - target: {fileID: 1031329750215003995, guid: eb98a53332365674593c321cf6568407, type: 3}
       propertyPath: m_Name
       value: Titan Beetle Charge
+      objectReference: {fileID: 0}
+    - target: {fileID: 3935128126683831380, guid: eb98a53332365674593c321cf6568407, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4808575731941919826, guid: eb98a53332365674593c321cf6568407, type: 3}
       propertyPath: m_Size.x

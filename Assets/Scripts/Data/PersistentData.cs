@@ -63,6 +63,11 @@ public class PersistentData : MonoBehaviour
             LevelData currLevel = currLevelDatas[currSaveData.currLevelIndex];
             LevelManager.currentLevelID = currLevel.levelID;
             LevelManager.currentBiome = currLevel.biome;
+            if (currSaveData.currLevelIndex == 0){
+                LevelManager.currentOxygenLevel = 0;
+            } else {
+                LevelManager.currentOxygenLevel = currLevelDatas[currSaveData.currLevelIndex - 1].firstTargetOxygenLevel;
+            }
             // TODO: load in plant in hand
             ////player.GetComponent<PlayerScript>().plantInHand = currLevel.plantInHand;
             // TODO: load in plant and pest datas
@@ -129,7 +134,12 @@ public class PersistentData : MonoBehaviour
 
     public static LevelData GetLevelData(int levelID)
     {
-        return currLevelDatas[levelID];
+        if (currLevelDatas.ContainsKey(levelID)){
+            return currLevelDatas[levelID];
+        } else {
+            return new LevelData();
+        }
+        
     }
 
     // Add a new LevelData to both currSaveData and currLevelDatas. This method is only called when a new level is unlocked. Once a level is unlocked, it stays unlocked. 
@@ -180,7 +190,7 @@ public class PersistentData : MonoBehaviour
                     levelData.pestDatas.Add(pest.GetComponent<PestScript>().pestData);
                 }
             }
-            levelData.oxygenLevel = levelSO.oxygenLevel;
+            levelData.oxygenLevel = 0; //levelSO.oxygenLevel;
             levelData.firstTargetOxygenLevel = levelSO.firstTargetOxygenLevel;
             levelData.secondTargetOxygenLevel = levelSO.secondTargetOxygenLevel;
             PlantScript plantInHand = player.GetComponent<PlayerScript>().plantInHand;

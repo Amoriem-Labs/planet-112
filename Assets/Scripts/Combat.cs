@@ -10,7 +10,7 @@ public class Combat : MonoBehaviour
   public LayerMask enemyLayers;
   public static LayerMask enemyLayersStatic;
   // TODO: get attack damage from weapon class to differentiate weapon specs
-  public static int attackDamage = 5;
+  public static float attackDamage = 5f;
   public static float playerAttackRange = 0.5f;
 
   void Awake(){
@@ -26,7 +26,7 @@ public class Combat : MonoBehaviour
     Collider2D[] hitPests = Physics2D.OverlapCircleAll(attackPointStatic.position, playerAttackRange, enemyLayersStatic);
 
     // Damage pests. Only damage one at a time.
-    if (hitPests != null){
+    if (hitPests.Length > 0){
       Collider2D pest = hitPests[0];
       AudioManager.GetSFX("thudSFX").Play();
       print("We hit " + pest.name);

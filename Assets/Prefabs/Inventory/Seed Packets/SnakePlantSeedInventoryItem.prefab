@@ -201,8 +201,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 295ea30a3b34e9947af558e32424143d, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -275,7 +275,7 @@ MonoBehaviour:
   linkedShopItemSO: {fileID: 11400000, guid: cdc6e2aaab34ed4498f08a78d0a5dfca, type: 2}
   displayName: Snake Plant Seed Packet
   image: {fileID: 6575165862027658249}
-  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  sprite: {fileID: 21300000, guid: 295ea30a3b34e9947af558e32424143d, type: 3}
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 6105018440530840956}

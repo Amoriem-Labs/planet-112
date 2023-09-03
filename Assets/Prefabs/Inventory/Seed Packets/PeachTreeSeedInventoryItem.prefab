@@ -66,8 +66,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 4451ae496de1abf49a7279d310974a89, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -140,7 +140,7 @@ MonoBehaviour:
   linkedShopItemSO: {fileID: 11400000, guid: 8cb4ab88fbbe493489391a7907860f64, type: 2}
   displayName: Peach Tree Seed Packet
   image: {fileID: 1830559405091512190}
-  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  sprite: {fileID: 21300000, guid: 4451ae496de1abf49a7279d310974a89, type: 3}
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 1648805072443348491}

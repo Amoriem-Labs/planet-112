@@ -25,7 +25,10 @@ public class LevelManager : MonoBehaviour
     public static TextMeshProUGUI firstOxygenLevelTextStatic;
     public TextMeshProUGUI secondOxygenLevelText;
     public static TextMeshProUGUI secondOxygenLevelTextStatic;
-    public bool leveledUp;
+    public GameObject cameraObj;
+    public static GameObject cameraObjStatic;
+    public GameObject cinemaMachineCamera; 
+    public static GameObject cinemaMachineCameraStatic;
 
     void Awake(){
         DontDestroyOnLoad(oxygenLevelCanvas);
@@ -36,14 +39,12 @@ public class LevelManager : MonoBehaviour
         firstOxygenLevelTextStatic = firstOxygenLevelText;
         secondOxygenLevelTextStatic = secondOxygenLevelText;
         firstOxygenLevelMarkStatic = firstOxygenLevelMark;
-        leveledUp = false;
-        foreach (Level levelSO in levelSOsStatic){
-            levelSO.oxygenLevel = 0;
-        }
+        cameraObjStatic = cameraObj;
+        cinemaMachineCameraStatic = cinemaMachineCamera;
     }
 
     void Update(){
-        if (levelSOsStatic[currentLevelID].oxygenLevel >= levelSOsStatic[currentLevelID].firstTargetOxygenLevel && !levelSOs[currentLevelID].completed){
+        if (currentOxygenLevel >= levelSOsStatic[currentLevelID].firstTargetOxygenLevel && !levelSOs[currentLevelID].completed){
             AudioManager.GetSFX("levelSFX").Play();
             AudioManager.GetSFX("swooshSFX").Play();
             levelSOs[currentLevelID].completed = true;
@@ -56,31 +57,44 @@ public class LevelManager : MonoBehaviour
         foreach (KeyValuePair<int, int> entry in plantOxygenContributions){
             totalOxygenLevel += entry.Value;
         }
-        levelSOsStatic[currentLevelID].oxygenLevel = totalOxygenLevel;
-        oxygenLevelSliderStatic.value = levelSOsStatic[currentLevelID].oxygenLevel;
-        firstOxygenLevelTextStatic.text = $"{levelSOsStatic[currentLevelID].oxygenLevel}/{levelSOsStatic[currentLevelID].firstTargetOxygenLevel}";
-        secondOxygenLevelTextStatic.text = $"{levelSOsStatic[currentLevelID].oxygenLevel}/{levelSOsStatic[currentLevelID].secondTargetOxygenLevel}";
-        return levelSOsStatic[currentLevelID].oxygenLevel;
+        currentOxygenLevel = totalOxygenLevel;
+        oxygenLevelSliderStatic.value = currentOxygenLevel;
+        firstOxygenLevelTextStatic.text = $"{currentOxygenLevel}/{levelSOsStatic[currentLevelID].firstTargetOxygenLevel}";
+        secondOxygenLevelTextStatic.text = $"{currentOxygenLevel}/{levelSOsStatic[currentLevelID].secondTargetOxygenLevel}";
+        return currentOxygenLevel;
     }
 
     public static void LoadLevel(int levelID){
+        Debug.Log($"Loading in level {levelID+1}");
         oxygenLevelCanvasStatic.SetActive(true);
-        oxygenLevelSliderStatic.value = levelSOsStatic[levelID].oxygenLevel;
+        oxygenLevelSliderStatic.value = currentOxygenLevel;
         oxygenLevelSliderStatic.maxValue = levelSOsStatic[levelID].secondTargetOxygenLevel;
         float sliderWidth = oxygenLevelSliderStatic.GetComponent<RectTransform>().rect.width; // is based off the width from RectTransform component of oxygenLevelSlider. Since oxygenLevelSlider is anchored in the middle of a Canvas object whose Camera is set to Screen Space - Camera Overlay, the position of the RectTransform is 0 and the actual width is twice what is displayed in RectTransform.
         float xPos = (levelSOsStatic[levelID].firstTargetOxygenLevel - (levelSOsStatic[levelID].secondTargetOxygenLevel / 2f)) * 0.01f * sliderWidth; // places firstLevelOxygenMark in proper position relative to oxygenLevelSlider
         firstOxygenLevelMarkStatic.transform.localPosition = new Vector3(xPos, 455, 0);
-        firstOxygenLevelTextStatic.text = $"{levelSOsStatic[levelID].oxygenLevel}/{levelSOsStatic[levelID].firstTargetOxygenLevel}";
-        secondOxygenLevelTextStatic.text = $"{levelSOsStatic[levelID].oxygenLevel}/{levelSOsStatic[levelID].secondTargetOxygenLevel}";
+        firstOxygenLevelTextStatic.text = $"{currentOxygenLevel}/{levelSOsStatic[levelID].firstTargetOxygenLevel}";
+        secondOxygenLevelTextStatic.text = $"{currentOxygenLevel}/{levelSOsStatic[levelID].secondTargetOxygenLevel}";
     }
 
     public static void LoadLevelScene(int levelID){
-        SceneManager.LoadScene(levelSOsStatic[levelID].sceneName);
-        LoadLevel(levelID);
-        currentLevelID = levelID;
-        //StopCoroutine(GameManager.StartPestWaves);
-        MonoBehaviour instance = GameObject.FindObjectOfType<LevelManager>();
-        instance.StopAllCoroutines(); // TODO: make a better system for stopping previous level's start pest waves coroutine.
-        Coroutine pestWaves = instance.StartCoroutine(GameManager.StartPestWaves(levelSOsStatic[levelID]));
+        if (currentLevelID == levelSOsStatic.Length - 1){
+            SceneManager.LoadScene("GameCompletedScene");
+            MonoBehaviour instance = GameObject.FindObjectOfType<LevelManager>();
+            instance.StopAllCoroutines();
+            cameraObjStatic.SetActive(false);
+            cinemaMachineCameraStatic.SetActive(false);
+        } else {
+            SceneManager.LoadScene(levelSOsStatic[levelID].sceneName);
+            LoadLevel(levelID);
+            currentLevelID = levelID;
+            //StopCoroutine(GameManager.StartPestWaves);
+            MonoBehaviour instance = GameObject.FindObjectOfType<LevelManager>();
+            instance.StopAllCoroutines(); // TODO: make a better system for stopping previous level's start pest waves coroutine.
+            Coroutine pestWaves = instance.StartCoroutine(GameManager.StartPestWaves(levelSOsStatic[levelID]));
+            // If second target oxygen level is reached in the level, then stick damage will be boosted in the future levels.
+            if (currentOxygenLevel >= levelSOsStatic[currentLevelID].secondTargetOxygenLevel){
+                Combat.attackDamage *= 1.5f;
+            }
+        }
     }
 }

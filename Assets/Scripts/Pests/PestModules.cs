@@ -628,7 +628,7 @@ public static class PestModuleArr
             if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
             {
                 Debug.Log("Projectile being generated...");
-                if (pestScript.pestSO.pName == PestName.EvilRoach){
+                if (pestScript.pestSO.pName == PestName.EvilRoach || pestScript.pestSO.pName == PestName.ArmoredSkeeto){
                     AudioManager.GetSFX("bugProjectileSFX").Play();
                     TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
                         pestScript.transform.position, Quaternion.identity, null).GetComponent<TriggerProjectile>();

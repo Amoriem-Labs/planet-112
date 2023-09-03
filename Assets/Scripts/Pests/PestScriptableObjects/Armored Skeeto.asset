@@ -20,10 +20,8 @@ MonoBehaviour:
   maxHealth:
   - 35
   defaultModules: 0000000001000000
-  hitboxSize:
-  - {x: 0, y: 0}
-  hitboxOffset:
-  - {x: 0, y: 0}
+  hitboxSize: []
+  hitboxOffset: []
   bezierMoveSpeed:
   - 5
   singleTargetProjectileAttackRate:
@@ -33,4 +31,4 @@ MonoBehaviour:
   singleTargetProjectileSpeed:
   - 10
   singleTargetProjectileAttackRangeRadius:
-  - 0.1
+  - 1

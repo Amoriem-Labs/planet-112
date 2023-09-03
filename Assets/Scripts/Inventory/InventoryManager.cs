@@ -167,6 +167,7 @@ public class InventoryManager : MonoBehaviour
                     if (slotTransform.childCount > 0 && inventoryItem.linkedItemPrefab.TryGetComponent<Fruit>(out Fruit fruitScript)){
                         // If there is more cost than or equal to the icura amount currently in this inventory slot, use up all of the icura in this inventory slot and wait for next iteration of loop to spend remaining icura needed to make the purchase.
                         if (fruitScript.fruitType.Equals(key)){
+                            Debug.Log($"total cost: {totalCostDict[key]}, num icura: {inventoryItem.stackSize}");
                             if (totalCostDict[key] >= inventoryItem.stackSize){
                                 totalCostDict[key] = totalCostDict[key] - inventoryItem.stackSize;
                                 inventoryItem.RemoveFromStack(inventoryItem.stackSize);
@@ -183,6 +184,8 @@ public class InventoryManager : MonoBehaviour
                     }
                 }
             }
+            hotbarManager.Invoke("UpdateHotbar",0);
+            hotbarManager.Invoke("UpdateFruitText",0);
         }
 
         shopManager.UpdateFruitStockText();

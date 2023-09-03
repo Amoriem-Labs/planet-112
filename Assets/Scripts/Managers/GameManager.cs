@@ -42,10 +42,9 @@ public class GameManager : MonoBehaviour
     }
 
     public static GameObject SpawnPest(PestName pestName, Vector2 location){
-        Transform pestParent = GameObject.FindGameObjectWithTag("pestParent").transform;
         GameObject pestPrefab = PestStorage.GetPestPrefab(pestName);
         Debug.Log($"Spawning pest at x:{location.x} and y:{location.y}");
-        GameObject pestObj = Instantiate(pestPrefab, location, pestPrefab.transform.rotation, pestParent);
+        GameObject pestObj = Instantiate(pestPrefab, location, pestPrefab.transform.rotation);
 
         /* if (plantObj != null)
         {

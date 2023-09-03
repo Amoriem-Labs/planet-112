@@ -155,8 +155,8 @@ public class Settings : MonoBehaviour
             saveFileBiomeTexts[saveIndex - 1].color = caveColor;
         }
 
-        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel / LevelManager.levelSOsStatic[LevelManager.currentLevelID].secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format($"Oxygen: {LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
+        float oxygenTextColor = startingOxygenTextColor - ((float)LevelManager.currentOxygenLevel / LevelManager.levelSOsStatic[LevelManager.currentLevelID].secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
+        saveFileOxygenLevelTexts[saveIndex - 1].text = String.Format($"Oxygen: {LevelManager.currentOxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
         saveFileOxygenLevelTexts[saveIndex - 1].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
     }
 
@@ -211,7 +211,7 @@ public class Settings : MonoBehaviour
                 }
 
                 float oxygenTextColor = startingOxygenTextColor - ((float)currLevel.oxygenLevel / currLevel.secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-                saveFileOxygenLevelTexts[i - 1].text = String.Format($"Oxygen: {LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
+                saveFileOxygenLevelTexts[i - 1].text = String.Format($"Oxygen: {LevelManager.currentOxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
                 saveFileOxygenLevelTexts[i - 1].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
             }
             else // Triggers if save file does not yet exist for that save index (i.e. the player hasn't written a save file to that index yet)
@@ -265,7 +265,7 @@ public class Settings : MonoBehaviour
                 }
 
                 float oxygenTextColor = startingOxygenTextColor - ((float)currLevel.oxygenLevel / currLevel.secondTargetOxygenLevel) * (startingOxygenTextColor - endingOxygenTextColor);
-                saveFileOxygenLevelTexts[i].text = String.Format($"Oxygen: {LevelManager.levelSOsStatic[LevelManager.currentLevelID].oxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
+                saveFileOxygenLevelTexts[i].text = String.Format($"Oxygen: {LevelManager.currentOxygenLevel}/{LevelManager.levelSOsStatic[LevelManager.currentLevelID].firstTargetOxygenLevel}");
                 saveFileOxygenLevelTexts[i].color = new Color(oxygenTextColor, 0.6320754f, oxygenTextColor, 1.0f); // color changes continuously from gray to green depending on how much oxygen you have
             }
             else // Triggers if save file does not yet exist for that save index (i.e. the player hasn't written a save file to that index yet)
