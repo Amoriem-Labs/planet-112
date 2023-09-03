@@ -2,6 +2,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random=UnityEngine.Random;
 
 public class TitleManager : MonoBehaviour
@@ -141,5 +142,9 @@ public class TitleManager : MonoBehaviour
 
     public void OpenURL(string link){
         Application.OpenURL(link);
+    }
+
+    public void OpenShowcaseScene(){
+        SceneManager.LoadScene("Showcase");
     }
 }

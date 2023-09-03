@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3494374539b0a354c9abd61a8565afec, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d0672a9aa55eb5e4a91e0f437fad4711, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -140,7 +140,7 @@ MonoBehaviour:
   linkedShopItemSO: {fileID: 0}
   displayName: Seafoam Icura
   image: {fileID: 4995659472095112554}
-  sprite: {fileID: 21300000, guid: 3494374539b0a354c9abd61a8565afec, type: 3}
+  sprite: {fileID: 21300000, guid: d0672a9aa55eb5e4a91e0f437fad4711, type: 3}
   stackable: 1
   stackSize: 0
   stackSizeText: {fileID: 5515142754238885967}
@@ -148,7 +148,7 @@ MonoBehaviour:
   parentAfterDrag: {fileID: 0}
   rootInventorySlot: {fileID: 0}
   isHotbarItem: 0
-  linkedItemPrefab: {fileID: 917211971986225222, guid: 7a786e886f6b9ea41aa3ba981a5851c1, type: 3}
+  linkedItemPrefab: {fileID: 6298690981765841532, guid: 50b0a2fe14084654f94e169b870b5d37, type: 3}
   hotbar: {fileID: 0}
   infoBar: {fileID: 0}
   playerScript: {fileID: 0}
