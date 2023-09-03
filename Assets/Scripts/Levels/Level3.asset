@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6b485001640845448ef1260a923aa49, type: 3}
-  m_Name: Level2
+  m_Name: Level3
   m_EditorClassIdentifier: 
-  levelID: 1
-  sceneName: Level2Scene
+  levelID: 2
+  sceneName: Level3Scene
   biome: plains
-  firstTargetOxygenLevel: 11
-  secondTargetOxygenLevel: 11
-  completed: 1
-  pestWavePestNames: 0000000001000000020000000100000002000000
-  pestWaveNumPests: 0000000003000000050000000500000005000000
+  firstTargetOxygenLevel: 210
+  secondTargetOxygenLevel: 210
+  completed: 0
+  pestWavePestNames: 00000000010000000200000001000000010000000200000002000000
+  pestWaveNumPests: 00000000030000000300000005000000050000000500000005000000
   pestWaveDelays:
+  - 15
+  - 15
   - 15
   - 15
   - 15

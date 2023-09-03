@@ -20508,7 +20508,6 @@ MonoBehaviour:
   firstOxygenLevelMark: {fileID: 1150516065}
   firstOxygenLevelText: {fileID: 1181099453}
   secondOxygenLevelText: {fileID: 1169155732}
-  leveledUp: 0
   cameraObj: {fileID: 519420028}
   cinemaMachineCamera: {fileID: 1985826452}
 --- !u!114 &798319921

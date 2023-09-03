@@ -89,6 +89,28 @@ public class GameManager : MonoBehaviour
         return plantObj;
     }
 
+    public static GameObject SpawnPlantRemoveLater(PlantName plantName, Vector2 location) // location has to be mapGrid int coords!
+    {
+        GameObject plantPrefab = PlantStorage.GetPlantPrefab(plantName);
+        GameObject plantObj = GridScript.SpawnObjectAtGridRemoveLater(location, plantPrefab, plantPrefab.GetComponent<PlantScript>().plantSO.offset[0],
+            plantPrefab.GetComponent<PlantScript>().plantSO.relativeGridsOccupied[0].vec2Array); // when a new plant is spawned, currStageOfLife is 0
+
+        if (plantObj != null)
+        {
+            AudioManager.GetSFX("plantSFX").Play();
+            PlantScript plantScript = plantObj.GetComponent<PlantScript>();
+            plantScript.ID = plantID; 
+            plantID += 1;
+            plantScript.InitializePlantData(location);
+
+            plantScript.SetMainCollider();
+            plantScript.SpawnInModules();
+            plantScript.VisualizePlant();
+        }
+
+        return plantObj;
+    }
+
     /* public static GameObject LoadPlant(PlantData plantData) // location has to be mapGrid int coords!
     {
         GameObject plantPrefab = PlantStorage.GetPlantPrefab((PlantName)plantData.plantName);
