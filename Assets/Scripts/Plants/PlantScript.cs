@@ -213,7 +213,7 @@ public abstract class PlantScript : MonoBehaviour
         if (plantData.currentHealth <= 0)
         {
             // sadly, plant dies.
-            Debug.Log("PLANT KILLED GG");
+            ////Debug.Log("PLANT KILLED GG");
             GameManager.KillPlant(this);
 
             // If this plant is a lilypad and there's other plants on the same square, also kill the other plants
@@ -268,7 +268,7 @@ public abstract class PlantScript : MonoBehaviour
         }
         else
         {
-            // Debug.Log("Current time left: " + plantData.stageTimeLeft);
+            // //Debug.Log("Current time left: " + plantData.stageTimeLeft);
             g = Timing.RunCoroutine(StartPlantGrowth(callback).CancelWith(gameObject), "plant");
         }
         // can execute a call back every iteration if want, like current % plant growth etc for growth animation if want.
@@ -286,7 +286,7 @@ public abstract class PlantScript : MonoBehaviour
         if (!GridScript.CheckOtherTilesAvailability(plantData.location, gameObject, newSpaceNeeded)) // if the spaces are not available, pause the growth.
         {
             // TODO: what's a way to resume the growth later on?
-            Debug.Log("Plant growth is paused. Need more space.");
+            ////Debug.Log("Plant growth is paused. Need more space.");
             plantData.currStageOfLife -= 1; // revert
             return;
         }
@@ -328,7 +328,7 @@ public abstract class PlantScript : MonoBehaviour
         if (plantData.currStageOfLife == plantSO.maxStage) //if maxStage = 3, then 0-1, 1-2, 2-3, but indices are 0 1 2 3.
         {
             // plant is fully grown; do something.
-            Debug.Log("Plant is fully grown!");
+            ////Debug.Log("Plant is fully grown!");
         }
         else
         {
@@ -361,8 +361,8 @@ public abstract class PlantScript : MonoBehaviour
         transform.SetParent(handTransform, false);
         transform.localPosition = Vector3.zero;
 
-        Debug.Log("Plant has been lifted, and growth paused at " + plantData.stageTimeLeft + " seconds");
-        Debug.Log(GridScript.GetTileState(GridScript.CoordinatesToGrid(transform.position)));
+        //Debug.Log("Plant has been lifted, and growth paused at " + plantData.stageTimeLeft + " seconds");
+        //Debug.Log(GridScript.GetTileState(GridScript.CoordinatesToGrid(transform.position)));
     }
 
     public bool PlacePlant(Vector2 location)
@@ -412,7 +412,7 @@ public abstract class PlantScript : MonoBehaviour
         // Modules shouldn't work when the plants is picked up? unless...
         if (pickedUp == false) UpdateAllModules();
 
-        // If this plant is lilypad and there is another plant on top of lilypad and if pest aggro is on lilypad, switches the pest aggro to the plant on top of lilypad.
+        /* // If this plant is lilypad and there is another plant on top of lilypad and if pest aggro is on lilypad, switches the pest aggro to the plant on top of lilypad.
         List<PlantScript> plantsInGridSquare = GridScript.GetGridSquare(GridScript.CoordinatesToGrid(transform.position)).plantsOnTop;
         if (plantsInGridSquare.Count > 1){
             foreach (PestScript pestScript in pestScripts){
@@ -422,6 +422,6 @@ public abstract class PlantScript : MonoBehaviour
                     }
                 }
             }
-        }
+        } */
     }
 }

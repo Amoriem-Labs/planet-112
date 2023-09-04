@@ -26,7 +26,7 @@ public class SeedPacket : MonoBehaviour, ICollectible
             if (linkedInventoryItem != null){
                 if (linkedInventoryItem.stackable) linkedInventoryItem.Use(1, linkedInventoryItem.gameObject);
             } else {
-                Debug.Log("Didn't find the matching seed packet in inventory!");
+                ////Debug.Log("Didn't find the matching seed packet in inventory!");
             }
         }        
     }

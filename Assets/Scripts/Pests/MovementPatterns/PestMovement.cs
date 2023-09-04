@@ -80,7 +80,7 @@ public class PestMovement : MonoBehaviour
 
     private void OnPathComplete(Path p)
     {
-        //Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
+        ////Debug.Log("A path was calculated. Did it fail with an error? " + p.error);
 
         if(targetPosition != null) targetPosition.GetComponent<PlantScript>().VisualizePlantTargetBoundary(); // for debugging. Comment out later
 
@@ -114,7 +114,7 @@ public class PestMovement : MonoBehaviour
 
     protected void EndPathing(bool turnOffPathing)
     {
-        //Debug.Log("ENDPATHING IS CALLED WITH turnOffPathing " + turnOffPathing + " and resetPath " + resetPath);
+        ////Debug.Log("ENDPATHING IS CALLED WITH turnOffPathing " + turnOffPathing + " and resetPath " + resetPath);
 
         if(resetPath) // pathing ended because it needs a reset
         {

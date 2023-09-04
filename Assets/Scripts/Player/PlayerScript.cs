@@ -65,10 +65,10 @@ public class PlayerScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
         {
-            Debug.LogError("RigidBody2D is null!");
+            //Debug.LogError("RigidBody2D is null!");
         }
 
-        // Debug.Log(null || null);
+        // //Debug.Log(null || null);
 
         // Pre-existing or prefab instantiation is faster than run time script generation
         /*GameObject childObject = new GameObject();
@@ -188,7 +188,7 @@ public class PlayerScript : MonoBehaviour
                 canMovePreviousLevel = false;
                 playerPopupCanvas.SetActive(false);
                 if (LevelManager.currentLevelID == 0){
-                    Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
+                    //Debug.Log("Cannot load previous level since you are on level 1 and there is no previous level!");
                     return;
                 }
                 LevelManager.LoadLevelScene(LevelManager.currentLevelID - 1); // this automatically decrements LevelManager's currentLevelID
@@ -209,7 +209,7 @@ public class PlayerScript : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("Can't place it here; not enough space.");
+                        //Debug.Log("Can't place it here; not enough space.");
                     }
                 }
                 else // no plant in hand

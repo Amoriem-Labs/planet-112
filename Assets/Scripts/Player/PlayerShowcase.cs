@@ -29,7 +29,7 @@ public class PlayerShowcase : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         if (rb is null)
         {
-            Debug.LogError("RigidBody2D is null!");
+            //Debug.LogError("RigidBody2D is null!");
         }
     }
 

@@ -127,7 +127,7 @@ public class TitleManager : MonoBehaviour
 
     public void confirmDeleteFile(){
         if (deleteSaveIndex == -1){
-            Debug.Log("Did not select a save file to delete.");
+            ////Debug.Log("Did not select a save file to delete.");
         } else {
             DataManager.deleteSaveFile(deleteSaveIndex);
             titleScreenSettingsCanvas.GetComponent<Settings>().LoadSaveFileUIsForTitleScreen();

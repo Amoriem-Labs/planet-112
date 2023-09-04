@@ -32,8 +32,8 @@ public class Settings : MonoBehaviour
 
     void Awake(){
         DontDestroyOnLoad(gameObject);
-        Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-        fullScreen = true;
+        //Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+        fullScreen = false;
         settingsStartingScale = transform.localScale;
         hotbarStartingScale = hotbarCanvas.transform.localScale;
         inventoryStartingScale = inventoryCanvas.transform.localScale;

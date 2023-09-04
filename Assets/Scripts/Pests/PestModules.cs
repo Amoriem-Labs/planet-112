@@ -141,12 +141,12 @@ public static class PestModuleArr
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerEnter2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerEnter2D called for TriggerModule. gameObject: " + collider.gameObject.name);
         }
 
         protected virtual void OnTriggerExit2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerExit2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerExit2D called for TriggerModule. gameObject: " + collider.gameObject.name);
         }
     }
 
@@ -429,7 +429,7 @@ public static class PestModuleArr
                             {
                                 resetPath = true;
                                 keepPathing = false;
-                                Debug.Log("Potentially idleling");
+                                ////Debug.Log("Potentially idleling");
                                 //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
                             }
                             else if (decoyState)
@@ -445,7 +445,7 @@ public static class PestModuleArr
                         break;
                     }
                 }
-                //Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+                ////Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
             }
 
             if (t <= 1) // movement if during movement pattern phase
@@ -467,7 +467,7 @@ public static class PestModuleArr
                         float distToTarget = Vector3.Distance(pestScript.transform.position, (targetPosition.position + targetOffsetFromCenter));
                         if (distToTarget <= slowdownDetectionRange && !decoyState)
                         {
-                            //Debug.Log("Dist to target is: " + distToTarget);
+                            ////Debug.Log("Dist to target is: " + distToTarget);
                             speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);
                         }
                     }
@@ -482,14 +482,14 @@ public static class PestModuleArr
                     // This basically means you've reached a set destination to the target.
                     // Call other functions etc
                     // if KeepPathing stays true, then the ai following target continues as target moves. 
-                    //Debug.Log("I shall stop HERE.");
+                    ////Debug.Log("I shall stop HERE.");
                     EndPathing(true);
                     return;
                 }
 
                 UpdatePath(); // update the path at the end of every path division.
 
-                //Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
+                ////Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
                 if (pathDivisions.Count == 0) // generate a new path division
                 {
                     // Problem with this is that the AI cuts through curves based on the alg since direct lerping.
@@ -521,7 +521,7 @@ public static class PestModuleArr
                     if (targetPosition != null) // just in case target is destroyed during this process
                     {
                         float newRelativePosition = Mathf.Sign(pestScript.transform.position.x - (targetPosition.transform.position.x + targetOffsetFromCenter.x));
-                        //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
+                        ////Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
                         if (newRelativePosition != relativePosition)
                         {
                             relativePosition = newRelativePosition;
@@ -627,7 +627,7 @@ public static class PestModuleArr
             // Launch projectile
             if (pestScript.targetPlantScript != null && pestScript.TargetPlantInAttackRange())
             {
-                Debug.Log("Projectile being generated...");
+                ////Debug.Log("Projectile being generated...");
                 if (pestScript.pestSO.pName == PestName.EvilRoach || pestScript.pestSO.pName == PestName.ArmoredSkeeto){
                     AudioManager.GetSFX("bugProjectileSFX").Play();
                     TriggerProjectile bullet = UtilPrefabStorage.Instance.InstantiatePrefab(UtilPrefabStorage.Instance.boxProjectile,
@@ -647,13 +647,13 @@ public static class PestModuleArr
             }
             // else
             // {
-            //    Debug.Log(pestScript.name + " Not in Range: " + pestScript.targetPlantScript.transform.position);
+            //    //Debug.Log(pestScript.name + " Not in Range: " + pestScript.targetPlantScript.transform.position);
             // }
         }
 
         void OnBulletHit2D(Collider2D collider, TriggerProjectile bullet)
         {
-            Debug.Log(collider.gameObject.name);
+            ////Debug.Log(collider.gameObject.name);
             if (collider.gameObject != null)
             {
                 if (pestScript.targetPlantScript != null && collider.gameObject == pestScript.targetPlantScript.gameObject)

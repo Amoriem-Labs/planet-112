@@ -65,7 +65,7 @@ public class LevelManager : MonoBehaviour
     }
 
     public static void LoadLevel(int levelID){
-        Debug.Log($"Loading in level {levelID+1}");
+        ////Debug.Log($"Loading in level {levelID+1}");
         oxygenLevelCanvasStatic.SetActive(true);
         oxygenLevelSliderStatic.value = currentOxygenLevel;
         oxygenLevelSliderStatic.maxValue = levelSOsStatic[levelID].secondTargetOxygenLevel;

@@ -38,8 +38,8 @@ public class TimeManager : MonoBehaviour
     void CountTimeUnit()
     {
         if (gameStateData.timePassedSeconds % 10 == 0){
-            Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
-            + gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
+            ////Debug.Log("Current time is: " + gameStateData.timePassedDays + " days, " + gameStateData.timePassedHours + " hours, "
+            //+ gameStateData.timePassedMinutes + " minutes, " + gameStateData.timePassedSeconds + " seconds.");
         }
 
         gameStateData.timePassedSeconds += timeUnit;

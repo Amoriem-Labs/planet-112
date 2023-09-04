@@ -159,12 +159,12 @@ public static class PlantModuleArr
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerEnter2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerEnter2D called for TriggerModule. gameObject: " + collider.gameObject.name);
         }
 
         protected virtual void OnTriggerExit2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerExit2D called for TriggerModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerExit2D called for TriggerModule. gameObject: " + collider.gameObject.name);
         }
     }
 
@@ -519,7 +519,7 @@ public static class PlantModuleArr
                 {
                     if (i < moduleData.maxPestsTargetable){
                         pestsInRange[i].TakeDamage(moduleData.damageAmount);
-                        Debug.Log("Attacking pest " + pestsInRange[i].name);
+                        ////Debug.Log("Attacking pest " + pestsInRange[i].name);
                     }
                     AudioManager.GetSFX("chompSFX").Play();
                 }
@@ -578,18 +578,18 @@ public static class PlantModuleArr
 
         public override void Update()
         {
-            //Debug.Log("Test Module output: the plant's time left is " + plantScript.plantData.stageTimeLeft);
-            Debug.Log("TEST MODULE UPDATE: " + EncodeDataToString() + moduleData.name);
+            ////Debug.Log("Test Module output: the plant's time left is " + plantScript.plantData.stageTimeLeft);
+            ////Debug.Log("TEST MODULE UPDATE: " + EncodeDataToString() + moduleData.name);
         }
 
         public override void OnModuleAdd()
         {
-            Debug.Log("OnModuleAdd was called for a TestModule");
+            ////Debug.Log("OnModuleAdd was called for a TestModule");
         }
 
         public override void OnModuleRemove()
         {
-            Debug.Log("OnModuleRemove was called for a TestModule");
+            ////Debug.Log("OnModuleRemove was called for a TestModule");
         }
     }
 
@@ -619,12 +619,12 @@ public static class PlantModuleArr
 
         protected virtual void OnTriggerEnter2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerEnter2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerEnter2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
         }
 
         protected virtual void OnTriggerExit2D(Collider2D collider)
         {
-            Debug.Log("OnTriggerExit2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
+            ////Debug.Log("OnTriggerExit2D called for InstaKillPestsModule. gameObject: " + collider.gameObject.name);
         }
     }
 
@@ -697,7 +697,7 @@ public static class PlantModuleArr
                 else // damage the pests. (or launch proj etc etc)
                 {
                     pestsInRange[i].switchTargetPlant(plantScript);
-                    Debug.Log("Taunting pest " + pestsInRange[i].name);
+                    ////Debug.Log("Taunting pest " + pestsInRange[i].name);
                 }
             }
         }
@@ -793,7 +793,7 @@ public static class PlantModuleArr
             if (collider.gameObject.CompareTag("plant"))
             {
                 plantsInRange.Add(collider.gameObject.GetComponent<PlantScript>());
-                Debug.Log("Boosting fruit production for plant " + collider.gameObject.GetComponent<PlantScript>().name);
+                ////Debug.Log("Boosting fruit production for plant " + collider.gameObject.GetComponent<PlantScript>().name);
             }
         }
 
@@ -808,7 +808,7 @@ public static class PlantModuleArr
                     fruitProductionModule.moduleData.fruitProductionQuantity = (int)Math.Floor(fruitProductionModule.moduleData.fruitProductionQuantity / moduleData.fruitProductionBoostDecimal);
                     exitingPlantScript.plantModules[PlantModuleEnum.FruitProduction] = fruitProductionModule;
                 }
-                Debug.Log("Deboosting fruit production for plant " + exitingPlantScript.name);
+                ////Debug.Log("Deboosting fruit production for plant " + exitingPlantScript.name);
                 plantsInRange.Remove(exitingPlantScript);
             }
         }
@@ -882,7 +882,7 @@ public static class PlantModuleArr
                         int newOxygenLevel = (int)Math.Ceiling(plantsInRange[i].plantSO.oxygenProductionQuantity[plantsInRange[i].plantData.currStageOfLife] * moduleData.oxygenProductionBoostDecimal);
                         oxygenProductionModule.moduleData.oxygenProductionQuantity = newOxygenLevel;
                         plantsInRange[i].plantModules[PlantModuleEnum.OxygenProduction] = oxygenProductionModule;
-                        Debug.Log("Boosting oxygen production for plant " + plantsInRange[i].name);
+                        ////Debug.Log("Boosting oxygen production for plant " + plantsInRange[i].name);
                     }
                 }
             }
@@ -908,7 +908,7 @@ public static class PlantModuleArr
                     oxygenProductionModule.moduleData.oxygenProductionQuantity = (int)Math.Floor(oxygenProductionModule.moduleData.oxygenProductionQuantity / moduleData.oxygenProductionBoostDecimal);
                     exitingPlantScript.plantModules[PlantModuleEnum.OxygenProduction] = oxygenProductionModule;
                 }
-                Debug.Log("Deboosting oxygen production for plant " + exitingPlantScript.name);
+                ////Debug.Log("Deboosting oxygen production for plant " + exitingPlantScript.name);
                 plantsInRange.Remove(exitingPlantScript);
             }
         }

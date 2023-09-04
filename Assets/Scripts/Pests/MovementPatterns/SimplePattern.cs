@@ -38,7 +38,7 @@ public class SimplePattern : PestMovement
             // This basically means you've reached a set destination to the target.
             // Call other functions etc
             // if KeepPathing stays true, then the ai following target continues as target moves. 
-            Debug.Log("I shall stop HERE.");
+            ////Debug.Log("I shall stop HERE.");
             EndPathing(true);
             return;
         }
@@ -67,7 +67,7 @@ public class SimplePattern : PestMovement
                     // You can use this to trigger some special code if your game requires that.
                     reachedEndOfPath = true;
 
-                    Debug.Log("END OF PATH REACHED. Execute an Action here.");
+                    ////Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
                     // are you trapped trying to reach the unreacheable?
                     if (targetPosition != null &&
@@ -93,7 +93,7 @@ public class SimplePattern : PestMovement
                     {
                         resetPath = true;
                         keepPathing = false;
-                        Debug.Log("Potentially idleling");
+                        ////Debug.Log("Potentially idleling");
                         //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
                     }
                     else if (decoyState)

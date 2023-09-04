@@ -40,7 +40,7 @@ public class BezierPattern : PestMovement
         if (path == null)
         {
             // We have no path to follow yet, so don't do anything
-            //Debug.Log("NO PATH");
+            ////Debug.Log("NO PATH");
             return;
         }
 
@@ -54,12 +54,12 @@ public class BezierPattern : PestMovement
         float radius = 0.5f; // width of your "ray"... makeShift. TODO: projectile size comm?
         int attackRange = 100; // makeShift.. TODO: try to find a way to use SO data.
         RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
-        Debug.Log(hit.collider.gameObject);
+        ////Debug.Log(hit.collider.gameObject);
         if (hit.collider != null)
         {
             if (hit.collider.gameObject == GetComponent<PestScript>().targetPlantScript.gameObject)
             {
-                Debug.Log("Found target plant!");
+                ////Debug.Log("Found target plant!");
                 GetComponent<PestScript>().ResumePestModule(PestModuleEnum.SingleTargetProjectileAttack); // FOR NOW... testing
                 this.enabled = false; // FOR NOW... testing
             }
@@ -72,7 +72,7 @@ public class BezierPattern : PestMovement
             // several of them in the same frame.
             float distanceToWaypoint;
             reachedEndOfPath = false;
-            //Debug.Log("Before while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+            ////Debug.Log("Before while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
             // The distance to the next waypoint in the path
             while (true)
             {
@@ -92,8 +92,8 @@ public class BezierPattern : PestMovement
                         // You can use this to trigger some special code if your game requires that.
                         reachedEndOfPath = true;
 
-                        //Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
-                        //Debug.Log("END OF PATH REACHED. Execute an Action here.");
+                        ////Debug.Log("Distance to waypoint is: " + distanceToWaypoint);
+                        ////Debug.Log("END OF PATH REACHED. Execute an Action here.");
 
                         // are you trapped trying to reach the unreacheable?
                         if (targetPosition != null &&
@@ -119,7 +119,7 @@ public class BezierPattern : PestMovement
                         {
                             resetPath = true;
                             keepPathing = false;
-                            Debug.Log("Potentially idleling");
+                            ////Debug.Log("Potentially idleling");
                             //enabled = false; // target destroyed. Better to set to idle behavior here while calculating/waiting new target
                         }
                         else if(decoyState)
@@ -140,18 +140,18 @@ public class BezierPattern : PestMovement
                     break;
                 }
             }
-            //Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+            ////Debug.Log("After while loop: current waypoint: " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
         }
 
         if (t <= 1) // movement if during movement pattern phase
         {
             Vector3 newLoc = CalculateCubicBezierPoint(t, p0, p1, p2, p3);
             Vector3 dir = (newLoc - transform.position).normalized;
-            //Debug.Log(newLoc);
+            ////Debug.Log(newLoc);
             if (Vector3.Distance(newLoc, transform.position) <= 0.01)
             {
                 t += 0.1f;
-                //Debug.Log("Small pt reached");
+                ////Debug.Log("Small pt reached");
             }
             else
             {
@@ -164,13 +164,13 @@ public class BezierPattern : PestMovement
                     float distToTarget = Vector3.Distance(transform.position, (targetPosition.position + targetOffsetFromCenter));
                     if (distToTarget <= slowdownDetectionRange && !decoyState)
                     {
-                        //Debug.Log("Dist to target is: " + distToTarget);
+                        ////Debug.Log("Dist to target is: " + distToTarget);
                         speedFactor = Mathf.Sqrt(distToTarget / slowdownDetectionRange);
                     }
                 }
                 /*if(reachedEndOfPath)
                 {
-                    Debug.LogError("REACHED END OF PATH TRIGGERED");
+                    ////Debug.LogError("REACHED END OF PATH TRIGGERED");
                     var distanceToTarget = Vector3.Distance(transform.position, targetPosition.position);
                     speedFactor = Mathf.Sqrt(distanceToTarget / nextWaypointDistance);
                 }*/
@@ -182,7 +182,7 @@ public class BezierPattern : PestMovement
 
                 transform.position += dir * speed * Time.deltaTime * speedFactor;
             }
-            //Debug.Log("Called");
+            ////Debug.Log("Called");
         }
         else // if t > 1 and keepPathing (usually true, only false when the target is stationary, set at reaching. 
         { 
@@ -191,17 +191,17 @@ public class BezierPattern : PestMovement
                 // This basically means you've reached a set destination to the target.
                 // Call other functions etc
                 // if KeepPathing stays true, then the ai following target continues as target moves. 
-                //Debug.Log("I shall stop HERE.");
+                ////Debug.Log("I shall stop HERE.");
                 EndPathing(true);
                 return;
             }
 
             UpdatePath(); // update the path at the end of every path division.
 
-            //Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
+            ////Debug.Log("t > 1. Check: pathDivisionsQueueCount: " + pathDivisions.Count + " and not reachedEndOfPath: " + !reachedEndOfPath);
             if (pathDivisions.Count == 0) // generate a new path division
             {
-                //Debug.Log("NEW PATH DIV GENERATED! Current waypoint is " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
+                ////Debug.Log("NEW PATH DIV GENERATED! Current waypoint is " + currentWaypoint + ", and total waypoints are: " + path.vectorPath.Count);
 
                 // Problem with this is that the AI cuts through curves based on the alg since direct lerping.
                 // which makes it weird since the AI passes through obstacles.
@@ -232,10 +232,10 @@ public class BezierPattern : PestMovement
                 if(targetPosition != null) // just in case target is destroyed during this process
                 {
                     float newRelativePosition = Mathf.Sign(transform.position.x - (targetPosition.transform.position.x + targetOffsetFromCenter.x));
-                    //Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
+                    ////Debug.Log("ARE THE RELATIVE POSITIONS DIFFERENT: " + (newRelativePosition != relativePosition));
                     if (newRelativePosition != relativePosition)
                     {
-                        //Debug.Log("Sign Flipped");
+                        ////Debug.Log("Sign Flipped");
                         relativePosition = newRelativePosition;
                         alternatingFactor *= -1;
                     }
@@ -250,11 +250,11 @@ public class BezierPattern : PestMovement
             Vector2 rot3 = (p3 - p0).normalized / (1 / curveExtrusionFactor);
             p1 = p0 + RotateVector(rot0, uniformalBezDegree * alternatingFactor);
             p2 = p3 + RotateVector(rot3, -uniformalBezDegree * alternatingFactor);
-            //Debug.Log("Sign Flipped");
+            ////Debug.Log("Sign Flipped");
             alternatingFactor *= -1;
 
-            //Debug.Log("Bez: " + p0 + " " + p1 + " " + p2 + " " + p3);
-            //Debug.Log("Character trans: " + FindObjectOfType<PlayerScript>().transform.position);
+            ////Debug.Log("Bez: " + p0 + " " + p1 + " " + p2 + " " + p3);
+            ////Debug.Log("Character trans: " + FindObjectOfType<PlayerScript>().transform.position);
         }
     }
 

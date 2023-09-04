@@ -100,7 +100,7 @@ public class GridScript : MonoBehaviour
 
         if (levelData.mapGrid == null || levelData.mapGrid.Length == 0) // new level data. Spawn in default config for this level.
         {
-            //Debug.Log("New Map detected, Loading in default map config: ");
+            ////Debug.Log("New Map detected, Loading in default map config: ");
             var mapGrid = GridConfigs.levelGridConfigs[LevelManager.currentLevelID](); // only need to flip for default. 
             GridConfigs.FlipRows(ref mapGrid, rows, columns);
             levelData.mapGrid = GridConfigs.Convert2DArrayTo1D(ref mapGrid, rows, columns);
@@ -170,7 +170,7 @@ public class GridScript : MonoBehaviour
         }
         if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.OCCUPIED_STATE)
         {
-            Debug.Log("Grid " + centerGridPos.ToString() + " is occupied!");
+            ////Debug.Log("Grid " + centerGridPos.ToString() + " is occupied!");
             return false;
         }
         if (CheckOutOfBounds(centerGridPos) || GetTileState(centerGridPos) == TileState.WATER_STATE)
@@ -180,7 +180,7 @@ public class GridScript : MonoBehaviour
                     return true;
                 }
             }
-            Debug.Log("Relative grid " + centerGridPos.ToString() + " is a water state and you're not planting a plant that has the unlock plantability feature!");
+            ////Debug.Log("Relative grid " + centerGridPos.ToString() + " is a water state and you're not planting a plant that has the unlock plantability feature!");
             return false;
         }
         return true;
@@ -199,7 +199,7 @@ public class GridScript : MonoBehaviour
             }
             if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.OCCUPIED_STATE)
             {
-                Debug.Log("Relative grid " + gridPos.ToString() + " is occupied!");
+                ////Debug.Log("Relative grid " + gridPos.ToString() + " is occupied!");
                 return false;
             }
             if (CheckOutOfBounds(tile) || GetTileState(tile) == TileState.WATER_STATE)
@@ -209,7 +209,7 @@ public class GridScript : MonoBehaviour
                         return true;
                     }
                 }
-                Debug.Log("Relative grid " + gridPos.ToString() + " is a water state and you're not planting a plant that has the unlock plantability feature!");
+                ////Debug.Log("Relative grid " + gridPos.ToString() + " is a water state and you're not planting a plant that has the unlock plantability feature!");
                 return false;
             }
         }
@@ -228,7 +228,7 @@ public class GridScript : MonoBehaviour
                 SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
             } else {
                 SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
-                Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
+                ////Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
             }
         }
         GetGridSquare(centerGridPos).plantsOnTop.Add(prefab.GetComponent<PlantScript>());
@@ -242,7 +242,7 @@ public class GridScript : MonoBehaviour
                 SetTileStates(centerGridPos, TileState.AVAILABLE_STATE, additionRelativeGrids);
             } else {
                 SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
-                Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
+                ////Debug.Log("New Plant spawned at grid " + centerGridPos.ToString());
             }
         }
         GetGridSquare(centerGridPos).plantsOnTop.Add(prefab.GetComponent<PlantScript>());
@@ -260,7 +260,7 @@ public class GridScript : MonoBehaviour
             } else {
                 SetTileStates(centerGridPos, TileState.OCCUPIED_STATE, additionRelativeGrids);
             }
-            Debug.Log("Plant placed at grid " + centerGridPos.ToString());
+            ////Debug.Log("Plant placed at grid " + centerGridPos.ToString());
         }
         gameObject.transform.SetParent(plantParent);
         gameObject.transform.position = GridToCoordinates(centerGridPos, offset);
@@ -344,7 +344,7 @@ public class GridScript : MonoBehaviour
 
         if(currGrid != prevGrid)
         {
-            Debug.Log("New grid: " + currGrid.ToString());
+            ////Debug.Log("New grid: " + currGrid.ToString());
             prevGrid = currGrid;
         }
     } */

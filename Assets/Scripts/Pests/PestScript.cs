@@ -92,7 +92,7 @@ public class PestScript : MonoBehaviour
         for (int j = 0; j < 36; j++) // could i get less than 36 paths?
         {
             var pathToPossPoint = possPaths.vectorPaths[j];
-            //Debug.Log("Length of pathToPossPoint is " + pathToPossPoint.Count);
+            ////Debug.Log("Length of pathToPossPoint is " + pathToPossPoint.Count);
             if (Vector2.Distance(pathToPossPoint[pathToPossPoint.Count - 1], center + pointOffsets[j]) <= attackRange)
             {
                 // this point is reacheable
@@ -153,14 +153,14 @@ public class PestScript : MonoBehaviour
     {
         if (p.error)
         {
-            Debug.Log("The multipather has an error." + p.errorLog);
+            ////Debug.Log("The multipather has an error." + p.errorLog);
             return;
         }
 
         MultiTargetPath mp = p as MultiTargetPath;
         if (mp == null)
         {
-            Debug.LogError("The path was not a multi-target path");
+            ////Debug.LogError("The path was not a multi-target path");
             return;
         }
 
@@ -177,7 +177,7 @@ public class PestScript : MonoBehaviour
 
             if (path == null || currentPlantCache[i] == null)
             {
-                Debug.Log("Path number " + i + " could not be found. Prehaps the plant is already destroyed.");
+                ////Debug.Log("Path number " + i + " could not be found. Prehaps the plant is already destroyed.");
                 queryCount++; // no path, no need to query
                 continue;
             }
@@ -235,7 +235,7 @@ public class PestScript : MonoBehaviour
 
         if (queryCount < expectedQueryCount) // queries unfinished
         {
-            //Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
+            ////Debug.Log("Dancin'~~~ (idle animation-ing)"); // could play idle animation? might no need.
             return;
         }
         else // all queries finished
@@ -362,7 +362,7 @@ public class PestScript : MonoBehaviour
     // this is to deal with the case where a stationary plant already being attacked is being moved
     public void ChaseAfterPlant()
     {
-        //Debug.Log("CHASE AFTER PLANT ACTIVATED");
+        ////Debug.Log("CHASE AFTER PLANT ACTIVATED");
         if (currentState == State.STATE_ATTACKING)
         {
             // GetComponent<PestMovement>().enabled = true;
@@ -390,10 +390,10 @@ public class PestScript : MonoBehaviour
             if (TargetPlantInAttackRange())
             {
                 // TODO: play attacking animation here
-                //Debug.Log("Attack animation played");
+                ////Debug.Log("Attack animation played");
 
                 targetPlantScript.TakeDamage((int)attackDamage);
-                //Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
+                ////Debug.Log("Attacking target plant, hp left: " + targetPlantScript.plantData.currentHealth);
 
                 nextAttackTime = Time.time + attackRate; // reset aa timer
             }
@@ -420,12 +420,12 @@ public class PestScript : MonoBehaviour
         float attackRange = 100f; // makeShift.. TODO: try to find a way to use SO data.
         // Single cast has problem: another plant blocking the ray from reaching the target plant. So has to track all
         /*RaycastHit2D hit = Physics2D.CircleCast(transform.position, radius, rayDirection, attackRange, combinedLayerMask);
-        // Debug.Log(hit.collider.gameObject);
+        // //Debug.Log(hit.collider.gameObject);
         if (hit.collider != null)
         {
             if (hit.collider.gameObject == targetPlantScript.gameObject)
             {
-                Debug.Log("Found target plant in sight!!!");
+                ////Debug.Log("Found target plant in sight!!!");
                 return true;
             }
         }*/
@@ -435,7 +435,7 @@ public class PestScript : MonoBehaviour
         {
             if (hit.collider.gameObject == targetPlantScript.gameObject)
             {
-                Debug.Log("Found target plant in sight!!!");
+                ////Debug.Log("Found target plant in sight!!!");
                 return true;
             }
             // If the hit is an obstacle, then the target plant is not in sight. Objects are returned in order of contact.
@@ -556,7 +556,7 @@ public class PestScript : MonoBehaviour
     public void OnDeath()
     {
         // TODO: properly destroy the whole pest
-        Debug.Log("Called OnDeath for PestScript: " + gameObject.name);
+        ////Debug.Log("Called OnDeath for PestScript: " + gameObject.name);
         Destroy(gameObject);
     }
 
