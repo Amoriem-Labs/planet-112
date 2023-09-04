@@ -217,6 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a539a785db503ba43b4d6551cd479425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotTransform: {fileID: 0}
+  slotTransform: {fileID: 2160542359277527271}
   inventorySlotIndex: 0
+  linkedSellSlotTransform: {fileID: 0}
   infoBar: {fileID: 0}

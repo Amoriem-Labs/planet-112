@@ -30,12 +30,15 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     // Initializing inventory item properties.
     void Awake(){
-        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         if (transform.parent.parent.TryGetComponent<InventorySlot>(out InventorySlot inventorySlot)){
             rootInventorySlot = transform.parent.parent;
             draggingItem = rootInventorySlot.GetComponentInParent<InventoryManager>().draggingItem;
             infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
         }
+    }
+
+    void Start(){
+        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         hotbar = GameObject.FindGameObjectWithTag("hotbar").GetComponent<HotbarManagerScript>();
         parentAfterDrag = transform.parent;
     }

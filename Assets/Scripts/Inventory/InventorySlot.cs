@@ -14,7 +14,6 @@ public class InventorySlot : MonoBehaviour, IDropHandler, IPointerEnterHandler, 
 
     // Initializing variables
     void Awake(){
-        slotTransform = transform.GetChild(0);
         infoBar = GameObject.FindGameObjectWithTag("infoBar").GetComponent<InfoBarScript>();
         inventorySlotIndex = transform.GetSiblingIndex();
     }
