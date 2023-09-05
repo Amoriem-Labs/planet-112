@@ -83,8 +83,8 @@ public class PersistentData : MonoBehaviour
             inventory.LoadInventory(currSaveData.playerData);
 
             // Initialize settings from settings in currSaveData
-            settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
-            settings.loadScreen(settings.fullScreen);
+            // settings.fullScreen = currSaveData.gameStateData.settingsData.fullScreen;
+            settings.loadScreen(false);
             audioManager.volumeBGM = currSaveData.gameStateData.settingsData.volumeBGM;
             audioManager.OnMusicVolumeChanged(audioManager.volumeBGM);
             audioManager.volumeSFX = currSaveData.gameStateData.settingsData.volumeSFX;
