@@ -15,9 +15,9 @@ MonoBehaviour:
   levelID: 1
   sceneName: Level2Scene
   biome: plains
-  firstTargetOxygenLevel: 11
-  secondTargetOxygenLevel: 11
-  completed: 1
+  firstTargetOxygenLevel: 120
+  secondTargetOxygenLevel: 140
+  completed: 0
   pestWavePestNames: 0000000001000000020000000100000002000000
   pestWaveNumPests: 0000000003000000050000000500000005000000
   pestWaveDelays:

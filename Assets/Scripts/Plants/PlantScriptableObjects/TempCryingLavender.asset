@@ -29,7 +29,7 @@ MonoBehaviour:
   - 0
   maxHealth:
   - 0
-  - 50
+  - 150
   defaultModules: 020000000100000007000000
   relativeGridsOccupied:
   - vec2Array: []
@@ -53,13 +53,13 @@ MonoBehaviour:
   oxygenProductionQuantity: 0000000002000000
   healSelfRate:
   - 0
-  - 5
+  - 2
   healSelfAmount:
   - 0
   - 5
   healRate:
   - 0
-  - 60
+  - 2
   healAmount:
   - 0
   - 10

@@ -118,7 +118,7 @@ public abstract class PlantScript : MonoBehaviour
         plantData.stageTimeLeft = plantSO.stageTimeMax[plantData.currStageOfLife];
         plantData.currentHealth = plantSO.maxHealth[plantData.currStageOfLife];
         plantData.plantModuleData = new Dictionary<PlantModuleEnum, string>(); // size 0. Modules to be added in the child class
-        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData); // add this plant into save. 
+        //PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Add(plantData); // add this plant into save. 
     }
 
     /* public void LoadPlantData(PlantData plantData){
@@ -232,7 +232,7 @@ public abstract class PlantScript : MonoBehaviour
     public void OnPlantDeath()
     {
         // remove this plant from save
-        PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Remove(plantData);
+        //PersistentData.GetLevelData(LevelManager.currentLevelID).plantDatas.Remove(plantData);
         // TODO: probably need to call module terminations. Be mindful that some modules are automatically terminated when the gameObject destructs.
         foreach (var module in plantModules.Values)
         {

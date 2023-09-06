@@ -16,7 +16,7 @@ MonoBehaviour:
   sceneName: Level3Scene
   biome: plains
   firstTargetOxygenLevel: 210
-  secondTargetOxygenLevel: 210
+  secondTargetOxygenLevel: 230
   completed: 0
   pestWavePestNames: 00000000010000000200000001000000010000000200000002000000
   pestWaveNumPests: 00000000030000000300000005000000050000000500000005000000

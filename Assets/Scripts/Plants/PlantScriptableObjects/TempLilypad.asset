@@ -42,7 +42,7 @@ MonoBehaviour:
   fruitType: 0
   oxygenProductionQuantity: 
   healSelfRate:
-  - 5
+  - 2
   healSelfAmount:
   - 5
   healRate: []

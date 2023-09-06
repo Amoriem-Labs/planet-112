@@ -466,7 +466,7 @@ public class PestScript : MonoBehaviour
         pestData.pestName = (int)pestSO.pName;
         pestData.currentHealth = pestSO.maxHealth[pestData.currStageOfLife];
         pestData.pestModuleData = new Dictionary<PestModuleEnum, string>(); // size 0. Modules to be added in the child class
-        PersistentData.GetLevelData(LevelManager.currentLevelID).pestDatas.Add(pestData); // add this pest into save. 
+        //PersistentData.GetLevelData(LevelManager.currentLevelID).pestDatas.Add(pestData); // add this pest into save. 
     }
 
     private void Start()

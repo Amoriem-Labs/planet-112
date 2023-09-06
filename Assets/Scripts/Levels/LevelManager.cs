@@ -29,6 +29,12 @@ public class LevelManager : MonoBehaviour
     public static GameObject cameraObjStatic;
     public GameObject cinemaMachineCamera; 
     public static GameObject cinemaMachineCameraStatic;
+    public ShopSlot[] unlockAtLevel2;
+    public static ShopSlot[] unlockAtLevel2Static;
+    public ShopSlot[] unlockAtLevel3;
+    public static ShopSlot[] unlockAtLevel3Static;
+    public ShopSlot[] unlockAtLevel4;
+    public static ShopSlot[] unlockAtLevel4Static;
 
     void Awake(){
         DontDestroyOnLoad(oxygenLevelCanvas);
@@ -41,6 +47,9 @@ public class LevelManager : MonoBehaviour
         firstOxygenLevelMarkStatic = firstOxygenLevelMark;
         cameraObjStatic = cameraObj;
         cinemaMachineCameraStatic = cinemaMachineCamera;
+        unlockAtLevel2Static = unlockAtLevel2;
+        unlockAtLevel3Static = unlockAtLevel3;
+        unlockAtLevel4Static = unlockAtLevel4;
     }
 
     void Update(){
@@ -94,6 +103,28 @@ public class LevelManager : MonoBehaviour
             // If second target oxygen level is reached in the level, then stick damage will be boosted in the future levels.
             if (currentOxygenLevel >= levelSOsStatic[currentLevelID].secondTargetOxygenLevel){
                 Combat.attackDamage *= 1.5f;
+            }
+            if (currentLevelID == 1){
+                foreach (ShopSlot shopSlot in unlockAtLevel2Static){
+                    shopSlot.unlockItem();
+                }
+            } else if (currentLevelID == 2){
+                foreach (ShopSlot shopSlot in unlockAtLevel2Static){
+                    shopSlot.unlockItem();
+                }
+                foreach (ShopSlot shopSlot in unlockAtLevel3Static){
+                    shopSlot.unlockItem();
+                }
+            } else if (currentLevelID == 3){
+                foreach (ShopSlot shopSlot in unlockAtLevel2Static){
+                    shopSlot.unlockItem();
+                }
+                foreach (ShopSlot shopSlot in unlockAtLevel3Static){
+                    shopSlot.unlockItem();
+                }
+                foreach (ShopSlot shopSlot in unlockAtLevel4Static){
+                    shopSlot.unlockItem();
+                }
             }
         }
     }
