@@ -17,4 +17,4 @@ MonoBehaviour:
   cost: 05000000000000000000000000000000
   inventoryItemPrefab: {fileID: 2290849425908696756, guid: b21958e858e2d0442bd4ac7de913f6b2, type: 3}
   biome: Plains
-  mainRole: Support
+  mainRole: 'Role: Plantable on Water'

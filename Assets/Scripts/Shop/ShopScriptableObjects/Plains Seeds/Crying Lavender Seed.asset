@@ -17,4 +17,4 @@ MonoBehaviour:
   cost: 3c000000000000000000000001000000
   inventoryItemPrefab: {fileID: 5475830003357801135, guid: 5f874a23a17c7db4e840643d5693aa5e, type: 3}
   biome: Plains
-  mainRole: Healing
+  mainRole: 'Role: Late Game / Heals Nearby Plants'

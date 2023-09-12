@@ -17,4 +17,4 @@ MonoBehaviour:
   cost: 05000000000000000000000000000000
   inventoryItemPrefab: {fileID: 4921657913025983270, guid: 007c735406100f54291b8c27720c8bf2, type: 3}
   biome: Plains
-  mainRole: Oxygen Production
+  mainRole: 'Role: Early Game / Oxygen Production'

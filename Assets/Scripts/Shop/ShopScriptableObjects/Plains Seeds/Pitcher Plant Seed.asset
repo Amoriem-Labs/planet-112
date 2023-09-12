@@ -17,4 +17,4 @@ MonoBehaviour:
   cost: 28000000000000000000000000000000
   inventoryItemPrefab: {fileID: 6460909878121052546, guid: 2403cfc38f4479e44aca264ad588b345, type: 3}
   biome: Plains
-  mainRole: Attack
+  mainRole: 'Role: Attacks Pests'

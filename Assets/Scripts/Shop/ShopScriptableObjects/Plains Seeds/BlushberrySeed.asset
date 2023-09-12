@@ -17,4 +17,4 @@ MonoBehaviour:
   cost: 05000000000000000000000000000000
   inventoryItemPrefab: {fileID: 2350221773790147034, guid: f6a03b293af838f43820ad75cd5d44a4, type: 3}
   biome: Plains
-  mainRole: Early Game / Fruit Production
+  mainRole: 'Role: Early Game / Fruit Production'
